@@ -149,6 +149,9 @@
     background: linear-gradient(180deg, var(--wall-teal) 0%, var(--wall-teal-deep) 100%);
     color: var(--cream);
     padding: 18px 24px 20px;
+    /* One font across the whole bar (the serif display face used by the
+       hero headline just below), so nothing looks mismatched. */
+    font-family: var(--font-serif);
   }
   .campaign-inner {
     display: flex;
@@ -163,7 +166,7 @@
     gap: 14px;
     flex-wrap: wrap;
   }
-  .campaign-headline .eyebrow { color: var(--wall-gold); }
+  .campaign-headline .eyebrow { color: var(--wall-gold); font-family: var(--font-serif); }
   .campaign-headline .camp-name {
     font-family: var(--font-serif);
     font-weight: 600;
@@ -247,6 +250,11 @@
   @media (prefers-reduced-motion: reduce) {
     .names-ticker .ticker-track { animation: none; flex-wrap: wrap; white-space: normal; padding: 0 24px; }
   }
+  /* When the names fit on screen (only a few so far) we show them ONCE and
+     centered, with no scrolling - so a single name isn't repeated. The JS
+     adds this class only while the list is narrower than the bar. */
+  .names-ticker.is-static { text-align: center; }
+  .names-ticker.is-static .ticker-track { animation: none; }
   @media (max-width: 620px) {
     .campaign-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
     .campaign-count { text-align: left; }
@@ -1026,14 +1034,28 @@
       // scroll animation loops seamlessly. If nobody has joined
       // yet, show a friendly invitation instead.
       var track = document.getElementById('names-track');
-      if (track) {
+      var ticker = track ? track.parentNode : null;
+      if (track && ticker) {
         var chips = members.map(function (m) {
           return '<span class="name-chip">' + escapeHtml(m.name) + '</span>';
         }).join('');
         if (!chips) {
           chips = '<span class="name-chip">Be the first to join the Chai With Us campaign</span>';
         }
-        track.innerHTML = chips + chips;
+        // Show the names once first.
+        track.innerHTML = chips;
+        // Only scroll when the names are actually wider than the bar. If they
+        // fit (just a few so far), leave them shown once and centered - that
+        // way a single name never appears twice. Once the list grows past the
+        // bar width, duplicate it so the marquee loops seamlessly.
+        requestAnimationFrame(function () {
+          if (track.scrollWidth > ticker.clientWidth + 4) {
+            track.innerHTML = chips + chips;
+            ticker.classList.remove('is-static');
+          } else {
+            ticker.classList.add('is-static');
+          }
+        });
       }
 
       // Wall of Honor: drop each new member into the card that
