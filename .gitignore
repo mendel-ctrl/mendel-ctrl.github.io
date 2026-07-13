@@ -1,0 +1,12 @@
+# Local design/source assets — the deployed page uses an inline (base64)
+# hero image, so these originals aren't needed in the public repo.
+*.jpg
+*.jpeg
+*.JPG
+*.png
+Screenshot*
+# Internal notes, kept local (not published to the site repo).
+AUTOMATION.md
+
+# Editor/session
+.claude/
