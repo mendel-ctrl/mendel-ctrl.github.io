@@ -597,17 +597,12 @@
     overflow: hidden;
   }
   .form-frame iframe { display: block; width: 100%; border: 0; }
-  /* On phones, let the form card span the full screen width so the
-     embedded form isn't cramped. Drop the section's side padding and
-     the card's rounded corners/side border for an edge-to-edge fit. */
+  /* On phones, shrink the section's side padding so the form card is
+     wider and the embedded form isn't cramped - but keep the same
+     rounded, bordered "bubble" look as the desktop version. */
   @media (max-width: 600px) {
-    .join-form { padding: 48px 0 60px; }
-    .join-form .section-head { padding: 0 20px; }
-    .form-frame {
-      border-radius: 0;
-      border-left: 0;
-      border-right: 0;
-    }
+    .join-form { padding: 48px 10px 60px; }
+    .join-form .section-head { padding: 0 14px; }
   }
 
   .why-give { background: var(--cream); padding: 90px 24px; }
