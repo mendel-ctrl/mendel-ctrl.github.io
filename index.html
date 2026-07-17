@@ -576,6 +576,28 @@
   /* ---------------------------------------------------------
      WHY GIVE MONTHLY
      --------------------------------------------------------- */
+  /* ---------------------------------------------------------
+     JOIN FORM (embedded iframe)
+     --------------------------------------------------------- */
+  .join-form { background: var(--cream-dark); padding: 80px 24px 90px; }
+  .join-form .section-head { text-align: center; margin-bottom: 40px; }
+  .join-form h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(30px, 3.6vw, 42px);
+    font-weight: 600;
+    margin-top: 14px;
+  }
+  .form-frame {
+    max-width: 720px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(18,51,57,0.10);
+    border: 1px solid rgba(18,51,57,0.06);
+    overflow: hidden;
+  }
+  .form-frame iframe { display: block; width: 100%; border: 0; }
+
   .why-give { background: var(--cream); padding: 90px 24px; }
   .why-give .section-head { text-align: center; margin-bottom: 50px; }
   .why-give h2 {
@@ -718,10 +740,9 @@
 
   <!-- =====================================================
        1. HERO
-       This is the real trigger button lives here:
-       id="donate-button" - the embed script at the bottom of
-       the page watches for clicks on this exact element and
-       opens the donate popup when it's clicked.
+       The "Become a Member" button (id="donate-button") smooth-
+       scrolls down to the embedded form section ("Join the Chai
+       Club"). See the small script at the bottom of the page.
        ===================================================== -->
   <section class="hero">
     <div class="wrap">
@@ -748,9 +769,9 @@
   <!-- =====================================================
        3. TIER CARDS
        These cards are just a visual preview of the giving
-       levels. Each button below forwards a click to the real
-       #donate-button so the actual popup opens - see the small
-       script near the bottom for how that works.
+       levels. Each "Join Now" button smooth-scrolls down to the
+       embedded form section - see the small script near the
+       bottom of the page for how that works.
        ===================================================== -->
   <section class="tiers">
     <div class="wrap">
@@ -827,6 +848,35 @@
 
       </div>
       <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:32px;">*Discounted rates available when applicable.</p>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       JOIN FORM (embedded iframe)
+       The actual signup/donate form is embedded right here on
+       the page as an iframe. Every "Join Now" / "Become a
+       Member" button on the page smooth-scrolls down to this
+       section (see the small script near the bottom).
+
+       To swap in a different form, change the id in the src
+       URL below. To make the form taller or shorter, change
+       the height="2000".
+       ===================================================== -->
+  <section class="join-form" id="join-form">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow" style="text-align:center;">Join the Chai Club</div>
+        <h2>Become a member</h2>
+      </div>
+      <div class="form-frame reveal">
+        <iframe
+          src="https://chabadsp.chabadms.com/api/Forms/getFormView?id=ac2627f7-d9b4-43b5-a071-b8130abf9d59"
+          title="Chai Club membership form"
+          frameborder="0"
+          width="100%"
+          height="1250"
+          loading="lazy"></iframe>
+      </div>
     </div>
   </section>
 
@@ -1036,7 +1086,10 @@
         // Member #1 of the summer campaign (joined 07/08/2026, $36 = Bronze).
         // Add one { name: "...", tier: "..." } line per new member below.
         { name: "Jett Schrey", tier: "Bronze" },
-        { name: "Max Huebel", tier: "Gold" }
+        { name: "Max Huebel", tier: "Gold" },
+        { name: "Noa & Ado Moshe", tier: "Gold" },
+        { name: "Zac Miller", tier: "Lamplighter" },
+        { name: "Amanda Donnelly", tier: "Bronze" }
       ]
     };
 
@@ -1110,39 +1163,27 @@
   </script>
 
   <!-- =====================================================
-       6. DONATE FORM EMBED (unchanged, exactly as provided)
-       This script finds the element matching data-trigger and
-       opens the donate popup whenever it's clicked.
+       6. SEND EVERY "JOIN" BUTTON TO THE EMBEDDED FORM
+       =====================================================
+       The signup form now lives right on the page as an iframe
+       (the "Join the Chai Club" section above), instead of a
+       pop-up. So every button - the hero "Become a Member",
+       the tier "Join Now" buttons, and the "Become a Founding
+       Member" button - just smooth-scrolls down to that form.
        ===================================================== -->
-  <script src="https://chabadsp.chabadms.com/assets/donate-embed/donate.js?v=1.0.0.1"
-    data-form-id="57ca0e4d-d42a-427a-95c2-3c888957a153"
-    data-trigger="#donate-button"
-    data-auto-open="true"></script>
-
-  <!--
-    NOTE for you (Mendel): data-auto-open="true" makes the popup open
-    automatically the moment the page loads, for every visitor - not
-    just when they click a button. That's probably not what you want
-    on a permanent page. If you'd rather it only open on click, change
-    that line to data-auto-open="false".
-  -->
-
   <script>
-    // ---------------------------------------------------------
-    // STEP 7: FORWARD OTHER BUTTON CLICKS TO THE REAL TRIGGER
-    // ---------------------------------------------------------
-    // The donate script only listens for clicks on the ONE element
-    // with id="donate-button" (up in the hero). But we have several
-    // "Join at $__" buttons on the tier cards below that should also
-    // open the popup. Instead of duplicating the embed script (which
-    // would break, since IDs must be unique on a page), we just tell
-    // every button with class="donate-trigger" to click the real
-    // button on our behalf when someone clicks it.
-    document.querySelectorAll('.donate-trigger').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.getElementById('donate-button').click();
+    (function () {
+      // #donate-button is the hero button; .donate-trigger covers
+      // the tier cards and the founders CTA. Both scroll to the form.
+      var triggers = document.querySelectorAll('#donate-button, .donate-trigger');
+      var form = document.getElementById('join-form');
+      triggers.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (form) { form.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        });
       });
-    });
+    })();
   </script>
 
   <script>
