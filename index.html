@@ -69,6 +69,11 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Never let the page scroll sideways - important when it's dropped
+     into a Wix HTML embed box, so there's no stray horizontal
+     scrollbar inside the iframe. */
+  html, body { overflow-x: hidden; max-width: 100%; }
+
   body {
     font-family: var(--font-sans);
     color: var(--text-dark);
