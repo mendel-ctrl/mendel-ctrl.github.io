@@ -597,6 +597,18 @@
     overflow: hidden;
   }
   .form-frame iframe { display: block; width: 100%; border: 0; }
+  /* On phones, let the form card span the full screen width so the
+     embedded form isn't cramped. Drop the section's side padding and
+     the card's rounded corners/side border for an edge-to-edge fit. */
+  @media (max-width: 600px) {
+    .join-form { padding: 48px 0 60px; }
+    .join-form .section-head { padding: 0 20px; }
+    .form-frame {
+      border-radius: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+  }
 
   .why-give { background: var(--cream); padding: 90px 24px; }
   .why-give .section-head { text-align: center; margin-bottom: 50px; }
@@ -941,9 +953,9 @@
         <div class="founder-card reveal" data-tier="partner" style="--tier-color: var(--tier-partner);">
           <div class="tier-head"><span class="tier-dot"></span><span class="tier-name">Partner</span></div>
           <ul>
-            <li>Eitan Smolash &amp; Noa Lasman</li>
+            <li data-last="Smolash">Eitan Smolash &amp; Noa Lasman</li>
             <li>Jay Feldman</li>
-            <li>Premier Auto Lounge</li>
+            <li data-last="Premier">Premier Auto Lounge</li>
             <li>Marshall &amp; Stephanie Marcus</li>
             <li>Logan &amp; Alex Sembler</li>
             <li>Jordan Stein</li>
@@ -1149,6 +1161,41 @@
         li.textContent = m.name;
         ul.appendChild(li);
       });
+
+      // Alphabetize every Wall of Honor list by last name. This runs
+      // AFTER the campaign members above are added, so founding members
+      // and new members are sorted together into one A-Z order. For a
+      // few entries where the last word isn't the surname (businesses,
+      // or couples with different surnames) put the sort name in a
+      // data-last="..." attribute on that <li> and it's used instead.
+      sortFoundersByLastName();
+
+      function sortFoundersByLastName() {
+        document.querySelectorAll('.founder-card ul').forEach(function (ul) {
+          var items = Array.prototype.slice.call(ul.querySelectorAll('li'));
+          items.sort(function (a, b) {
+            var ka = lastNameKey(a), kb = lastNameKey(b);
+            if (ka < kb) { return -1; }
+            if (ka > kb) { return 1; }
+            // Same last name: fall back to the full name so it's stable.
+            var fa = a.textContent.trim().toLowerCase();
+            var fb = b.textContent.trim().toLowerCase();
+            return fa < fb ? -1 : (fa > fb ? 1 : 0);
+          });
+          items.forEach(function (li) { ul.appendChild(li); });
+        });
+      }
+      function lastNameKey(li) {
+        // Manual override wins (for businesses / mixed-surname couples).
+        if (li.dataset && li.dataset.last) { return li.dataset.last.toLowerCase(); }
+        // Otherwise use the last word of the name. Couples here share a
+        // surname written at the end ("Kamilla & Angelo Dematteo"), so
+        // the last word is the surname. A trailing "Group" is dropped
+        // so "Jac Smith Group" sorts under "Smith".
+        var name = li.textContent.replace(/\bgroup\b\s*$/i, '').trim();
+        var words = name.split(/\s+/);
+        return (words[words.length - 1] || '').toLowerCase();
+      }
 
       function setText(id, val) {
         var el = document.getElementById(id);
