@@ -7,6 +7,11 @@
 Screenshot*
 # Internal notes, kept local (not published to the site repo).
 AUTOMATION.md
+# Working content drafts (RTF source pastes), kept local.
+*.rtf
+
+# VM auto-updater (runs on your Google Cloud VM, not part of the website).
+vm-automation/
 
 # Editor/session
 .claude/

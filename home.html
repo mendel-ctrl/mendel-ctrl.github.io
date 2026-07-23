@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<!--
+  CYP ST. PETERSBURG — HOMEPAGE
+  =================================================================
+  One self-contained HTML page (styles + markup + a little JS all
+  inline) built for chabadyoungsp.com. Paste it into Wix as a
+  "Custom Embed" / HTML element, or host it on GitHub Pages and
+  iframe it in — same workflow as the Chai Club page.
+
+  Editorial / minimal redesign: light, typographic, hairline
+  dividers instead of cards, no emojis. One dark section (First
+  Friday) for contrast.
+
+  Where to edit (search these comments to jump around):
+    1. :root        - colors + fonts
+    2. NAV
+    3. HERO         - big editorial headline
+    4. STATEMENT    - the mission line
+    5. INDEX        - "what we do" as a numbered list
+    6. FIRSTFRIDAY  - dark feature section
+    7. CHAI         - slim membership line
+    8. PROMISE      - Rabbi Mendel pull-quote
+    9. FAQ          - hairline accordion
+   10. CONTACT
+   11. FOOTER
+   12. SCRIPT
+  =================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0e1116">
+<title>CYP St. Pete — Chabad Young Professionals of St. Petersburg</title>
+<meta name="description" content="Your Jewish home in St. Petersburg, FL. Chabad Young Professionals — First Fridays, Shabbat dinners, Torah, and real friendships for young Jewish professionals in Tampa Bay.">
+
+<!-- Type: Inter (UI + body) with Fraunces used only for serif-italic accents -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =============== 1. :root =============== */
+  :root {
+    --ink:      #0e1116;   /* near-black */
+    --ink-2:    #171b22;   /* dark surface */
+    --paper:    #ffffff;
+    --paper-2:  #f4f2ec;   /* warm off-white band */
+    --muted:    #6a707a;   /* secondary text */
+    --line:     rgba(14,17,22,.14);
+    --line-2:   rgba(255,255,255,.16);
+    --accent:   #10908f;   /* deep muted teal */
+    --accent-bright: #37d6d6;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --maxw: 1240px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.6;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  /* shared type */
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .serif-i { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -.028em; line-height: 1.06; }
+  .display { font-size: clamp(44px, 8vw, 104px); font-weight: 600; letter-spacing: -.035em; line-height: .98; }
+  h2.sec { font-size: clamp(30px, 4.4vw, 52px); }
+  .lead { color: var(--muted); font-size: clamp(17px, 1.5vw, 20px); font-weight: 400; }
+
+  .pad { padding: clamp(84px, 12vw, 168px) 0; }
+  .rule { height: 1px; background: var(--line); border: 0; }
+
+  /* links + buttons — sharp, minimal */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 600; padding: 15px 26px;
+    border-radius: 3px; border: 1px solid var(--ink); cursor: pointer;
+    transition: background .2s ease, color .2s ease, transform .2s ease, border-color .2s ease;
+  }
+  .btn-solid { background: var(--ink); color: var(--paper); }
+  .btn-solid:hover { background: var(--accent); border-color: var(--accent); }
+  .btn-line { background: transparent; color: var(--ink); }
+  .btn-line:hover { background: var(--ink); color: var(--paper); }
+  .btn-on-dark { background: transparent; color: #fff; border-color: var(--line-2); }
+  .btn-on-dark:hover { background: #fff; color: var(--ink); border-color: #fff; }
+
+  .arrow-link {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-weight: 600; font-size: 15px; color: var(--ink);
+    padding-bottom: 3px; border-bottom: 1px solid var(--line);
+    transition: gap .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .arrow-link:hover { gap: 15px; border-color: var(--ink); color: var(--accent); }
+  .arrow-link.on-dark { color: #fff; border-color: var(--line-2); }
+  .arrow-link.on-dark:hover { color: var(--accent-bright); border-color: #fff; }
+
+  /* =============== 2. NAV =============== */
+  header.nav {
+    position: sticky; top: 0; z-index: 60;
+    background: rgba(255,255,255,.86);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .25s ease;
+  }
+  header.nav.scrolled { border-color: var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 74px; }
+  .wordmark { display: flex; align-items: baseline; gap: 10px; font-weight: 600; letter-spacing: -.02em; font-size: 19px; }
+  .wordmark span.sub { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .nav-links { display: flex; align-items: center; gap: 34px; }
+  .nav-links a.link { font-size: 15px; font-weight: 500; color: var(--ink); position: relative; padding: 4px 0; }
+  .nav-links a.link::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 0; height: 1px; background: var(--ink); transition: width .22s ease; }
+  .nav-links a.link:hover::after { width: 100%; }
+  .nav-cta { font-size: 14px; font-weight: 600; padding: 10px 20px; border: 1px solid var(--ink); border-radius: 3px; transition: background .2s ease, color .2s ease; }
+  .nav-cta:hover { background: var(--ink); color: var(--paper); }
+  .nav-toggle { display: none; background: none; border: 0; cursor: pointer; padding: 8px; }
+  .nav-toggle span { display: block; width: 26px; height: 1.5px; background: var(--ink); margin: 6px 0; transition: .25s; }
+
+  /* =============== 3. HERO =============== */
+  .hero { padding: clamp(70px, 11vw, 150px) 0 clamp(56px, 7vw, 96px); }
+  .hero .eyebrow { display: block; margin-bottom: 30px; }
+  .hero .display { max-width: 15ch; }
+  .hero .display .serif-i { color: var(--accent); }
+  .hero-lead { max-width: 46ch; margin: 34px 0 0; color: var(--muted); font-size: clamp(17px, 1.7vw, 21px); }
+  .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 44px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 0; margin-top: 72px; border-top: 1px solid var(--line); }
+  .hero-meta .m { flex: 1 1 200px; padding: 26px 30px 0 0; }
+  .hero-meta .m + .m { padding-left: 30px; border-left: 1px solid var(--line); }
+  .hero-meta .k { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .hero-meta .v { font-size: 19px; font-weight: 500; margin-top: 6px; letter-spacing: -.01em; }
+
+  /* =============== 4. STATEMENT =============== */
+  .statement { background: var(--paper-2); }
+  .statement .big {
+    font-size: clamp(26px, 3.5vw, 42px); font-weight: 400; letter-spacing: -.02em;
+    line-height: 1.28; max-width: 20ch;
+  }
+  .statement .big em { font-family: var(--serif); font-style: italic; color: var(--accent); }
+  .statement-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .statement .support { color: var(--muted); font-size: 18px; max-width: 42ch; }
+  .statement .support + .support { margin-top: 20px; }
+
+  /* =============== 5. INDEX (what we do) =============== */
+  .index-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-bottom: 20px; }
+  .idx-item {
+    display: grid; grid-template-columns: 64px 1fr 1.1fr auto; gap: 28px; align-items: baseline;
+    padding: 34px 0; border-top: 1px solid var(--line); position: relative;
+    transition: padding .25s ease;
+  }
+  .idx-item:last-child { border-bottom: 1px solid var(--line); }
+  .idx-item .num { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 4px; }
+  .idx-item .t { font-size: clamp(22px, 2.6vw, 30px); font-weight: 600; letter-spacing: -.02em; transition: color .2s ease; }
+  .idx-item .d { color: var(--muted); font-size: 16px; }
+  .idx-item .go { color: var(--muted); opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease, color .2s ease; font-size: 22px; }
+  .idx-item:hover { padding-left: 12px; }
+  .idx-item:hover .t { color: var(--accent); }
+  .idx-item:hover .go { opacity: 1; transform: translateX(0); color: var(--accent); }
+
+  /* =============== 6. FIRSTFRIDAY (dark) =============== */
+  .dark { background: var(--ink); color: #fff; }
+  .dark .eyebrow { color: rgba(255,255,255,.55); }
+  .ff-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 72px; align-items: center; }
+  .ff-grid h2 { font-size: clamp(34px, 5vw, 62px); margin: 26px 0 24px; }
+  .ff-grid h2 .serif-i { color: var(--accent-bright); }
+  .ff-grid p { color: rgba(255,255,255,.72); font-size: 18px; max-width: 42ch; }
+  .ff-cta { margin-top: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
+  .ff-detail { border-top: 1px solid var(--line-2); }
+  .ff-detail .row { display: flex; justify-content: space-between; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line-2); }
+  .ff-detail .row .k { color: rgba(255,255,255,.55); font-size: 14px; letter-spacing: .04em; }
+  .ff-detail .row .v { font-weight: 500; font-size: 16px; text-align: right; }
+
+  /* =============== 7. CHAI (slim band) =============== */
+  .chai-band { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+  .chai-band h2 { font-size: clamp(28px, 3.6vw, 44px); }
+  .chai-band h2 .serif-i { color: var(--accent); }
+  .chai-band p { color: var(--muted); font-size: 18px; max-width: 46ch; margin-top: 18px; }
+  .chai-band .side { text-align: right; }
+  .chai-band .side .fig { font-family: var(--serif); font-style: italic; font-size: clamp(60px, 9vw, 128px); line-height: 1; color: var(--ink); }
+  .chai-band .side .cap { color: var(--muted); font-size: 15px; margin-top: 12px; }
+
+  /* =============== 8. PROMISE =============== */
+  .promise { background: var(--paper-2); }
+  .promise blockquote {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(26px, 3.6vw, 44px); line-height: 1.28; letter-spacing: -.01em;
+    max-width: 22ch; margin: 0 auto; text-align: center;
+  }
+  .promise .attrib { text-align: center; margin-top: 40px; }
+  .promise .attrib .n { font-weight: 600; font-size: 17px; }
+  .promise .attrib .r { color: var(--muted); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+
+  /* =============== 9. FAQ =============== */
+  .faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; }
+  details.faq { border-top: 1px solid var(--line); }
+  details.faq:last-of-type { border-bottom: 1px solid var(--line); }
+  details.faq summary {
+    list-style: none; cursor: pointer; padding: 28px 0; font-size: 20px; font-weight: 500; letter-spacing: -.01em;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq summary .pm { flex: none; width: 22px; height: 22px; position: relative; }
+  details.faq summary .pm::before,
+  details.faq summary .pm::after { content: ""; position: absolute; background: var(--ink); transition: transform .25s ease, opacity .2s ease; }
+  details.faq summary .pm::before { top: 10px; left: 0; width: 22px; height: 1.5px; }
+  details.faq summary .pm::after { left: 10px; top: 0; width: 1.5px; height: 22px; }
+  details.faq[open] summary .pm::after { transform: scaleY(0); }
+  details.faq .answer { padding: 0 60px 30px 0; color: var(--muted); font-size: 17px; max-width: 60ch; }
+
+  /* =============== 10. CONTACT =============== */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .contact h2 { font-size: clamp(34px, 5vw, 60px); }
+  .contact h2 .serif-i { color: var(--accent); }
+  .contact .lead { margin-top: 26px; max-width: 40ch; }
+  .contact-cta { margin-top: 38px; display: flex; flex-wrap: wrap; gap: 18px; }
+  .cinfo { border-top: 1px solid var(--line); }
+  .cinfo a, .cinfo div.static { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--line); transition: color .2s ease; }
+  .cinfo a:hover { color: var(--accent); }
+  .cinfo .k { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .cinfo .v { font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+
+  /* =============== 11. FOOTER =============== */
+  footer.foot { background: var(--ink); color: rgba(255,255,255,.66); padding: 84px 0 44px; }
+  .foot-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 44px; }
+  .foot .wordmark { color: #fff; }
+  .foot p { max-width: 38ch; font-size: 15px; margin-top: 20px; color: rgba(255,255,255,.6); }
+  .foot h5 { color: #fff; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 20px; font-weight: 600; }
+  .foot-links { display: grid; gap: 13px; }
+  .foot-links a { font-size: 15px; color: rgba(255,255,255,.66); transition: color .2s ease; width: fit-content; }
+  .foot-links a:hover { color: var(--accent-bright); }
+  .socials { display: flex; gap: 16px; margin-top: 26px; }
+  .socials a { color: rgba(255,255,255,.66); transition: color .2s ease, transform .2s ease; }
+  .socials a:hover { color: #fff; transform: translateY(-2px); }
+  .socials svg { width: 21px; height: 21px; display: block; }
+  .foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 64px; padding-top: 26px; border-top: 1px solid var(--line-2); font-size: 13px; color: rgba(255,255,255,.45); }
+
+  /* =============== RESPONSIVE =============== */
+  @media (max-width: 900px) {
+    .statement-grid, .ff-grid, .chai-band, .faq-grid, .contact-grid, .foot-top { grid-template-columns: 1fr; }
+    .statement-grid { gap: 32px; }
+    .ff-grid { gap: 44px; }
+    .chai-band .side { text-align: left; }
+    .idx-item { grid-template-columns: 40px 1fr; gap: 16px 18px; }
+    .idx-item .d { grid-column: 2; }
+    .idx-item .go { display: none; }
+    .foot-top { gap: 40px; }
+  }
+  @media (max-width: 680px) {
+    .nav-links { display: none; position: absolute; top: 74px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: #fff; border-bottom: 1px solid var(--line); padding: 8px 28px 24px; }
+    .nav-links.open { display: flex; }
+    .nav-links a.link { padding: 15px 0; border-bottom: 1px solid var(--line); font-size: 17px; }
+    .nav-links a.link::after { display: none; }
+    .nav-cta { margin-top: 18px; text-align: center; }
+    .nav-toggle { display: block; }
+    .hero-meta .m { flex-basis: 100%; padding: 22px 0 0; }
+    .hero-meta .m + .m { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+    .ff-detail { margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= 2. NAV ================= -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#top">CYP St. Pete <span class="sub">Chabad Young Professionals</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a class="link" href="#about">About</a>
+      <a class="link" href="#index">What We Do</a>
+      <a class="link" href="#firstfriday">First Friday</a>
+      <a class="link" href="#chai">Chai Club</a>
+      <a class="link" href="#faq">FAQ</a>
+      <a class="nav-cta" href="#contact">Get Connected</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<span id="top"></span>
+
+<!-- ================= 3. HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Young Jewish Life · St. Petersburg, FL</span>
+    <h1 class="display">Your Jewish home in <span class="serif-i">St. Pete.</span></h1>
+    <p class="hero-lead">
+      Chabad Young Professionals is where young Jews across Tampa Bay come to
+      connect — over Shabbat dinners, First Friday nights, and friendships that
+      actually last. No pressure. No judgment. An open door and a warm table.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-solid" href="#contact">Get Connected</a>
+      <a class="arrow-link" href="#firstfriday">See what's on <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="hero-meta">
+      <div class="m"><div class="k">For</div><div class="v">Jewish professionals, 20s &amp; 30s</div></div>
+      <div class="m"><div class="k">Led by</div><div class="v">Rabbi Mendel &amp; Chaya Lebovics</div></div>
+      <div class="m"><div class="k">Part of</div><div class="v">The global CYP network</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. STATEMENT ================= -->
+<section class="pad statement" id="about">
+  <div class="wrap statement-grid">
+    <div>
+      <span class="eyebrow">Who we are</span>
+      <p class="big" style="margin-top:24px">
+        We meet every young Jewish professional <em>exactly where they are</em> —
+        in their career, their questions, and their journey.
+      </p>
+    </div>
+    <div>
+      <p class="support">
+        Through genuine relationships and a community built on warmth and
+        authenticity, CYP St. Pete is a space where you can explore your
+        heritage freely and grow at your own pace.
+      </p>
+      <p class="support">
+        Not as an organization looking to fill seats — as people who genuinely
+        care about yours.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. INDEX (what we do) ================= -->
+<section class="pad" id="index">
+  <div class="wrap">
+    <div class="index-head">
+      <h2 class="sec">What we do</h2>
+      <p class="lead" style="max-width:34ch">More ways to belong — from the Shabbat table to the other side of the world.</p>
+    </div>
+    <div class="idx-list">
+      <a class="idx-item" href="#firstfriday">
+        <span class="num">01</span>
+        <span class="t">First Friday</span>
+        <span class="d">Our signature monthly Shabbat dinner for the young professional crowd of Tampa Bay.</span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="idx-item" href="#contact">
+        <span class="num">02</span>
+        <span class="t">Shabbat &amp; Holidays</span>
+        <span class="d">Dinners, holiday experiences, and the warmth of a table that welcomes everyone home.</span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="idx-item" href="#contact">
+        <span class="num">03</span>
+        <span class="t">Torah &amp; Learning</span>
+        <span class="d">Classes and weekly study for professionals who want real depth. Questions encouraged.</span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="idx-item" href="#contact">
+        <span class="num">04</span>
+        <span class="t">Community &amp; Connection</span>
+        <span class="d">Socials, networking, and Jewish dating — the start of friendships and families that last.</span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+      <a class="idx-item" href="#contact">
+        <span class="num">05</span>
+        <span class="t">Travel &amp; Experiences</span>
+        <span class="d">Trips and retreats that turn Jewish identity into lifelong belonging.</span>
+        <span class="go" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. FIRSTFRIDAY (dark) ================= -->
+<section class="pad dark" id="firstfriday">
+  <div class="wrap ff-grid">
+    <div>
+      <span class="eyebrow">Our signature night</span>
+      <h2>First <span class="serif-i">Friday.</span></h2>
+      <p>
+        Once a month we throw open the doors for the young professional Shabbat
+        dinner that's become a St. Pete tradition. Challah, wine, home-cooked
+        food, and a room full of people your age. Come solo or bring friends —
+        everyone leaves with new ones.
+      </p>
+      <div class="ff-cta">
+        <a class="btn btn-on-dark" href="https://wa.me/19544788015" target="_blank" rel="noopener">Save my spot</a>
+        <a class="arrow-link on-dark" href="https://www.instagram.com/chabadsp/" target="_blank" rel="noopener">See the last one <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="ff-detail">
+      <div class="row"><span class="k">When</span><span class="v">First Friday of the month</span></div>
+      <div class="row"><span class="k">Who</span><span class="v">Jewish professionals, 20s &amp; 30s</span></div>
+      <div class="row"><span class="k">Cost</span><span class="v">Free &amp; open — always</span></div>
+      <div class="row"><span class="k">Details</span><span class="v">Message us for time &amp; place</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. CHAI (slim band) ================= -->
+<section class="pad" id="chai">
+  <div class="wrap chai-band">
+    <div>
+      <span class="eyebrow">The Chai Club</span>
+      <h2 style="margin-top:22px">Help build young Jewish life in <span class="serif-i">St. Pete.</span></h2>
+      <p>
+        The Chai Club is our founding membership — young professionals whose
+        monthly partnership powers everything we do, and earns a permanent place
+        on our Wall of Honor.
+      </p>
+      <div style="margin-top:30px">
+        <a class="arrow-link" href="https://chabadyoungsp.com/chai" target="_blank" rel="noopener">Join the Chai Club <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="side">
+      <div class="fig">חי</div>
+      <div class="cap">"Chai" — life, and the number 18. Membership from $36/mo.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. PROMISE ================= -->
+<section class="pad promise">
+  <div class="wrap">
+    <blockquote>
+      "We're not flying in for events. We live here in St. Pete. Our door is
+      open, our table has a seat for you, and the only agenda we have is your
+      growth."
+    </blockquote>
+    <div class="attrib">
+      <div class="n">Rabbi Mendel &amp; Chaya Lebovics</div>
+      <div class="r">Directors · CYP St. Petersburg</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9. FAQ ================= -->
+<section class="pad" id="faq">
+  <div class="wrap faq-grid">
+    <div>
+      <h2 class="sec">Questions?</h2>
+      <p class="lead" style="margin-top:20px">Still not sure? Just message us — the easiest answer is usually a seat at the next dinner.</p>
+    </div>
+    <div>
+      <details class="faq" open>
+        <summary>I'm new to St. Pete — where do I start? <span class="pm"></span></summary>
+        <div class="answer">Message us on WhatsApp or through the contact section below. We'll personally reach out within a day or two and invite you to a Shabbat dinner, a First Friday, or just coffee. That's the best way in.</div>
+      </details>
+      <details class="faq">
+        <summary>Do I need to be religious or know anything? <span class="pm"></span></summary>
+        <div class="answer">Not at all. CYP is for every young Jewish professional, wherever you are on your journey — no background, affiliation, or knowledge required. Most people show up the first time not knowing a soul, and leave with friends.</div>
+      </details>
+      <details class="faq">
+        <summary>Who actually runs CYP St. Pete? <span class="pm"></span></summary>
+        <div class="answer">Rabbi Mendel and Chaya Lebovics — a rabbi and rebbetzin who live in St. Petersburg full-time. They aren't coordinators flying in; they're your neighbors. Show up to one Shabbat dinner and you'll see what we mean.</div>
+      </details>
+      <details class="faq">
+        <summary>How much does any of this cost? <span class="pm"></span></summary>
+        <div class="answer">Coming to dinners and events is always free and open — we never want cost to be the reason someone doesn't come. If you'd like to support the community and help it grow, that's what the Chai Club is for, and it's entirely optional.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10. CONTACT ================= -->
+<section class="pad statement" id="contact">
+  <div class="wrap contact-grid">
+    <div>
+      <span class="eyebrow">Get connected</span>
+      <h2 style="margin-top:22px">Come pull up a <span class="serif-i">chair.</span></h2>
+      <p class="lead">
+        Living in — or moving to — the St. Pete area? Send us a message and
+        we'll help you find your place. We've got a seat.
+      </p>
+      <div class="contact-cta">
+        <a class="btn btn-solid" href="https://wa.me/19544788015" target="_blank" rel="noopener">Message on WhatsApp</a>
+        <a class="btn btn-line" href="mailto:mendel@chabadsp.com">Email us</a>
+      </div>
+    </div>
+    <div class="cinfo">
+      <a href="https://wa.me/19544788015" target="_blank" rel="noopener">
+        <span class="k">WhatsApp / Text</span><span class="v">(954) 478-8015</span>
+      </a>
+      <a href="mailto:mendel@chabadsp.com">
+        <span class="k">Email</span><span class="v">mendel@chabadsp.com</span>
+      </a>
+      <a href="https://www.instagram.com/chabadsp/" target="_blank" rel="noopener">
+        <span class="k">Instagram</span><span class="v">@chabadsp</span>
+      </a>
+      <div class="static">
+        <span class="k">Based in</span><span class="v">St. Petersburg, FL 33701</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11. FOOTER ================= -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <a class="wordmark" href="#top">CYP St. Pete <span class="sub">Chabad Young Professionals</span></a>
+        <p>Your Jewish home in St. Petersburg — part of the global network of Chabad Young Professionals communities across six continents.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/chabadsp/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.facebook.com/ChabadSP" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14.5 8.5H17V5.7h-2.5c-2 0-3.5 1.5-3.5 3.6V12H8.5v3H11v6.3h3V15h2.4l.6-3H14V9.4c0-.5.3-.9 1-.9z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@mendellebovics" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M15.5 4c.4 2.2 1.8 3.9 4 4.2v2.9c-1.4 0-2.7-.4-3.9-1.1v5.7A5.4 5.4 0 1 1 10 10.5v3a2.4 2.4 0 1 0 2.6 2.4V4h2.9z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/mendellebovicssp/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <div class="foot-links">
+          <a href="#about">About</a>
+          <a href="#index">What we do</a>
+          <a href="#firstfriday">First Friday</a>
+          <a href="#chai">Chai Club</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <h5>Connect</h5>
+        <div class="foot-links">
+          <a href="https://wa.me/19544788015" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="mailto:mendel@chabadsp.com">mendel@chabadsp.com</a>
+          <a href="https://www.instagram.com/chabadsp/" target="_blank" rel="noopener">@chabadsp</a>
+          <a href="https://chabadsp.com" target="_blank" rel="noopener">chabadsp.com</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> Chabad Young Professionals of St. Petersburg</span>
+      <span>St. Petersburg, FL · A project of Chabad of St. Petersburg</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= 12. SCRIPT ================= -->
+<script>
+  var toggle = document.getElementById('navToggle');
+  var links  = document.getElementById('navLinks');
+  toggle.addEventListener('click', function () {
+    var open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { links.classList.remove('open'); });
+  });
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
