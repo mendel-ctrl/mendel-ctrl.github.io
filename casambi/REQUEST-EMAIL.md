@@ -6,7 +6,7 @@ to build.
 
 ---
 
-**Subject:** API key request — [Your organization name] Casambi network
+**Subject:** API key request — Chabad Center Casambi network
 
 Hello Casambi Support,
 
@@ -16,11 +16,12 @@ programmatically.
 
 Details:
 
-- **Organization:** [Your organization name]
-- **Casambi network name:** [network name as it appears in the app]
-- **Network admin email:** [the email you use to administer the network]
+- **Organization:** Chabad Center
+- **Casambi network name:** Chabad Center
+- **Network admin email:** [the email you use to log into the Casambi app as admin]
 - **Approximate size:** [e.g. ~30 luminaires across sanctuary, lobby, social hall]
-- **Gateway:** we have a device running the Casambi app set as a gateway.
+- **Gateway:** we have a dedicated Casambi Cloud Gateway installed, wired via
+  Ethernet, currently online.
 - **Intended use:** internal, on-demand control and simple schedules for our own
   single network only — no third-party or multi-site product.
 - **Access needed:** network-level API key + confirmation of the REST and
