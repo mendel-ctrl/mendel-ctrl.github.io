@@ -15,3 +15,8 @@ vm-automation/
 
 # Editor/session
 .claude/
+
+# Casambi lighting control — secrets and building layout stay private.
+casambi/.env
+casambi/.casambi_session.json
+casambi/devices.json
