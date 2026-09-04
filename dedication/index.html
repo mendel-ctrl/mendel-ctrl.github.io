@@ -45,6 +45,15 @@
 <title>Dedication Opportunities · Chabad St. Petersburg</title>
 <meta name="description" content="Explore dedication and naming opportunities in the new Chabad Center for Jewish Life, St. Petersburg.">
 
+<!-- Offline / "Add to Home Screen" support so the page runs full-screen on the
+     iPad and keeps working even if the WiFi drops. See sw.js and manifest.json. -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dedications">
+<link rel="apple-touch-icon" href="icon-180.png">
+
 <!-- Fonts: Playfair Display (elegant serif) + Poppins (clean sans).
      These match the look of your other Chabad SP pages. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -793,6 +802,16 @@ renderSpaces();
 renderBoard();
 tickClock();
 setInterval(tickClock, 15000); // update the clock every 15 seconds
+
+/* ---------- OFFLINE SAFETY NET ----------
+   Turn on the service worker (sw.js) so the page keeps working if the WiFi
+   drops. This only runs when the page is served over the web (https), not
+   when you open the file directly on a computer — that's normal. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => { /* offline support unavailable — page still works */ });
+  });
+}
 </script>
 </body>
 </html>
