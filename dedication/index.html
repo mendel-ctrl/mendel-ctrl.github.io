@@ -500,7 +500,7 @@
         <div class="sec-head">
           <div class="eyebrow">The Wall of Honor</div>
           <h2 class="serif">Join the <em>Donor Board</em></h2>
-          <p>Not every gift is tied to a room. These giving levels place your name permanently on our donor wall — from the Chai level up to naming the building itself.</p>
+          <p>Not every gift is tied to a room. These giving levels place your name permanently on our donor wall — every gift, at every level, helps build our new home.</p>
         </div>
         <div class="board-wrap" id="board-list"></div>
         <p class="board-note">Every level is payable over one to three years. To reserve a level or discuss a custom dedication, please speak with the Rabbi.</p>
@@ -542,10 +542,11 @@
  *  Everything below the "END OF EDIT AREA" line is the app engine — you can
  *  leave that alone. Just change the three lists here.
  *
- *  IMPORTANT NOTE ABOUT THE DONOR NAMES BELOW:
- *  The family names used here (Cohen, Levine, Rosenberg, etc.) are only
- *  SAMPLE PLACEHOLDERS so you can see how it looks. Replace them with the
- *  real dedicators — or set a space back to "available" until it's taken.
+ *  ABOUT THE DATA BELOW:
+ *  The rooms, prices, dedicators and donor names are the REAL data pulled from
+ *  jewishsp.org/dedications/ and jewishsp.org/donors/. To update as gifts come
+ *  in: change a space's status from "available" to "dedicated" and fill in its
+ *  "dedicatedBy", or add a family to the right level in the DONOR_BOARD list.
  * ========================================================================== */
 
 /* ---- 1. CAMPAIGN -----------------------------------------------------------
@@ -574,32 +575,61 @@ const DONATE_URL = "https://www.jewishsp.org/dedications/";
      blurb       – a sentence describing the space (shown in the detail view)
    TIP: to add a new space, copy one { ... } block and paste it in the list. */
 const SPACES = [
-  // ---- Sacred Spaces ----
-  { name: "Main Sanctuary",        category: "Sacred Spaces", amount: 1000000, status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "The soul of our new home — where the community gathers for prayer, holidays, and lifecycle moments." },
-  { name: "The Holy Ark (Aron Kodesh)", category: "Sacred Spaces", amount: 180000, status: "dedicated", dedicatedBy: "The Cohen Family", memo: "In loving memory of Yaakov ben Avraham", image: "", blurb: "The hand-crafted ark that will hold our Torah scrolls at the front of the sanctuary." },
-  { name: "The Bimah",             category: "Sacred Spaces", amount: 72000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "The raised platform from which the Torah is read to the congregation." },
-  { name: "Eternal Light (Ner Tamid)", category: "Sacred Spaces", amount: 36000, status: "dedicated", dedicatedBy: "The Levine Family", memo: "", image: "", blurb: "The ever-burning light above the ark, a symbol of God's eternal presence." },
-  { name: "A Torah Scroll",        category: "Sacred Spaces", amount: 54000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "Dedicate a new Sefer Torah to be written and read for generations." },
-
-  // ---- Community Spaces ----
-  { name: "Grand Social Hall",     category: "Community",     amount: 500000, status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "Our largest gathering space for celebrations, dinners, and community events." },
-  { name: "Welcome Lobby",         category: "Community",     amount: 180000, status: "dedicated", dedicatedBy: "The Rosenberg Family", memo: "In honor of our parents", image: "", blurb: "The first space every visitor sees — warm, bright, and welcoming." },
-  { name: "Catering Kitchen",      category: "Community",     amount: 118000, status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A fully kosher commercial kitchen to nourish every simcha and Shabbat." },
-  { name: "Kiddush Lounge",        category: "Community",     amount: 54000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "Where the community shares food and friendship after services." },
-
-  // ---- Learning & Youth ----
-  { name: "Library & Beis Midrash", category: "Learning",    amount: 180000, status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A quiet home for Torah study, lined with books and light." },
-  { name: "Preschool Wing",        category: "Learning",     amount: 250000, status: "dedicated", dedicatedBy: "The Katz Family", memo: "For the children of St. Petersburg", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
-  { name: "Classroom",             category: "Learning",     amount: 36000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A dedicated learning space for Hebrew school and adult education." },
-  { name: "Teen Lounge",           category: "Learning",     amount: 54000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A cool, comfortable hangout built for our teens and CTeen programs." },
-
-  // ---- Ritual & Wellness ----
-  { name: "The Mikvah",            category: "Ritual",        amount: 360000, status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A serene, spa-like mikvah — one of the most sacred mitzvahs a family can give." },
-  { name: "Simcha Courtyard",      category: "Ritual",        amount: 118000, status: "dedicated", dedicatedBy: "The Friedman Family", memo: "", image: "", blurb: "An outdoor garden courtyard for celebrations under the open sky." },
-
-  // ---- Leadership ----
-  { name: "Rabbi's Study",         category: "Leadership",    amount: 54000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A quiet office for learning, counsel, and community leadership." },
-  { name: "Chai Club Lounge",      category: "Leadership",    amount: 72000,  status: "available",  dedicatedBy: "", memo: "", image: "", blurb: "A warm gathering space honoring our founding Chai Club members." },
+  { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
+  { name: "The Lounge", category: "Community", amount: 400000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A warm, comfortable gathering space for the community to relax and connect." },
+  { name: "Hebrew School Naming", category: "Education", amount: 360000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name our Hebrew school, where the next generation learns and grows." },
+  { name: "The Grand Glass Stairwell", category: "Building", amount: 250000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A striking glass stairwell at the heart of the new building." },
+  { name: "Ner Tamid", category: "Sacred Spaces", amount: 200000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The eternal light above the ark, a symbol of God's constant presence." },
+  { name: "The Chabad Hub", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The central space connecting our programs, people, and daily life." },
+  { name: "Sanctuary Doors — שערי היכל", category: "Sacred Spaces", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The beautiful doors that welcome everyone into the sanctuary." },
+  { name: "Outdoor Terrace & Play Area", category: "Outdoors", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "An outdoor space for families, children, and celebrations." },
+  { name: "Wall of Honor Dedication", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the Wall of Honor that recognizes our community's builders." },
+  { name: "Tribute to the Rebbe", category: "Sacred Spaces", amount: 120000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A dedicated tribute honoring the Lubavitcher Rebbe." },
+  { name: "Chabad Cares", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting our community outreach and acts of kindness." },
+  { name: "Shomer Yisrael — Security System", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Keeping our community safe with a comprehensive security system." },
+  { name: "The Lifted Path — Accessibility Upgrade", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Making every space welcoming and accessible to all." },
+  { name: "Women's Circle Naming", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the home of our women's programming and gatherings." },
+  { name: "Landscaping", category: "Outdoors", amount: 50000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The gardens and greenery that surround our new home." },
+  { name: "Windows to Jerusalem (4)", category: "Windows & Art", amount: 45000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A set of four windows connecting us to Jerusalem." },
+  { name: "Synagogue Seating", category: "Sacred Spaces", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The seating where our community comes together in prayer." },
+  { name: "Audio Visual System", category: "Building & Systems", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The sound and visual systems that bring every event to life." },
+  { name: "Window Treatment (Upper Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the upper level." },
+  { name: "Window Treatment (Lower Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the lower level." },
+  { name: "Commercial Appliances — Dairy", category: "Kitchen", amount: 25000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Professional dairy kitchen appliances for every simcha." },
+  { name: "Mayim Chaim — Living Waters", category: "Sacred Spaces", amount: 18000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting the living waters of our community." },
+  { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "", blurb: "" },
+  { name: "The Atrium", category: "Building", amount: null, status: "dedicated", dedicatedBy: "The Alexander Family", memo: "", image: "", blurb: "" },
+  { name: "Education Wing", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Morris Willner", memo: "", image: "", blurb: "" },
+  { name: "Sky Rooftop Deck", category: "Outdoors", amount: null, status: "dedicated", dedicatedBy: "Dr. Jeffrey and Wendy Miller", memo: "", image: "", blurb: "" },
+  { name: "Social Hall", category: "Community", amount: null, status: "dedicated", dedicatedBy: "The Buns Family", memo: "", image: "", blurb: "" },
+  { name: "Institute of Jewish Learning", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Herman Forbes Charitable Trust", memo: "", image: "", blurb: "" },
+  { name: "Ark (Aron Kodesh)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Morris and Lillian Tabacinic", memo: "", image: "", blurb: "" },
+  { name: "Dairy Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Herman OB\"M and Rebecca Ovadia", memo: "", image: "", blurb: "" },
+  { name: "Backup Generator", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Steven and Nicole Cohen", memo: "", image: "", blurb: "" },
+  { name: "Commercial Meat Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Dr. Larry and Alice Ettinger", memo: "", image: "", blurb: "" },
+  { name: "Lift of Life", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Lane and Suzanne Mercer", memo: "", image: "", blurb: "" },
+  { name: "Library / Conference Room", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ms. Judy Goodman", memo: "", image: "", blurb: "" },
+  { name: "Holocaust Memorial", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Abraham Reichbach", memo: "", image: "", blurb: "" },
+  { name: "Commercial Appliances — Meat", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Linda Weiss & The Wein Family", memo: "", image: "", blurb: "" },
+  { name: "Education Office", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Gideon Hecht", memo: "", image: "", blurb: "" },
+  { name: "Memorial Board", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Stuart Nast", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Evan Cohn and Haris Lender", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Rosenbaum Family", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Alon Varsha", memo: "", image: "", blurb: "" },
+  { name: "Rabbi's Study", category: "Leadership", amount: null, status: "dedicated", dedicatedBy: "Mr. Ralph and Ruth Ann Mizrahi", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ronald and Debbie Berzon", memo: "", image: "", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Alex and Lena Rogachevsky", memo: "", image: "", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Kevin Lane", memo: "", image: "", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Keyvan and Stepanie Kohan", memo: "", image: "", blurb: "" },
+  { name: "Torah Platform (Bima)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Murray and Debby Bevitz", memo: "", image: "", blurb: "" },
+  { name: "Candle Lighting Station", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Social Hall Furnishing", category: "Community", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Washing Station (Kiyor)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Chazzan's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Michael and Gail Frye", memo: "", image: "", blurb: "" },
+  { name: "Mechitza", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Stanley and Nancy Rosenberg", memo: "", image: "", blurb: "" },
+  { name: "Prayerbook Wall Unit", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Cary and Karen Reich", memo: "", image: "", blurb: "" },
+  { name: "Rabbi's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Dan and Irene Lawson", memo: "", image: "", blurb: "" },
+  { name: "Talis Rack", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Frank and Dale Marsilio", memo: "", image: "", blurb: "" },
 ];
 
 /* ---- 3. DONOR BOARD --------------------------------------------------------
@@ -611,15 +641,13 @@ const SPACES = [
      donors – a list of names already on this level. Use [] for none yet.
    Listed from highest to lowest. */
 const DONOR_BOARD = [
-  { name: "Building Naming",  amount: 2500000, color: "#7A5C43", donors: [] },
-  { name: "Founding Pillar",  amount: 250000,  color: "#8A6A3E", donors: ["The Cohen Family"] },
-  { name: "Cornerstone",      amount: 180000,  color: "#9C7A45", donors: ["The Rosenberg Family", "The Katz Family"] },
-  { name: "Guardian",         amount: 100000,  color: "#B0894A", donors: ["The Friedman Family"] },
-  { name: "Benefactor",       amount: 50000,   color: "#BE9A5A", donors: ["The Levine Family", "Anonymous"] },
-  { name: "Builder",          amount: 18000,   color: "#C9A25C", donors: ["The Weiss Family", "The Gold Family", "The Stern Family"] },
-  { name: "Pillar",           amount: 10000,   color: "#C9A25C", donors: ["The Brenner Family", "The Adler Family"] },
-  { name: "Supporter",        amount: 5000,    color: "#C9A25C", donors: ["The Miller Family", "The Klein Family", "The Roth Family", "The Schwartz Family"] },
-  { name: "Chai Member",      amount: 1800,    color: "#C9A25C", donors: ["The Berger Family", "The Fox Family", "The Green Family", "The Hirsch Family", "The Wolf Family"] },
+  { name: "Lead", amount: 500000, color: "#6B4A31", donors: ["Dr. Michael and Elizabeth Zimmer"] },
+  { name: "Pillar", amount: 250000, color: "#7A5C43", donors: ["Alexander Family","Michael and Margot Benstock","The Buns Family","Dr. Steven and Nicole Cohen","Dr. Jeffrey and Wendy Miller","Herman OB\"M and Rebecca Ovadia","Aron and Esther Raihshtein","Ambassador Mel and Betty Sembler OBM","Morris Willner"] },
+  { name: "Visionary", amount: 100000, color: "#8A6A3E", donors: ["Alexander Family","Stephen and Vicky Baker","Sherran Blair","Evan Cohn and Haris Lender","Dr. Andrew and Meredith Cooper","Bill Edwards","Dr. Larry and Alice Ettinger","Herman Forbes Charitable Trust","Steven Goodman OB\"M and Judy Goodman","Samuel and Janet Hammer","Gideon Hecht","Dr. Lane and Suzanne Mercer","Steven and Mona Press","Abraham Reichbach","Morris and Lillian Tabacinic","Anonymous Donor"] },
+  { name: "Founder", amount: 50000, color: "#9C7A45", donors: ["Antony Cooke","Rosenbaum Family","Peter and Lani Ford","Lenny Gartner","Rabbi Gedale Korf OB\"M","Ralph and Ruth Ann Mizrahi","Stuart Nast","Andrew Pozin","Steven Raymund","Dr. Richard Shelsky","Susan Turner OB\"M","Alon Varsha"] },
+  { name: "Benefactor", amount: 18000, color: "#B0894A", donors: ["Dr. Warren and Naomi Abel","Bob Barnum OB\"M","Murray and Debby Bevitz","David and Heather Delrahim","Keyvan and Stephanie Kohan","Leonid and Alla Komanovsky","Steven and Belinda Konigsberg","Kevin Lane","Dr. Dan and Irene Lawson","Dr. Adam and Jamee Miller","Aaron Raihshtein","Cary and Karen Reich","Ruvane Richman","Alex and Lena Rogachevsky","Dr. Stanley and Nancy Rosenberg","Ken and JP Sherman","Michael and Selena Shimshoni","Mark and Judy Teitelbaum","Drs. Israel and Katie Wojnowich"] },
+  { name: "Sponsor", amount: 5000, color: "#BE9A5A", donors: ["Mickael Boutboul","David Colman","Michael and Jenna Cvetetic","Patrick Ehrlich","Deitch Family","The Wein Family","Elie and Kory Farkas","Michael and Gail Frye","Ross Gelfand","Ethel Goldberg","Madelaine Goldish","Mordechai and Esther Goldstein","Dr. Mark and Judy Gordon","Bryan and Robyn Greenberg","Beth Shalom Gulfport","Herman & Waterman Families","Mauricio and Deborah Lan","Ted Mallin","Frank and Dale Marsilio","Barbara Mazer","Michael Morris","Daniel & Maggie Penello","Marcia Person","Roger Rovell","Robert Shapiro","Linda Weiss"] },
+  { name: "Donor", amount: 1800, color: "#C9A25C", donors: ["Amnon Abayov","Marcia Bressler","Beverly Cohen","Patrick Erlich","Max Glazer","Hilbert Haghnazarzadeh","Oleg and Katherine Iossem","Brian and Susan Kagan","Richard and Judith Kuskin","Linda Lerner","Robert Murray","Eileen Richman","Daniel and Ronith Sheffer","Steven and Elizabeth Sussman","Shari Cohen William Boesch","Drs Steven Bloom and Charlene Wygodski","Anonymous Donor"] },
 ];
 
 /* ============================================================================
@@ -732,9 +760,12 @@ function renderSpaces() {
     const who = isDed
       ? '<div class="who">Dedicated by ' + space.dedicatedBy + '</div>'
       : '<div class="who">Awaiting its dedicator</div>';
-    const price = isDed
-      ? '<div class="price taken">' + money(space.amount) + '</div>'
-      : '<div class="price">' + money(space.amount) + '</div>';
+    // Reserved rooms have no public price (amount is null) — show nothing there.
+    const price = !space.amount
+      ? '<span></span>'
+      : isDed
+        ? '<div class="price taken">' + money(space.amount) + '</div>'
+        : '<div class="price">' + money(space.amount) + '</div>';
     const cta = isDed ? "View dedication" : "Dedicate this →";
     return '<button class="card ' + (isDed ? "is-dedicated" : "") + '" data-idx="' + idx + '">' +
              thumbHTML(space) +
@@ -761,8 +792,9 @@ function openModal(idx) {
   let body =
     '<div class="eyebrow cat">' + s.category + '</div>' +
     '<h2>' + s.name + '</h2>' +
-    '<p class="blurb">' + s.blurb + '</p>' +
-    '<div class="m-row"><span class="k">Dedication</span><span class="v">' + money(s.amount) + '</span></div>' +
+    (s.blurb ? '<p class="blurb">' + s.blurb + '</p>' : '') +
+    // Only show the dedication amount when we have one (reserved rooms don't).
+    (s.amount ? '<div class="m-row"><span class="k">Dedication</span><span class="v">' + money(s.amount) + '</span></div>' : '') +
     '<div class="m-row"><span class="k">Status</span><span class="pill ' + (isDed ? "dedicated" : "available") + '">' + (isDed ? "Dedicated" : "Available") + '</span></div>';
 
   if (isDed) {
@@ -793,7 +825,7 @@ function renderBoard() {
     return '<div class="tier" style="--tier-color:' + tier.color + '">' +
              '<div class="t-head">' +
                '<div class="t-name">' + tier.name + '</div>' +
-               '<div class="t-price">' + money(tier.amount) + '</div>' +
+               '<div class="t-price">' + money(tier.amount) + '<small> &amp; up</small></div>' +
                '<div class="t-sub">' + (count === 0 ? "Open" : count + (count === 1 ? " dedicator" : " dedicators")) + '</div>' +
              '</div>' +
              names +
