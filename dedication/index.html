@@ -146,6 +146,8 @@
     gap: 16px; padding-top: 14px; padding-bottom: 14px;
   }
   .brand { display: flex; align-items: center; gap: 14px; }
+  /* Building logo, recolored white to sit on the walnut header bar. */
+  .brand-logo { height: 56px; width: auto; max-width: 320px; object-fit: contain; filter: brightness(0) invert(1); }
   .brand .mark {
     width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
     display: grid; place-items: center;
@@ -342,6 +344,28 @@
   .modal .m-cta { margin-top: 22px; }
   .m-close { position: absolute; top: 14px; right: 14px; z-index: 5; width: 52px; height: 52px; border-radius: 50%; background: rgba(244,235,218,.95); color: var(--walnut); font-size: 26px; display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
 
+  /* =========================================================================
+     DONATE / INTEREST FORM POPUP  (emails the Rabbi)
+     ========================================================================= */
+  .interest { position: relative; background: var(--paper); border-radius: 24px; max-width: 560px; width: 100%; padding: clamp(26px,3.4vw,42px); box-shadow: 0 40px 80px -20px rgba(0,0,0,.5); }
+  .interest h2 { font-family: var(--serif); font-size: clamp(24px,3vw,34px); font-weight: 600; color: var(--walnut); line-height: 1.12; margin: 8px 0 8px; }
+  .interest .i-sub { color: var(--walnut-2); font-size: clamp(14px,1.6vw,17px); margin-bottom: 22px; }
+  .interest form { display: flex; flex-direction: column; gap: 16px; }
+  .interest label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .interest input[type="text"], .interest input:not([type]), .interest textarea {
+    font-family: var(--sans); font-size: 17px; color: var(--ink); background: var(--cream);
+    border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 16px; min-height: 52px; width: 100%;
+    -webkit-user-select: text; user-select: text; transition: border-color .15s;
+  }
+  .interest input:focus, .interest textarea:focus { outline: none; border-color: var(--gold); }
+  .interest textarea { min-height: 66px; resize: none; }
+  .interest .btn-gold { width: 100%; justify-content: center; margin-top: 4px; }
+  .interest .ierr { color: #9B4A2F; background: rgba(155,74,47,.1); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
+  .interest .i-thanks { text-align: center; padding: 14px 0 6px; }
+  .interest .i-thanks .check { width: 68px; height: 68px; margin: 0 auto 16px; border-radius: 50%; background: rgba(124,139,90,.16); display: grid; place-items: center; }
+  .interest .i-thanks h2 { margin-top: 0; }
+  .interest .i-thanks p { color: var(--walnut-2); font-size: 17px; }
+
   /* Big call-to-action button */
   .btn-gold {
     display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border-radius: 999px;
@@ -409,7 +433,13 @@
   <header class="topbar">
     <div class="wrap">
       <div class="brand">
-        <div class="mark">ח</div>
+        <!-- Building logo: drop the file in as dedication/building-logo.png
+             (transparent background). It is auto-recolored white to sit on the
+             walnut bar. If the file is missing, the gold "ח" mark shows instead. -->
+        <img src="building-logo.png" alt="Chabad — A Center for Jewish Life" class="brand-logo" id="brand-logo"
+             onload="var m=document.getElementById('brand-mark'); if(m) m.style.display='none';"
+             onerror="this.remove();">
+        <div class="mark" id="brand-mark">ח</div>
         <div class="txt">
           <b>Chabad Center for Jewish Life</b>
           <span>St. Petersburg · Dedication Opportunities</span>
@@ -535,6 +565,45 @@
     </div>
   </div>
 
+  <!-- ======================= DONATE / INTEREST POPUP ======================= -->
+  <div class="modal-back" id="interest-back">
+    <div class="interest">
+      <button class="m-close" id="interest-close" aria-label="Close">×</button>
+
+      <!-- The form -->
+      <div id="interest-form-wrap">
+        <div class="eyebrow">Make a dedication</div>
+        <h2 id="interest-title">I'd like to dedicate this space</h2>
+        <p class="i-sub" id="interest-sub">Leave your details and Rabbi Korf will reach out to you personally.</p>
+        <form id="interest-form">
+          <label>Your name
+            <input type="text" name="name" required autocomplete="name" placeholder="Your full name">
+          </label>
+          <label>Phone or email
+            <input type="text" name="contact" required placeholder="So the Rabbi can reach you">
+          </label>
+          <label>Anything you'd like to add? (optional)
+            <textarea name="note" placeholder="Optional message"></textarea>
+          </label>
+          <input type="hidden" name="space" id="interest-space">
+          <!-- spam trap: real people leave this empty -->
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+          <button type="submit" class="btn-gold" id="interest-submit">Send to Rabbi Korf</button>
+          <div class="ierr" id="interest-error" hidden></div>
+        </form>
+      </div>
+
+      <!-- The thank-you (shown after a successful send) -->
+      <div class="i-thanks" id="interest-thanks" hidden>
+        <div class="check">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7C8B5A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h2>Thank you!</h2>
+        <p>Rabbi Korf has been notified and will be in touch with you soon.</p>
+      </div>
+    </div>
+  </div>
+
 <script>
 /* ============================================================================
  *  >>>>>  EDIT YOUR CONTENT HERE  <<<<<
@@ -562,6 +631,20 @@ const CAMPAIGN = {
    setup needed. If you have a more specific donate link, paste it here. */
 const DONATE_URL = "https://www.jewishsp.org/dedications/";
 
+/* ---- DONATE EMAIL FORM ------------------------------------------------------
+   When someone taps "Donate toward this space" (or "Donate Now"), a short form
+   pops up. When they send it, an email goes straight to Rabbi Korf telling him
+   who wants to dedicate which space. This uses Web3Forms — a free service, no
+   server or coding needed.
+
+   ONE-TIME SETUP:
+     1. Go to  https://web3forms.com
+     2. Type in the email address the notifications should go to
+        (e.g. Rabbi Korf's email, or info@chabadsp.com).
+     3. It emails you back an "Access Key" — paste it between the quotes below.
+   Until you paste a real key, the form will tell the visitor it isn't set up. */
+const CONTACT_FORM_KEY = "REPLACE-WITH-YOUR-WEB3FORMS-ACCESS-KEY";
+
 /* ---- 2. SPACES -------------------------------------------------------------
    Every dedicatable room/space in the building. For each one:
      name        – the name of the space
@@ -576,39 +659,31 @@ const DONATE_URL = "https://www.jewishsp.org/dedications/";
    TIP: to add a new space, copy one { ... } block and paste it in the list. */
 const SPACES = [
   { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
+  { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "", blurb: "" },
+  { name: "The Atrium", category: "Building", amount: null, status: "dedicated", dedicatedBy: "The Alexander Family", memo: "", image: "", blurb: "" },
+  { name: "Education Wing", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Morris Willner", memo: "", image: "", blurb: "" },
   { name: "The Lounge", category: "Community", amount: 400000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A warm, comfortable gathering space for the community to relax and connect." },
   { name: "Hebrew School Naming", category: "Education", amount: 360000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name our Hebrew school, where the next generation learns and grows." },
+  { name: "Sky Rooftop Deck", category: "Outdoors", amount: null, status: "dedicated", dedicatedBy: "Dr. Jeffrey and Wendy Miller", memo: "", image: "", blurb: "" },
   { name: "The Grand Glass Stairwell", category: "Building", amount: 250000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A striking glass stairwell at the heart of the new building." },
+  { name: "Social Hall", category: "Community", amount: null, status: "dedicated", dedicatedBy: "The Buns Family", memo: "", image: "", blurb: "" },
   { name: "Ner Tamid", category: "Sacred Spaces", amount: 200000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The eternal light above the ark, a symbol of God's constant presence." },
   { name: "The Chabad Hub", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The central space connecting our programs, people, and daily life." },
   { name: "Sanctuary Doors — שערי היכל", category: "Sacred Spaces", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The beautiful doors that welcome everyone into the sanctuary." },
   { name: "Outdoor Terrace & Play Area", category: "Outdoors", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "An outdoor space for families, children, and celebrations." },
-  { name: "Wall of Honor Dedication", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the Wall of Honor that recognizes our community's builders." },
-  { name: "Tribute to the Rebbe", category: "Sacred Spaces", amount: 120000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A dedicated tribute honoring the Lubavitcher Rebbe." },
-  { name: "Chabad Cares", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting our community outreach and acts of kindness." },
-  { name: "Shomer Yisrael — Security System", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Keeping our community safe with a comprehensive security system." },
-  { name: "The Lifted Path — Accessibility Upgrade", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Making every space welcoming and accessible to all." },
-  { name: "Women's Circle Naming", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the home of our women's programming and gatherings." },
-  { name: "Landscaping", category: "Outdoors", amount: 50000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The gardens and greenery that surround our new home." },
-  { name: "Windows to Jerusalem (4)", category: "Windows & Art", amount: 45000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A set of four windows connecting us to Jerusalem." },
-  { name: "Synagogue Seating", category: "Sacred Spaces", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The seating where our community comes together in prayer." },
-  { name: "Audio Visual System", category: "Building & Systems", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The sound and visual systems that bring every event to life." },
-  { name: "Window Treatment (Upper Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the upper level." },
-  { name: "Window Treatment (Lower Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the lower level." },
-  { name: "Commercial Appliances — Dairy", category: "Kitchen", amount: 25000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Professional dairy kitchen appliances for every simcha." },
-  { name: "Mayim Chaim — Living Waters", category: "Sacred Spaces", amount: 18000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting the living waters of our community." },
-  { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "", blurb: "" },
-  { name: "The Atrium", category: "Building", amount: null, status: "dedicated", dedicatedBy: "The Alexander Family", memo: "", image: "", blurb: "" },
-  { name: "Education Wing", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Morris Willner", memo: "", image: "", blurb: "" },
-  { name: "Sky Rooftop Deck", category: "Outdoors", amount: null, status: "dedicated", dedicatedBy: "Dr. Jeffrey and Wendy Miller", memo: "", image: "", blurb: "" },
-  { name: "Social Hall", category: "Community", amount: null, status: "dedicated", dedicatedBy: "The Buns Family", memo: "", image: "", blurb: "" },
   { name: "Institute of Jewish Learning", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Herman Forbes Charitable Trust", memo: "", image: "", blurb: "" },
   { name: "Ark (Aron Kodesh)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Morris and Lillian Tabacinic", memo: "", image: "", blurb: "" },
   { name: "Dairy Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Herman OB\"M and Rebecca Ovadia", memo: "", image: "", blurb: "" },
+  { name: "Wall of Honor Dedication", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the Wall of Honor that recognizes our community's builders." },
+  { name: "Tribute to the Rebbe", category: "Sacred Spaces", amount: 120000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A dedicated tribute honoring the Lubavitcher Rebbe." },
   { name: "Backup Generator", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Steven and Nicole Cohen", memo: "", image: "", blurb: "" },
+  { name: "Chabad Cares", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting our community outreach and acts of kindness." },
+  { name: "Shomer Yisrael — Security System", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Keeping our community safe with a comprehensive security system." },
   { name: "Commercial Meat Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Dr. Larry and Alice Ettinger", memo: "", image: "", blurb: "" },
   { name: "Lift of Life", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Lane and Suzanne Mercer", memo: "", image: "", blurb: "" },
   { name: "Library / Conference Room", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ms. Judy Goodman", memo: "", image: "", blurb: "" },
+  { name: "The Lifted Path — Accessibility Upgrade", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Making every space welcoming and accessible to all." },
+  { name: "Women's Circle Naming", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the home of our women's programming and gatherings." },
   { name: "Holocaust Memorial", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Abraham Reichbach", memo: "", image: "", blurb: "" },
   { name: "Commercial Appliances — Meat", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Linda Weiss & The Wein Family", memo: "", image: "", blurb: "" },
   { name: "Education Office", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Gideon Hecht", memo: "", image: "", blurb: "" },
@@ -618,12 +693,20 @@ const SPACES = [
   { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Alon Varsha", memo: "", image: "", blurb: "" },
   { name: "Rabbi's Study", category: "Leadership", amount: null, status: "dedicated", dedicatedBy: "Mr. Ralph and Ruth Ann Mizrahi", memo: "", image: "", blurb: "" },
   { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ronald and Debbie Berzon", memo: "", image: "", blurb: "" },
+  { name: "Landscaping", category: "Outdoors", amount: 50000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The gardens and greenery that surround our new home." },
   { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Alex and Lena Rogachevsky", memo: "", image: "", blurb: "" },
   { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Kevin Lane", memo: "", image: "", blurb: "" },
   { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Keyvan and Stepanie Kohan", memo: "", image: "", blurb: "" },
+  { name: "Windows to Jerusalem (4)", category: "Windows & Art", amount: 45000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A set of four windows connecting us to Jerusalem." },
+  { name: "Synagogue Seating", category: "Sacred Spaces", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The seating where our community comes together in prayer." },
   { name: "Torah Platform (Bima)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Murray and Debby Bevitz", memo: "", image: "", blurb: "" },
+  { name: "Audio Visual System", category: "Building & Systems", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The sound and visual systems that bring every event to life." },
+  { name: "Window Treatment (Upper Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the upper level." },
+  { name: "Window Treatment (Lower Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the lower level." },
+  { name: "Commercial Appliances — Dairy", category: "Kitchen", amount: 25000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Professional dairy kitchen appliances for every simcha." },
   { name: "Candle Lighting Station", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
   { name: "Social Hall Furnishing", category: "Community", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Mayim Chaim — Living Waters", category: "Sacred Spaces", amount: 18000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting the living waters of our community." },
   { name: "Washing Station (Kiyor)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
   { name: "Chazzan's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Michael and Gail Frye", memo: "", image: "", blurb: "" },
   { name: "Mechitza", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Stanley and Nancy Rosenberg", memo: "", image: "", blurb: "" },
@@ -801,11 +884,14 @@ function openModal(idx) {
     body += '<div class="dedicated-note"><div class="k">Dedicated by</div><div class="name">' + s.dedicatedBy + '</div>' +
             (s.memo ? '<div class="memo">' + s.memo + '</div>' : '') + '</div>';
   } else {
-    body += '<div class="m-cta"><a class="btn-gold" href="' + DONATE_URL + '">Donate toward this space</a></div>' +
+    body += '<div class="m-cta"><button class="btn-gold" id="m-donate-btn">Donate toward this space</button></div>' +
             '<p style="margin-top:14px;color:var(--muted);font-size:14px">Or call the Rabbi at <a href="tel:+17273444900" style="color:var(--gold);font-weight:600;text-decoration:none">727-344-4900</a> to reserve the full dedication.</p>';
   }
 
   document.getElementById("m-body").innerHTML = body;
+  // The "Donate toward this space" button opens the email popup for THIS space.
+  const dbtn = document.getElementById("m-donate-btn");
+  if (dbtn) dbtn.addEventListener("click", () => { closeModal(); openInterest(s.name); });
   document.getElementById("modal-back").classList.add("open");
 }
 function closeModal() { document.getElementById("modal-back").classList.remove("open"); }
@@ -813,7 +899,88 @@ document.getElementById("modal-close").addEventListener("click", closeModal);
 document.getElementById("modal-back").addEventListener("click", (e) => {
   if (e.target.id === "modal-back") closeModal(); // tap outside the card closes it
 });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeInterest(); } });
+
+/* ---------- DONATE / INTEREST EMAIL POPUP ---------- */
+let interestTimer = null;
+
+function openInterest(spaceName) {
+  const title = document.getElementById("interest-title");
+  const sub   = document.getElementById("interest-sub");
+  if (spaceName) {
+    document.getElementById("interest-space").value = spaceName;
+    title.textContent = "Dedicate: " + spaceName;
+    sub.textContent = "Leave your details and Rabbi Korf will reach out to you personally about this dedication.";
+  } else {
+    document.getElementById("interest-space").value = "General donation";
+    title.textContent = "I'd like to make a gift";
+    sub.textContent = "Leave your details and Rabbi Korf will reach out to you personally.";
+  }
+  // reset to the fresh form (in case it was left on the thank-you screen)
+  document.getElementById("interest-form").reset();
+  document.getElementById("interest-error").hidden = true;
+  document.getElementById("interest-form-wrap").hidden = false;
+  document.getElementById("interest-thanks").hidden = true;
+  document.getElementById("interest-back").classList.add("open");
+}
+
+function closeInterest() {
+  document.getElementById("interest-back").classList.remove("open");
+  if (interestTimer) { clearTimeout(interestTimer); interestTimer = null; }
+}
+
+document.getElementById("interest-close").addEventListener("click", closeInterest);
+document.getElementById("interest-back").addEventListener("click", (e) => {
+  if (e.target.id === "interest-back") closeInterest();
+});
+
+document.getElementById("interest-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("interest-submit");
+  const err = document.getElementById("interest-error");
+  const fd  = new FormData(e.target);
+  err.hidden = true;
+
+  // Guard: form not set up yet.
+  if (!CONTACT_FORM_KEY || CONTACT_FORM_KEY.indexOf("REPLACE") === 0) {
+    err.textContent = "This form isn't connected yet. Please see the front desk, or add your Web3Forms key.";
+    err.hidden = false;
+    return;
+  }
+
+  const payload = {
+    access_key: CONTACT_FORM_KEY,
+    subject: "New dedication interest: " + fd.get("space"),
+    from_name: "Lobby Dedication Board",
+    "Interested in": fd.get("space"),
+    "Name": fd.get("name"),
+    "Phone or email": fd.get("contact"),
+    "Message": fd.get("note") || "(none)",
+    botcheck: !!fd.get("botcheck"),
+  };
+
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  try {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || "send failed");
+    // Show thank-you, then auto-reset so the next visitor gets a fresh form.
+    document.getElementById("interest-form-wrap").hidden = true;
+    document.getElementById("interest-thanks").hidden = false;
+    interestTimer = setTimeout(closeInterest, 6000);
+  } catch (ex) {
+    err.textContent = "Sorry — that didn't go through. Please try again, or see the front desk.";
+    err.hidden = false;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Send to Rabbi Korf";
+  }
+});
 
 /* ---------- DONOR BOARD ---------- */
 function renderBoard() {
@@ -843,8 +1010,10 @@ function tickClock() {
 }
 
 /* ---------- START EVERYTHING ---------- */
-// Point the "Donate Now" buttons (header + footer) at your donate page.
-document.querySelectorAll("#header-donate, #footer-donate").forEach((a) => { a.href = DONATE_URL; });
+// The "Donate Now" buttons (header + footer) open the email popup.
+document.querySelectorAll("#header-donate, #footer-donate").forEach((a) => {
+  a.addEventListener("click", (e) => { e.preventDefault(); openInterest(null); });
+});
 
 renderOverview();
 renderFilters();
