@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  THE CAMPAIGN FOR OUR NEW HOME  ·  Chabad Center for Jewish Life, St. Petersburg
+  ============================================================================
+  A capital-campaign "donor book" for the new building, built to run on the
+  lobby touchscreen and read well on phones and desktops. One self-contained
+  file: an editorial architectural design (serif headlines, thin rules, ivory
+  space) with a highly legible, large-target touch interface.
+
+  WHERE TO EDIT CONTENT:  scroll to  >>>>> EDIT YOUR CONTENT HERE <<<<<
+    1. CAMPAIGN       – goal + amount raised
+    2. RABBI_EMAIL    – where the dedication form emails go (info@chabadsp.com)
+    3. SPACES         – every dedication (name, price, who dedicated it)
+    4. DONOR_BOARD    – the giving levels and the names on each
+  Colors + type live in the :root block in <style>.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4A3020">
+<title>The Campaign for Our New Home · Chabad St. Petersburg</title>
+<meta name="description" content="Dedication and naming opportunities in the new Chabad Center for Jewish Life, St. Petersburg — a permanent capital campaign.">
+
+<!-- Offline / Add-to-Home-Screen support for the kiosk (see sw.js, manifest.json) -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dedications">
+<link rel="apple-touch-icon" href="icon-180.png">
+
+<!-- Type: Cormorant Garamond (editorial serif voice) + Inter (legible kiosk sans) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================================================================
+     1. THE SYSTEM  ·  three colors, two typefaces
+     ========================================================================= */
+  :root {
+    --espresso: #4A3020;   /* authority — text, dark bands */
+    --ivory:    #F5EFE3;   /* warmth, breathing room — the page */
+    --gold:     #B88A3E;   /* reserved accent — meaningful rules, top honors */
+
+    /* tones derived only from the three hues (opacity of espresso on ivory) */
+    --soft:   rgba(74,48,32,.62);   /* quiet supporting copy */
+    --faint:  rgba(74,48,32,.42);   /* very quiet */
+    --rule:   rgba(74,48,32,.20);   /* thin hairline */
+    --rule-2: rgba(74,48,32,.34);   /* stronger hairline */
+    --wash:   rgba(74,48,32,.045);  /* barely-there field tint */
+    --on-dark:      #F5EFE3;
+    --on-dark-soft: rgba(245,239,227,.66);
+
+    --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    --edge: clamp(20px, 5vw, 88px);   /* page side margin */
+    --maxw: 1320px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--sans);
+    color: var(--espresso);
+    background: var(--ivory);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-user-select: none; user-select: none;
+    overflow-x: hidden;
+  }
+  img { max-width: 100%; display: block; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  .serif { font-family: var(--serif); }
+  ::selection { background: var(--gold); color: #fff; }
+
+  .shell { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--edge); }
+
+  /* Small uppercase sans label — the only "category" treatment on the site */
+  .kicker {
+    font-family: var(--sans); font-size: clamp(11px,1vw,12.5px); font-weight: 600;
+    letter-spacing: .26em; text-transform: uppercase; color: var(--gold);
+  }
+  .kicker.muted { color: var(--faint); }
+
+  /* Thin rules — the primary structural device, replacing cards */
+  .rule    { border: 0; border-top: 1px solid var(--rule); }
+  .rule-2  { border: 0; border-top: 1px solid var(--rule-2); }
+  .rule-gold { border: 0; border-top: 1.5px solid var(--gold); }
+
+  /* =========================================================================
+     2. BUTTONS  ·  squared (modest 2px), large touch targets, high contrast
+     ========================================================================= */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 54px; padding: 15px 30px; border-radius: 2px;
+    font-family: var(--sans); font-weight: 600; font-size: clamp(13px,1.3vw,15px);
+    letter-spacing: .12em; text-transform: uppercase; text-decoration: none;
+    transition: background .16s, color .16s, border-color .16s;
+  }
+  .btn-primary { background: var(--espresso); color: var(--ivory); }
+  .btn-primary:active { background: #3a2519; }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-gold:active { filter: brightness(.94); }
+  .btn-ghost { background: transparent; color: var(--espresso); border: 1.5px solid var(--rule-2); }
+  .btn-ghost:active { border-color: var(--espresso); }
+  .btn-onDark { background: var(--gold); color: #fff; }
+  .btn-line { /* text-only editorial link-button */
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px;
+    font-family: var(--sans); font-weight: 600; font-size: 13px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--espresso); border-bottom: 1.5px solid var(--gold);
+    padding: 2px 0; background: none;
+  }
+
+  /* =========================================================================
+     3. CHROME  ·  masthead + nav (sticky). Squared, institutional.
+     ========================================================================= */
+  .chrome { position: sticky; top: 0; z-index: 60; background: var(--ivory); }
+
+  .masthead { background: var(--espresso); color: var(--ivory); }
+  .masthead .shell { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 84px; padding-top: 12px; padding-bottom: 12px; }
+  .mh-brand { display: flex; align-items: center; gap: 18px; min-width: 0; }
+  .mh-logo { height: 54px; width: auto; max-width: 240px; object-fit: contain; flex-shrink: 0; }
+  .mh-mark { /* fallback if logo image missing */
+    width: 46px; height: 46px; flex-shrink: 0; display: grid; place-items: center;
+    border: 1px solid var(--gold); color: var(--gold); font-family: var(--serif); font-size: 26px; font-weight: 600;
+  }
+  .mh-word .name { font-family: var(--serif); font-size: clamp(19px,2vw,25px); font-weight: 600; letter-spacing: .02em; line-height: 1.05; color: #fff; }
+  .mh-word .sub  { font-size: clamp(9.5px,1vw,11px); letter-spacing: .24em; text-transform: uppercase; color: var(--gold); margin-top: 4px; }
+  .mh-right { display: flex; align-items: center; gap: clamp(16px,2.4vw,34px); flex-shrink: 0; }
+  .mh-clock { text-align: right; line-height: 1.2; }
+  .mh-clock b { display: block; font-family: var(--serif); font-size: 19px; font-weight: 500; color: #fff; }
+  .mh-clock span { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--on-dark-soft); }
+
+  nav.nav { border-bottom: 1px solid var(--rule-2); background: var(--ivory); }
+  nav.nav .shell { display: flex; gap: clamp(6px,2vw,40px); align-items: stretch; }
+  .nav-tab {
+    position: relative; min-height: 58px; padding: 18px 4px 16px; background: none;
+    font-family: var(--sans); font-weight: 600; font-size: clamp(12px,1.3vw,14px);
+    letter-spacing: .16em; text-transform: uppercase; color: var(--faint); white-space: nowrap;
+    transition: color .16s;
+  }
+  .nav-tab:active { color: var(--espresso); }
+  .nav-tab.active { color: var(--espresso); }
+  .nav-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); }
+
+  .view { display: none; }
+  .view.active { display: block; animation: rise .5s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* =========================================================================
+     4. OVERVIEW  ·  editorial opening spread (asymmetric, drawing bleeds right)
+     ========================================================================= */
+  .kiosk-hero { padding: clamp(18px,2.6vw,36px) 0 clamp(12px,1.8vw,22px); }
+  .kh-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(28px,4.5vw,72px); align-items: start; }
+  .kh-lead h1 { font-family: var(--serif); font-weight: 600; color: var(--espresso); font-size: clamp(36px,4.9vw,70px); line-height: .96; letter-spacing: -.015em; margin: 12px 0 0; max-width: 15ch; }
+  .kh-lead h1 em { font-style: italic; color: var(--gold); }
+  .opening-lead { margin-top: 16px; max-width: 46ch; color: var(--soft); font-size: clamp(14px,1.5vw,18px); line-height: 1.6; }
+  .kh-standing { margin-top: clamp(16px,2.2vw,26px); padding-top: clamp(16px,2vw,22px); border-top: 1px solid var(--rule); }
+  .kh-standing .kicker.muted { display: block; margin-bottom: 4px; }
+  .raised-num { font-family: var(--serif); font-weight: 600; font-size: clamp(38px,5vw,66px); line-height: .9; letter-spacing: -.01em; }
+  .raised-of { margin-top: 8px; color: var(--soft); font-size: clamp(13px,1.4vw,16px); }
+  .raised-of b { color: var(--espresso); font-weight: 600; }
+  .progress { margin-top: 16px; max-width: 520px; }
+  .progress-track { height: 3px; background: var(--rule-2); position: relative; }
+  .progress-fill { position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--gold); transition: width 1.5s cubic-bezier(.2,.8,.2,1); }
+  .progress-legend { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+  .standing { display: flex; flex-wrap: wrap; margin-top: 20px; }
+  .standing-item { padding: 4px clamp(16px,2.6vw,36px); }
+  .standing-item + .standing-item { border-left: 1px solid var(--rule); }
+  .standing-item:first-child { padding-left: 0; }
+  .standing-num { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(30px,3.6vw,48px); line-height: 1; }
+  .standing-lbl { display: block; margin-top: 6px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); }
+
+  .kh-side { display: flex; flex-direction: column; }
+  .kh-draw { width: 100%; max-width: 440px; margin: -4px auto 0; opacity: .92; }
+  .kh-name { background: var(--espresso); color: var(--ivory); padding: clamp(22px,2.6vw,32px); margin-top: clamp(8px,1.4vw,16px); }
+  .kh-name h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px,3.6vw,50px); line-height: .98; color: #fff; margin: 10px 0 0; }
+  .kh-name-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin: 14px 0 18px; }
+  .naming-amt { font-family: var(--serif); font-weight: 600; font-size: clamp(28px,3vw,44px); color: var(--gold); line-height: 1; }
+  .naming-avail { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--on-dark-soft); }
+  .kh-name .btn { width: 100%; }
+
+  /* Gateways — two tappable panels (discover spaces + donor recognition) */
+  .gateways { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule-2); }
+  .gateway { text-align: left; display: block; background: none; padding: clamp(22px,3vw,38px) clamp(20px,2.4vw,34px); transition: background .16s; }
+  .gateway:first-child { padding-left: 0; }
+  .gateway:last-child { padding-right: 0; }
+  .gateway + .gateway { border-left: 1px solid var(--rule); }
+  .gateway:hover { background: var(--wash); }
+  .gateway h3 { font-family: var(--serif); font-weight: 600; font-size: clamp(26px,3vw,42px); line-height: 1; margin: 10px 0 12px; }
+  .gateway .g-preview { color: var(--soft); font-size: clamp(14px,1.5vw,17px); line-height: 1.5; max-width: 36ch; }
+  .gateway .g-cta { display: inline-block; margin-top: 16px; font-family: var(--sans); font-weight: 600; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+
+  @media (max-width: 900px){
+    .kh-grid { grid-template-columns: 1fr; gap: 26px; }
+    .kh-draw { max-width: 92%; }
+    .gateways { grid-template-columns: 1fr; }
+    .gateway, .gateway:first-child, .gateway:last-child { padding-left: 0; padding-right: 0; }
+    .gateway + .gateway { border-left: 0; border-top: 1px solid var(--rule); }
+  }
+  /* Mobile masthead: simplify so nothing collides; keep a big Donate target */
+  @media (max-width: 720px) {
+    .masthead .shell { flex-wrap: wrap; min-height: 0; gap: 12px 16px; padding-top: 14px; padding-bottom: 14px; }
+    .mh-clock { display: none; }
+    .mh-brand { flex: 1 1 auto; gap: 13px; }
+    .mh-logo { height: 42px; }
+    .mh-word .name { font-size: 17px; }
+    .mh-word .sub { display: none; }
+    .mh-right { flex: 1 1 100%; }
+    .mh-right .btn { width: 100%; }
+    nav.nav .shell { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  }
+
+  /* =========================================================================
+     5. SECTION HEADERS  ·  shared editorial header (asymmetric)
+     ========================================================================= */
+  .section { padding: clamp(28px,3.5vw,64px) 0; }
+  .sec-head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding-bottom: clamp(18px,2.2vw,30px); }
+  @media (max-width: 760px){ .sec-head { grid-template-columns: 1fr; } }
+  .sec-head h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(32px,4.6vw,60px); line-height: .98; letter-spacing: -.01em; margin-top: 10px; max-width: 16ch; }
+  .sec-head h2 em { font-style: italic; color: var(--gold); }
+  .sec-head .sec-note { max-width: 34ch; color: var(--soft); font-size: clamp(14px,1.5vw,17px); line-height: 1.6; padding-bottom: 6px; }
+
+  /* =========================================================================
+     6. BUILDING SPACES  ·  an architectural catalog / index (no cards)
+     ========================================================================= */
+  .filters { display: flex; flex-wrap: wrap; gap: clamp(18px,4vw,44px); align-items: center; padding: 6px 0 4px; border-top: 1px solid var(--rule-2); border-bottom: 1px solid var(--rule); }
+  .filter {
+    min-height: 52px; padding: 12px 2px; background: none; font-family: var(--sans);
+    font-weight: 600; font-size: clamp(12px,1.3vw,14px); letter-spacing: .16em; text-transform: uppercase;
+    color: var(--faint); position: relative; transition: color .16s;
+  }
+  .filter .fcount { font-family: var(--serif); font-weight: 600; letter-spacing: 0; font-size: 1.35em; margin-left: 8px; text-transform: none; }
+  .filter:active { color: var(--espresso); }
+  .filter.active { color: var(--espresso); }
+  .filter.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); }
+
+  .index { border-top: 1px solid var(--rule); }
+  .entry {
+    display: grid; grid-template-columns: clamp(44px,5vw,84px) 1fr auto; align-items: baseline;
+    gap: clamp(14px,3vw,40px); width: 100%; text-align: left;
+    padding: clamp(20px,2.6vw,30px) 0; border-bottom: 1px solid var(--rule); background: none;
+    transition: background .16s;
+  }
+  .entry:hover { background: var(--wash); }
+  .entry-no { font-family: var(--sans); font-weight: 600; font-size: 13px; letter-spacing: .08em; color: var(--faint); padding-top: 8px; }
+  .entry-name { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(24px,3.4vw,40px); line-height: 1.04; letter-spacing: -.005em; }
+  .entry-cat { display: block; margin-top: 7px; font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); }
+  .entry-tail { text-align: right; white-space: nowrap; padding-left: 8px; }
+  .entry-price { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(22px,2.8vw,32px); line-height: 1; }
+  .entry-take { display: block; margin-top: 9px; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+  .entry.is-ded .entry-name { color: var(--soft); font-weight: 500; }
+  .entry-ded { display: block; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--faint); }
+  .entry-by  { display: block; margin-top: 8px; font-family: var(--serif); font-style: italic; font-size: clamp(16px,1.9vw,21px); color: var(--espresso); }
+  .index-empty { padding: 60px 0; text-align: center; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--faint); }
+  /* Landscape / desktop: two-column catalog to keep the scroll short */
+  @media (min-width: 1000px){
+    .index { columns: 2; column-gap: clamp(36px,4vw,68px); }
+    .entry { break-inside: avoid; -webkit-column-break-inside: avoid; gap: clamp(10px,1.6vw,22px); }
+    .entry-name { font-size: clamp(20px,2.2vw,30px); }
+    .entry-price { font-size: clamp(18px,2vw,26px); }
+    .entry-by { font-size: clamp(14px,1.5vw,18px); }
+  }
+
+  /* a full-width architectural drawing composition inside the catalog */
+  .catalog-plate { position: relative; margin: clamp(30px,5vw,60px) 0; padding: clamp(30px,4vw,56px) 0; border-top: 1px solid var(--rule); overflow: hidden; }
+  .catalog-plate .plate-draw { width: min(64%, 640px); opacity: .5; }
+  .catalog-plate .plate-cap { position: absolute; right: 0; bottom: clamp(30px,4vw,56px); max-width: 22ch; text-align: right; }
+  .catalog-plate .plate-cap .kicker { display: block; margin-bottom: 8px; }
+  .catalog-plate .plate-cap p { font-family: var(--serif); font-style: italic; font-size: clamp(18px,2.4vw,28px); color: var(--soft); line-height: 1.25; }
+  @media (max-width: 720px){ .catalog-plate .plate-cap { position: static; text-align: left; max-width: none; margin-top: 20px; } .catalog-plate .plate-draw { width: 88%; } }
+
+  /* =========================================================================
+     7. DONOR BOARD  ·  a permanent recognition program (typographic, no pills)
+     ========================================================================= */
+  /* Each level is a compact horizontal band: label left, names flow right. */
+  .level {
+    display: grid; grid-template-columns: minmax(176px, 236px) 1fr; gap: clamp(22px,3.5vw,56px);
+    align-items: start; padding: clamp(18px,2.4vw,34px) 0; border-top: 1px solid var(--rule);
+  }
+  .level-name { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; line-height: .96; }
+  .level-amt { font-family: var(--sans); font-size: clamp(11.5px,1.2vw,14px); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin-top: 8px; }
+  .level-count { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
+  .dn { display: block; font-family: var(--serif); color: var(--espresso); line-height: 1.4; break-inside: avoid; }
+  .dn--open { font-style: italic; color: var(--faint); }
+
+  /* prestige hierarchy: label scale, name scale, gold rule for the top two */
+  .level--lead { border-top: 1.5px solid var(--gold); padding-top: clamp(24px,3vw,44px); padding-bottom: clamp(20px,2.6vw,38px); }
+  .level--lead .level-name { font-size: clamp(34px,4.2vw,58px); }
+  .level--lead .level-names { columns: 1; }
+  .level--lead .dn { font-size: clamp(24px,3vw,42px); font-weight: 600; line-height: 1.2; }
+
+  .level--pillar { border-top: 1.5px solid var(--gold); }
+  .level--pillar .level-name { font-size: clamp(27px,3.1vw,42px); }
+  .level--pillar .level-names { column-width: 248px; column-gap: clamp(26px,4vw,52px); }
+  .level--pillar .dn { font-size: clamp(18px,2vw,25px); padding: 3px 0; }
+
+  .level--visionary .level-name { font-size: clamp(25px,2.8vw,38px); }
+  .level--visionary .level-names { column-width: 214px; column-gap: clamp(22px,3vw,44px); }
+  .level--visionary .dn { font-size: clamp(16px,1.75vw,21px); padding: 2.5px 0; }
+
+  .level--std .level-name { font-size: clamp(23px,2.5vw,33px); }
+  .level--std .level-names { column-width: 188px; column-gap: clamp(20px,2.6vw,40px); }
+  .level--std .dn { font-size: clamp(15px,1.6vw,18.5px); padding: 2px 0; }
+
+  @media (max-width: 680px){
+    .level { grid-template-columns: 1fr; gap: 14px; padding: clamp(16px,4vw,26px) 0; }
+    .level-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .level-amt, .level-count { margin-top: 0; }
+    .level--lead .dn { font-size: clamp(22px,6vw,32px); }
+  }
+
+  .board-note { padding: clamp(24px,3vw,44px) 0 0; border-top: 1px solid var(--rule); margin-top: clamp(16px,2vw,28px); max-width: 62ch; color: var(--soft); font-size: 14.5px; line-height: 1.6; }
+
+  /* =========================================================================
+     8. CLOSING / FOOTER  ·  espresso, invitation
+     ========================================================================= */
+  footer.close { background: var(--espresso); color: var(--ivory); border-top: 2px solid var(--gold); }
+  footer.close .shell { padding: clamp(48px,7vw,110px) var(--edge); }
+  footer.close .kicker { color: var(--gold); }
+  footer.close h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(38px,6vw,80px); line-height: .98; color: #fff; margin: 16px 0 0; max-width: 16ch; }
+  footer.close p { color: var(--on-dark-soft); font-size: clamp(15px,1.7vw,19px); line-height: 1.6; margin: 22px 0 0; max-width: 46ch; }
+  .close-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 34px; }
+  .close-meta { margin-top: clamp(40px,6vw,72px); padding-top: 26px; border-top: 1px solid rgba(245,239,227,.18); display: flex; flex-wrap: wrap; gap: 10px 40px; align-items: center; }
+  .close-meta a { color: var(--gold); text-decoration: none; font-weight: 600; letter-spacing: .04em; }
+  .close-meta .addr { color: var(--on-dark-soft); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; margin-left: auto; }
+
+  /* =========================================================================
+     9. SPACE DETAIL — full-height editorial overlay (squared)
+     ========================================================================= */
+  .overlay { position: fixed; inset: 0; z-index: 100; background: rgba(37,24,15,.72); display: none; }
+  .overlay.open { display: block; animation: fade .22s ease; }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+  .sheet {
+    position: absolute; top: 0; right: 0; bottom: 0; width: min(680px, 100%); background: var(--ivory);
+    display: grid; grid-template-rows: auto 1fr; overflow: hidden; animation: slidein .3s cubic-bezier(.2,.8,.2,1);
+    border-left: 1px solid var(--rule-2);
+  }
+  @keyframes slidein { from { transform: translateX(30px); opacity:.6 } to { transform: none; opacity: 1 } }
+  .sheet-fig { position: relative; background: var(--espresso); overflow: hidden; height: clamp(180px,26vh,260px); }
+  .sheet-fig img { position: absolute; right: -6%; bottom: -10%; width: 78%; opacity: .82; }
+  .sheet-fig .fig-no { position: absolute; left: clamp(24px,4vw,40px); top: clamp(22px,3vw,34px); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+  .sheet-body { padding: clamp(28px,4vw,46px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .sheet-body .kicker { color: var(--gold); }
+  .sheet-body h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(32px,5vw,52px); line-height: 1; margin: 10px 0 0; }
+  .sheet-body .blurb { color: var(--soft); font-size: clamp(15px,1.7vw,18px); line-height: 1.6; margin-top: 18px; max-width: 46ch; }
+  .sheet-row { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; padding: 20px 0; border-top: 1px solid var(--rule); margin-top: 24px; }
+  .sheet-row .k { font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--soft); }
+  .sheet-row .v { font-family: var(--serif); font-weight: 600; font-size: clamp(24px,3vw,34px); }
+  .sheet-row .v.avail { color: var(--gold); }
+  .sheet-ded { margin-top: 24px; padding-top: 22px; border-top: 1.5px solid var(--gold); }
+  .sheet-ded .k { font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+  .sheet-ded .name { font-family: var(--serif); font-size: clamp(26px,3.4vw,38px); font-weight: 600; margin-top: 8px; line-height: 1.08; }
+  .sheet-ded .memo { font-family: var(--serif); font-style: italic; color: var(--soft); margin-top: 10px; font-size: 18px; }
+  .sheet-cta { margin-top: 30px; }
+  .sheet-cta .btn { width: 100%; }
+  .sheet-cta .call { margin-top: 16px; color: var(--soft); font-size: 14px; line-height: 1.5; }
+  .sheet-cta .call a { color: var(--espresso); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--gold); }
+  .x-close { position: absolute; top: 0; right: 0; z-index: 5; width: 60px; height: 60px; display: grid; place-items: center; background: var(--ivory); color: var(--espresso); font-size: 24px; border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+
+  /* =========================================================================
+     10. DEDICATION / EMAIL POPUP  (squared, editorial, legible)
+     ========================================================================= */
+  .modal-back { position: fixed; inset: 0; z-index: 110; background: rgba(37,24,15,.72); display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+  .modal-back.open { display: flex; animation: fade .2s ease; }
+  .askbox { position: relative; background: var(--ivory); width: 100%; max-width: 560px; padding: clamp(28px,4vw,48px); border-top: 3px solid var(--gold); }
+  .askbox h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(28px,4vw,42px); line-height: 1.02; margin: 10px 0 10px; }
+  .askbox .a-sub { color: var(--soft); font-size: clamp(14px,1.6vw,17px); line-height: 1.55; margin-bottom: 26px; }
+  .askbox form { display: flex; flex-direction: column; gap: 20px; }
+  .askbox label { display: flex; flex-direction: column; gap: 9px; font-size: 11.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); }
+  .askbox input[type=text], .askbox input:not([type]), .askbox textarea {
+    font-family: var(--sans); font-size: 17px; color: var(--espresso); background: var(--wash);
+    border: 1px solid var(--rule-2); border-radius: 2px; padding: 15px 16px; min-height: 54px; width: 100%;
+    -webkit-user-select: text; user-select: text; transition: border-color .15s;
+  }
+  .askbox input:focus, .askbox textarea:focus { outline: none; border-color: var(--gold); }
+  .askbox textarea { min-height: 70px; resize: none; line-height: 1.5; }
+  .askbox .btn { width: 100%; margin-top: 2px; }
+  .askbox .ierr { color: #7a2e15; background: rgba(122,46,21,.08); border-left: 3px solid #7a2e15; padding: 13px 15px; font-size: 14.5px; line-height: 1.45; }
+  .a-thanks { text-align: center; padding: 12px 0 4px; }
+  .a-thanks .mark { width: 64px; height: 64px; margin: 0 auto 20px; border: 1.5px solid var(--gold); display: grid; place-items: center; }
+  .a-thanks h2 { margin: 0; }
+  .a-thanks p { color: var(--soft); font-size: 17px; line-height: 1.55; margin-top: 10px; }
+
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce){ * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+  <!-- =========================== CHROME =========================== -->
+  <div class="chrome">
+    <div class="masthead">
+      <div class="shell">
+        <div class="mh-brand">
+          <img class="mh-logo" src="building-logo.png" alt="Chabad — A Center for Jewish Life" id="brand-logo"
+               onload="var m=document.getElementById('brand-mark'); if(m) m.remove();" onerror="this.remove();">
+          <div class="mh-mark" id="brand-mark">ח</div>
+          <div class="mh-word">
+            <div class="name">Chabad · A Center for Jewish Life</div>
+            <div class="sub">St. Petersburg — Capital Campaign</div>
+          </div>
+        </div>
+        <div class="mh-right">
+          <div class="mh-clock"><b id="clock-time">—</b><span id="clock-date">Welcome</span></div>
+          <button class="btn btn-gold" id="header-donate">Make a Dedication</button>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="shell">
+        <button class="nav-tab active" data-view="overview">The Campaign</button>
+        <button class="nav-tab" data-view="spaces">Building Spaces</button>
+        <button class="nav-tab" data-view="board">Wall of Honor</button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- =========================== OVERVIEW (kiosk-first) =========================== -->
+  <div class="view active" id="view-overview">
+    <section class="kiosk-hero">
+      <div class="shell kh-grid">
+        <!-- Left: campaign identity + live standing -->
+        <div class="kh-lead">
+          <span class="kicker">The Campaign for Our New Home</span>
+          <h1 class="serif">A house of <em>light</em> for generations.</h1>
+          <p class="opening-lead">In the heart of downtown St. Petersburg, we are building a permanent home for Jewish life — every space within it carries a name, a family, a legacy.</p>
+          <div class="kh-standing">
+            <span class="kicker muted">Raised toward our new home</span>
+            <div class="raised-num serif" id="raised-amt">$0</div>
+            <div class="raised-of">of <b id="goal-amt">$0</b> &nbsp;·&nbsp; <b id="pct-inline">0%</b> funded</div>
+            <div class="progress">
+              <div class="progress-track"><div class="progress-fill" id="bar-fill"></div></div>
+              <div class="progress-legend"><span id="remaining-label">—</span><span>Payable over 1–3 years</span></div>
+            </div>
+            <div class="standing" id="stat-line"></div>
+          </div>
+        </div>
+        <!-- Right: the building + the leading giving opportunity -->
+        <div class="kh-side">
+          <img class="kh-draw" src="building-line.png" alt="The new Chabad Center" >
+          <div class="kh-name">
+            <span class="kicker">The Cornerstone Opportunity</span>
+            <h2 class="serif">Name the building.</h2>
+            <div class="kh-name-row"><span class="naming-amt serif">$2,500,000</span><span class="naming-avail">Available</span></div>
+            <button class="btn btn-onDark" id="naming-cta">Begin the Conversation</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gateways: discover spaces + see recognition, and where to tap next -->
+    <div class="shell">
+      <div class="gateways">
+        <button class="gateway" data-goto="spaces">
+          <span class="kicker">Explore</span>
+          <h3 class="serif">Building Spaces</h3>
+          <p class="g-preview" id="gw-spaces">—</p>
+          <span class="g-cta">See the catalog →</span>
+        </button>
+        <button class="gateway" data-goto="board">
+          <span class="kicker">Recognition</span>
+          <h3 class="serif">Wall of Honor</h3>
+          <p class="g-preview" id="gw-board">—</p>
+          <span class="g-cta">See the wall →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================== BUILDING SPACES =========================== -->
+  <div class="view" id="view-spaces">
+    <section class="section">
+      <div class="shell">
+        <div class="sec-head">
+          <div>
+            <span class="kicker">Dedication Opportunities</span>
+            <h2>The building, <em>room by room</em>.</h2>
+          </div>
+          <p class="sec-note">An architectural catalog of every named space — from the sanctuary to the smallest detail. Select any entry to learn more.</p>
+        </div>
+
+        <div class="filters" id="space-filters"></div>
+        <div class="index" id="space-index"></div>
+
+        <div class="catalog-plate">
+          <img class="plate-draw" src="building-line.png" alt="" aria-hidden="true">
+          <div class="plate-cap">
+            <span class="kicker">The New Building</span>
+            <p>Every line drawn, a place for someone to belong.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================== WALL OF HONOR =========================== -->
+  <div class="view" id="view-board">
+    <section class="section">
+      <div class="shell">
+        <div class="sec-head">
+          <div>
+            <span class="kicker">Our Founding Donors</span>
+            <h2>The <em>Wall of Honor</em>.</h2>
+          </div>
+          <p class="sec-note">With profound gratitude to the families whose generosity is building a Jewish home for St. Petersburg.</p>
+        </div>
+        <div class="board" id="board-list"></div>
+        <p class="board-note">Every level is payable over one to three years. To join the Wall of Honor or discuss a dedication, please speak with the Rabbi.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================== CLOSING =========================== -->
+  <footer class="close">
+    <div class="shell">
+      <span class="kicker">A Place at the Heart of It</span>
+      <h2>Add your family's name to our new home.</h2>
+      <p>Speak with Rabbi Alter Korf about a dedication, a naming opportunity, or joining the Wall of Honor.</p>
+      <div class="close-actions">
+        <button class="btn btn-gold" id="footer-donate">Make a Dedication</button>
+        <a class="btn btn-ghost" style="border-color:rgba(245,239,227,.32);color:var(--ivory)" href="tel:+17273444900">Call 727·344·4900</a>
+      </div>
+      <div class="close-meta">
+        <a href="mailto:info@chabadsp.com">info@chabadsp.com</a>
+        <a href="https://www.chabadsp.com" target="_blank" rel="noopener">chabadsp.com</a>
+        <span class="addr">533 4th Street North · St. Petersburg, FL</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================== SPACE DETAIL SHEET =========================== -->
+  <div class="overlay" id="overlay">
+    <aside class="sheet">
+      <button class="x-close" id="sheet-close" aria-label="Close">×</button>
+      <div class="sheet-fig" id="sheet-fig"></div>
+      <div class="sheet-body" id="sheet-body"></div>
+    </aside>
+  </div>
+
+  <!-- =========================== DEDICATION POPUP =========================== -->
+  <div class="modal-back" id="interest-back">
+    <div class="askbox">
+      <button class="x-close" id="interest-close" style="border:0;background:none" aria-label="Close">×</button>
+      <div id="interest-form-wrap">
+        <span class="kicker">Make a Dedication</span>
+        <h2 id="interest-title">I'd like to dedicate this space</h2>
+        <p class="a-sub" id="interest-sub">Leave your details and Rabbi Korf will reach out to you personally.</p>
+        <form id="interest-form">
+          <label>Your name
+            <input type="text" name="name" required autocomplete="name" placeholder="Your full name">
+          </label>
+          <label>Phone or email
+            <input type="text" name="contact" required placeholder="So the Rabbi can reach you">
+          </label>
+          <label>Anything you'd like to add? (optional)
+            <textarea name="note" placeholder="Optional message"></textarea>
+          </label>
+          <input type="hidden" name="space" id="interest-space">
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+          <button type="submit" class="btn btn-primary" id="interest-submit">Send to Rabbi Korf</button>
+          <div class="ierr" id="interest-error" hidden></div>
+        </form>
+      </div>
+      <div class="a-thanks" id="interest-thanks" hidden>
+        <div class="mark"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B88A3E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h2 class="serif">With gratitude.</h2>
+        <p>Rabbi Korf has been notified and will be in touch with you soon.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================================================================
+ *  >>>>>  EDIT YOUR CONTENT HERE  <<<<<
+ *  The rooms, prices, dedicators and donor names below are the REAL data from
+ *  jewishsp.org/dedications and /donors. To update: change a space's status
+ *  to "dedicated" and fill "dedicatedBy", or add a family to a DONOR_BOARD level.
+ * ========================================================================== */
+
+const CAMPAIGN = {
+  goal:   10900000,   // total campaign goal, in dollars (no commas)
+  raised:  8100707,   // amount raised so far, in dollars
+};
+
+const DONATE_URL = "https://www.jewishsp.org/dedications/";
+
+const RABBI_EMAIL = "info@chabadsp.com";
+
+const SPACES = [
+  { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
+  { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "", blurb: "" },
+  { name: "The Atrium", category: "Building", amount: null, status: "dedicated", dedicatedBy: "The Alexander Family", memo: "", image: "", blurb: "" },
+  { name: "Education Wing", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Morris Willner", memo: "", image: "", blurb: "" },
+  { name: "The Lounge", category: "Community", amount: 400000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A warm, comfortable gathering space for the community to relax and connect." },
+  { name: "Hebrew School Naming", category: "Education", amount: 360000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name our Hebrew school, where the next generation learns and grows." },
+  { name: "Sky Rooftop Deck", category: "Outdoors", amount: null, status: "dedicated", dedicatedBy: "Dr. Jeffrey and Wendy Miller", memo: "", image: "", blurb: "" },
+  { name: "The Grand Glass Stairwell", category: "Building", amount: 250000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A striking glass stairwell at the heart of the new building." },
+  { name: "Social Hall", category: "Community", amount: null, status: "dedicated", dedicatedBy: "The Buns Family", memo: "", image: "", blurb: "" },
+  { name: "Ner Tamid", category: "Sacred Spaces", amount: 200000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The eternal light above the ark, a symbol of God's constant presence." },
+  { name: "The Chabad Hub", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The central space connecting our programs, people, and daily life." },
+  { name: "Sanctuary Doors — שערי היכל", category: "Sacred Spaces", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The beautiful doors that welcome everyone into the sanctuary." },
+  { name: "Outdoor Terrace & Play Area", category: "Outdoors", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "An outdoor space for families, children, and celebrations." },
+  { name: "Institute of Jewish Learning", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Herman Forbes Charitable Trust", memo: "", image: "", blurb: "" },
+  { name: "Ark (Aron Kodesh)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Morris and Lillian Tabacinic", memo: "", image: "", blurb: "" },
+  { name: "Dairy Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Herman OB\"M and Rebecca Ovadia", memo: "", image: "", blurb: "" },
+  { name: "Wall of Honor Dedication", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the Wall of Honor that recognizes our community's builders." },
+  { name: "Tribute to the Rebbe", category: "Sacred Spaces", amount: 120000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A dedicated tribute honoring the Lubavitcher Rebbe." },
+  { name: "Backup Generator", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Steven and Nicole Cohen", memo: "", image: "", blurb: "" },
+  { name: "Chabad Cares", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting our community outreach and acts of kindness." },
+  { name: "Shomer Yisrael — Security System", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Keeping our community safe with a comprehensive security system." },
+  { name: "Commercial Meat Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Dr. Larry and Alice Ettinger", memo: "", image: "", blurb: "" },
+  { name: "Lift of Life", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Lane and Suzanne Mercer", memo: "", image: "", blurb: "" },
+  { name: "Library / Conference Room", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ms. Judy Goodman", memo: "", image: "", blurb: "" },
+  { name: "The Lifted Path — Accessibility Upgrade", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Making every space welcoming and accessible to all." },
+  { name: "Women's Circle Naming", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the home of our women's programming and gatherings." },
+  { name: "Holocaust Memorial", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Abraham Reichbach", memo: "", image: "", blurb: "" },
+  { name: "Commercial Appliances — Meat", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Linda Weiss & The Wein Family", memo: "", image: "", blurb: "" },
+  { name: "Education Office", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Gideon Hecht", memo: "", image: "", blurb: "" },
+  { name: "Memorial Board", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Stuart Nast", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Evan Cohn and Haris Lender", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Rosenbaum Family", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Alon Varsha", memo: "", image: "", blurb: "" },
+  { name: "Rabbi's Study", category: "Leadership", amount: null, status: "dedicated", dedicatedBy: "Mr. Ralph and Ruth Ann Mizrahi", memo: "", image: "", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ronald and Debbie Berzon", memo: "", image: "", blurb: "" },
+  { name: "Landscaping", category: "Outdoors", amount: 50000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The gardens and greenery that surround our new home." },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Alex and Lena Rogachevsky", memo: "", image: "", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Kevin Lane", memo: "", image: "", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Keyvan and Stepanie Kohan", memo: "", image: "", blurb: "" },
+  { name: "Windows to Jerusalem (4)", category: "Windows & Art", amount: 45000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A set of four windows connecting us to Jerusalem." },
+  { name: "Synagogue Seating", category: "Sacred Spaces", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The seating where our community comes together in prayer." },
+  { name: "Torah Platform (Bima)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Murray and Debby Bevitz", memo: "", image: "", blurb: "" },
+  { name: "Audio Visual System", category: "Building & Systems", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The sound and visual systems that bring every event to life." },
+  { name: "Window Treatment (Upper Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the upper level." },
+  { name: "Window Treatment (Lower Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the lower level." },
+  { name: "Commercial Appliances — Dairy", category: "Kitchen", amount: 25000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Professional dairy kitchen appliances for every simcha." },
+  { name: "Candle Lighting Station", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Social Hall Furnishing", category: "Community", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Mayim Chaim — Living Waters", category: "Sacred Spaces", amount: 18000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting the living waters of our community." },
+  { name: "Washing Station (Kiyor)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
+  { name: "Chazzan's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Michael and Gail Frye", memo: "", image: "", blurb: "" },
+  { name: "Mechitza", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Stanley and Nancy Rosenberg", memo: "", image: "", blurb: "" },
+  { name: "Prayerbook Wall Unit", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Cary and Karen Reich", memo: "", image: "", blurb: "" },
+  { name: "Rabbi's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Dan and Irene Lawson", memo: "", image: "", blurb: "" },
+  { name: "Talis Rack", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Frank and Dale Marsilio", memo: "", image: "", blurb: "" },
+];
+
+const DONOR_BOARD = [
+  { name: "Lead", amount: 500000, color: "#6B4A31", donors: ["Dr. Michael and Elizabeth Zimmer"] },
+  { name: "Pillar", amount: 250000, color: "#7A5C43", donors: ["Alexander Family","Michael and Margot Benstock","The Buns Family","Dr. Steven and Nicole Cohen","Dr. Jeffrey and Wendy Miller","Herman OB\"M and Rebecca Ovadia","Aron and Esther Raihshtein","Ambassador Mel and Betty Sembler OBM","Morris Willner"] },
+  { name: "Visionary", amount: 100000, color: "#8A6A3E", donors: ["Alexander Family","Stephen and Vicky Baker","Sherran Blair","Evan Cohn and Haris Lender","Dr. Andrew and Meredith Cooper","Bill Edwards","Dr. Larry and Alice Ettinger","Herman Forbes Charitable Trust","Steven Goodman OB\"M and Judy Goodman","Samuel and Janet Hammer","Gideon Hecht","Dr. Lane and Suzanne Mercer","Steven and Mona Press","Abraham Reichbach","Morris and Lillian Tabacinic","Anonymous Donor"] },
+  { name: "Founder", amount: 50000, color: "#9C7A45", donors: ["Antony Cooke","Rosenbaum Family","Peter and Lani Ford","Lenny Gartner","Rabbi Gedale Korf OB\"M","Ralph and Ruth Ann Mizrahi","Stuart Nast","Andrew Pozin","Steven Raymund","Dr. Richard Shelsky","Susan Turner OB\"M","Alon Varsha"] },
+  { name: "Benefactor", amount: 18000, color: "#B0894A", donors: ["Dr. Warren and Naomi Abel","Bob Barnum OB\"M","Murray and Debby Bevitz","David and Heather Delrahim","Keyvan and Stephanie Kohan","Leonid and Alla Komanovsky","Steven and Belinda Konigsberg","Kevin Lane","Dr. Dan and Irene Lawson","Dr. Adam and Jamee Miller","Aaron Raihshtein","Cary and Karen Reich","Ruvane Richman","Alex and Lena Rogachevsky","Dr. Stanley and Nancy Rosenberg","Ken and JP Sherman","Michael and Selena Shimshoni","Mark and Judy Teitelbaum","Drs. Israel and Katie Wojnowich"] },
+  { name: "Sponsor", amount: 5000, color: "#BE9A5A", donors: ["Mickael Boutboul","David Colman","Michael and Jenna Cvetetic","Patrick Ehrlich","Deitch Family","The Wein Family","Elie and Kory Farkas","Michael and Gail Frye","Ross Gelfand","Ethel Goldberg","Madelaine Goldish","Mordechai and Esther Goldstein","Dr. Mark and Judy Gordon","Bryan and Robyn Greenberg","Beth Shalom Gulfport","Herman & Waterman Families","Mauricio and Deborah Lan","Ted Mallin","Frank and Dale Marsilio","Barbara Mazer","Michael Morris","Daniel & Maggie Penello","Marcia Person","Roger Rovell","Robert Shapiro","Linda Weiss"] },
+  { name: "Donor", amount: 1800, color: "#C9A25C", donors: ["Amnon Abayov","Marcia Bressler","Beverly Cohen","Patrick Erlich","Max Glazer","Hilbert Haghnazarzadeh","Oleg and Katherine Iossem","Brian and Susan Kagan","Richard and Judith Kuskin","Linda Lerner","Robert Murray","Eileen Richman","Daniel and Ronith Sheffer","Steven and Elizabeth Sussman","Shari Cohen William Boesch","Drs Steven Bloom and Charlene Wygodski","Anonymous Donor"] },
+];
+
+/* ============================================================================
+ *  END OF EDIT AREA — the engine is below.
+ * ========================================================================== */
+
+function money(n){ return "$" + Number(n).toLocaleString("en-US"); }
+function pad2(n){ return String(n).padStart(2,"0"); }
+
+/* ---------- NAVIGATION ---------- */
+function showView(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("view-"+name).classList.add("active");
+  const tab=document.querySelector('.nav-tab[data-view="'+name+'"]'); if(tab) tab.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.querySelectorAll(".nav-tab").forEach(t=>t.addEventListener("click",()=>showView(t.dataset.view)));
+document.querySelectorAll(".gateway").forEach(g=>g.addEventListener("click",()=>showView(g.dataset.goto)));
+
+/* ---------- OVERVIEW ---------- */
+function renderOverview(){
+  const goal=CAMPAIGN.goal, raised=CAMPAIGN.raised, pct=Math.min(100,Math.round(raised/goal*100));
+  document.getElementById("raised-amt").textContent=money(raised);
+  document.getElementById("goal-amt").textContent=money(goal);
+  document.getElementById("pct-inline").textContent=pct+"%";
+  document.getElementById("remaining-label").textContent=money(goal-raised)+" remaining";
+  setTimeout(()=>{ document.getElementById("bar-fill").style.width=pct+"%"; }, 350);
+  const avail=SPACES.filter(s=>s.status==="available").length;
+  const stats=[[SPACES.length,"Dedications"],[avail,"Available"],[DONOR_BOARD.length,"Giving Levels"]];
+  document.getElementById("stat-line").innerHTML=stats.map(([n,l])=>
+    '<div class="standing-item"><span class="standing-num serif">'+n+'</span><span class="standing-lbl">'+l+'</span></div>').join("");
+  // gateway previews (discover spaces + donor recognition, on the first screen)
+  const totalDonors=DONOR_BOARD.reduce((n,t)=>n+(t.donors?t.donors.length:0),0), lead=DONOR_BOARD[0];
+  document.getElementById("gw-spaces").textContent=avail+" of "+SPACES.length+" named spaces are still available for dedication.";
+  document.getElementById("gw-board").textContent=totalDonors+" founding families across "+DONOR_BOARD.length+" giving levels — led by "+(lead.donors[0]||lead.name)+".";
+}
+
+/* ---------- BUILDING SPACES (catalog) ---------- */
+let currentFilter="all";
+function renderFilters(){
+  const all=SPACES.length, avail=SPACES.filter(s=>s.status==="available").length, ded=SPACES.length-avail;
+  const chips=[["all","All",all],["available","Available",avail],["dedicated","Dedicated",ded]];
+  document.getElementById("space-filters").innerHTML=chips.map(([k,l,c])=>
+    '<button class="filter'+(k===currentFilter?" active":"")+'" data-filter="'+k+'">'+l+'<span class="fcount">'+c+'</span></button>').join("");
+  document.querySelectorAll(".filter").forEach(f=>f.addEventListener("click",()=>{ currentFilter=f.dataset.filter; renderFilters(); renderSpaces(); }));
+}
+function renderSpaces(){
+  const list=SPACES.filter(s=>currentFilter==="all"?true:s.status===currentFilter);
+  const el=document.getElementById("space-index");
+  if(!list.length){ el.innerHTML='<div class="index-empty">No spaces in this view.</div>'; return; }
+  el.innerHTML=list.map((space,i)=>{
+    const idx=SPACES.indexOf(space), isDed=space.status==="dedicated";
+    const tail=isDed
+      ? '<span class="entry-ded">Dedicated</span><span class="entry-by">'+space.dedicatedBy+'</span>'
+      : (space.amount?'<span class="entry-price serif">'+money(space.amount)+'</span>':'')+'<span class="entry-take">Available →</span>';
+    return '<button class="entry '+(isDed?"is-ded":"")+'" data-idx="'+idx+'">'+
+             '<span class="entry-no">'+pad2(i+1)+'</span>'+
+             '<span class="entry-main"><span class="entry-name serif">'+space.name+'</span><span class="entry-cat">'+space.category+'</span></span>'+
+             '<span class="entry-tail">'+tail+'</span>'+
+           '</button>';
+  }).join("");
+  el.querySelectorAll(".entry").forEach(en=>en.addEventListener("click",()=>openSheet(parseInt(en.dataset.idx,10))));
+}
+
+/* ---------- SPACE DETAIL SHEET ---------- */
+function openSheet(idx){
+  const s=SPACES[idx], isDed=s.status==="dedicated";
+  document.getElementById("sheet-fig").innerHTML=
+    '<span class="fig-no">No. '+pad2(idx+1)+'</span><img src="building-logo.png" alt="" onerror="this.remove()">';
+  let b='<span class="kicker">'+s.category+'</span><h2>'+s.name+'</h2>'+
+    (s.blurb?'<p class="blurb">'+s.blurb+'</p>':'')+
+    (s.amount?'<div class="sheet-row"><span class="k">Dedication</span><span class="v">'+money(s.amount)+'</span></div>':'')+
+    '<div class="sheet-row"><span class="k">Status</span><span class="v '+(isDed?"":"avail")+'">'+(isDed?"Dedicated":"Available")+'</span></div>';
+  if(isDed){
+    b+='<div class="sheet-ded"><div class="k">Dedicated by</div><div class="name">'+s.dedicatedBy+'</div>'+
+       (s.memo?'<div class="memo">'+s.memo+'</div>':'')+'</div>';
+  } else {
+    b+='<div class="sheet-cta"><button class="btn btn-primary" id="sheet-donate">Dedicate This Space</button>'+
+       '<p class="call">Or call Rabbi Korf at <a href="tel:+17273444900">727·344·4900</a> to arrange the full dedication.</p></div>';
+  }
+  document.getElementById("sheet-body").innerHTML=b;
+  const d=document.getElementById("sheet-donate");
+  if(d) d.addEventListener("click",()=>{ closeSheet(); openInterest(s.name); });
+  document.getElementById("overlay").classList.add("open");
+}
+function closeSheet(){ document.getElementById("overlay").classList.remove("open"); }
+document.getElementById("sheet-close").addEventListener("click",closeSheet);
+document.getElementById("overlay").addEventListener("click",e=>{ if(e.target.id==="overlay") closeSheet(); });
+
+/* ---------- WALL OF HONOR ---------- */
+function renderBoard(){
+  const cls=["level--lead","level--pillar","level--visionary"];
+  document.getElementById("board-list").innerHTML=DONOR_BOARD.map((tier,i)=>{
+    const lvl=cls[i]||"level--std";
+    const count=tier.donors?tier.donors.length:0;
+    const names=count
+      ? tier.donors.map(n=>'<span class="dn">'+n+'</span>').join("")
+      : '<span class="dn dn--open">Awaiting its first supporter</span>';
+    return '<section class="level '+lvl+'">'+
+             '<div class="level-head">'+
+               '<h3 class="level-name serif">'+tier.name+'</h3>'+
+               '<div class="level-amt">'+money(tier.amount)+' &amp; above</div>'+
+               '<div class="level-count">'+(count?count+(count===1?" family":" families"):"Open")+'</div>'+
+             '</div>'+
+             '<div class="level-names">'+names+'</div>'+
+           '</section>';
+  }).join("");
+}
+
+/* ---------- DEDICATION / EMAIL POPUP ---------- */
+let interestTimer=null;
+function openInterest(spaceName){
+  const t=document.getElementById("interest-title"), sub=document.getElementById("interest-sub");
+  if(spaceName){ document.getElementById("interest-space").value=spaceName; t.textContent="Dedicate — "+spaceName;
+    sub.textContent="Leave your details and Rabbi Korf will reach out to you personally about this dedication."; }
+  else { document.getElementById("interest-space").value="General inquiry"; t.textContent="I'd like to make a gift";
+    sub.textContent="Leave your details and Rabbi Korf will reach out to you personally."; }
+  document.getElementById("interest-form").reset();
+  document.getElementById("interest-error").hidden=true;
+  document.getElementById("interest-form-wrap").hidden=false;
+  document.getElementById("interest-thanks").hidden=true;
+  document.getElementById("interest-back").classList.add("open");
+}
+function closeInterest(){ document.getElementById("interest-back").classList.remove("open"); if(interestTimer){clearTimeout(interestTimer);interestTimer=null;} }
+document.getElementById("interest-close").addEventListener("click",closeInterest);
+document.getElementById("interest-back").addEventListener("click",e=>{ if(e.target.id==="interest-back") closeInterest(); });
+document.querySelectorAll("#header-donate, #footer-donate, #naming-cta").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); openInterest(null); }));
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSheet(); closeInterest(); } });
+
+document.getElementById("interest-form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const btn=document.getElementById("interest-submit"), err=document.getElementById("interest-error"), fd=new FormData(e.target);
+  err.hidden=true;
+  if(fd.get("botcheck")) return; // honeypot: silently ignore bots
+  const payload={ _subject:"New dedication interest: "+fd.get("space"), _template:"table", _captcha:"false",
+    "Interested in":fd.get("space"), "Name":fd.get("name"), "Phone or email":fd.get("contact"), "Message":fd.get("note")||"(none)" };
+  btn.disabled=true; btn.textContent="Sending…";
+  try{
+    const res=await fetch("https://formsubmit.co/ajax/"+encodeURIComponent(RABBI_EMAIL),{ method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(payload) });
+    const data=await res.json();
+    if(String(data.success)!=="true") throw new Error(data.message||"send failed");
+    document.getElementById("interest-form-wrap").hidden=true;
+    document.getElementById("interest-thanks").hidden=false;
+    interestTimer=setTimeout(closeInterest,6000);
+  } catch(ex){ err.textContent="Sorry — that didn't go through. Please try again, or see the front desk."; err.hidden=false; }
+  finally{ btn.disabled=false; btn.textContent="Send to Rabbi Korf"; }
+});
+
+/* ---------- CLOCK ---------- */
+function tickClock(){
+  const now=new Date();
+  document.getElementById("clock-time").textContent=now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  document.getElementById("clock-date").textContent=now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+}
+
+/* ---------- START ---------- */
+renderOverview(); renderFilters(); renderSpaces(); renderBoard(); tickClock();
+setInterval(tickClock,15000);
+
+/* Offline safety net for the kiosk */
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); }); }
+</script>
+</body>
+</html>

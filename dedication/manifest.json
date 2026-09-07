@@ -1,0 +1,15 @@
+{
+  "name": "Chabad St. Petersburg — Dedication Board",
+  "short_name": "Dedications",
+  "description": "Interactive dedication and naming opportunities for the new Chabad Center for Jewish Life.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#3D2B1F",
+  "theme_color": "#3D2B1F",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
