@@ -412,9 +412,12 @@
           <span>St. Petersburg · Dedication Opportunities</span>
         </div>
       </div>
-      <div class="clock">
-        <b id="clock-time">—</b>
-        <span id="clock-date">Welcome</span>
+      <div style="display:flex;align-items:center;gap:clamp(14px,2vw,26px)">
+        <a class="btn-gold" id="header-donate" href="#" style="padding:11px 24px;font-size:15px">Donate Now</a>
+        <div class="clock">
+          <b id="clock-time">—</b>
+          <span id="clock-date">Welcome</span>
+        </div>
       </div>
     </div>
   </header>
@@ -508,7 +511,10 @@
       <div class="eyebrow" style="color:var(--gold-soft)">Ready to make it yours?</div>
       <h2 class="serif">Let's talk about your <em>dedication</em></h2>
       <p>Speak with Rabbi Alter Korf about reserving a space or joining the donor board. Every dedication helps build a Jewish home for St. Petersburg.</p>
-      <a class="btn-gold" href="tel:+17273444900">Call 727-344-4900</a>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+        <a class="btn-gold" id="footer-donate" href="#">Donate Now</a>
+        <a class="btn-ghost" href="tel:+17273444900" style="border-color:var(--gold-soft);color:var(--cream)">Call 727-344-4900</a>
+      </div>
       <div class="contact">
         <a href="mailto:info@chabadsp.com">info@chabadsp.com</a>
         <a href="https://www.chabadsp.com" target="_blank" rel="noopener">chabadsp.com</a>
@@ -545,6 +551,12 @@ const CAMPAIGN = {
   goal:   10900000,   // total campaign goal, in dollars (no commas)
   raised:  8100707,   // amount raised so far, in dollars
 };
+
+/* ---- DONATE LINK ------------------------------------------------------------
+   Where the "Donate Now" / "Donate toward this space" buttons send people.
+   This points at your existing chabadsp.com dedications page — no new payment
+   setup needed. If you have a more specific donate link, paste it here. */
+const DONATE_URL = "https://www.jewishsp.org/dedications/";
 
 /* ---- 2. SPACES -------------------------------------------------------------
    Every dedicatable room/space in the building. For each one:
@@ -754,8 +766,8 @@ function openModal(idx) {
     body += '<div class="dedicated-note"><div class="k">Dedicated by</div><div class="name">' + s.dedicatedBy + '</div>' +
             (s.memo ? '<div class="memo">' + s.memo + '</div>' : '') + '</div>';
   } else {
-    body += '<div class="m-cta"><a class="btn-gold" href="tel:+17273444900">Dedicate this space · Call the Rabbi</a></div>' +
-            '<p style="margin-top:14px;color:var(--muted);font-size:14px">Or speak with anyone at the front desk to reserve it.</p>';
+    body += '<div class="m-cta"><a class="btn-gold" href="' + DONATE_URL + '">Donate toward this space</a></div>' +
+            '<p style="margin-top:14px;color:var(--muted);font-size:14px">Or call the Rabbi at <a href="tel:+17273444900" style="color:var(--gold);font-weight:600;text-decoration:none">727-344-4900</a> to reserve the full dedication.</p>';
   }
 
   document.getElementById("m-body").innerHTML = body;
@@ -796,6 +808,9 @@ function tickClock() {
 }
 
 /* ---------- START EVERYTHING ---------- */
+// Point the "Donate Now" buttons (header + footer) at your donate page.
+document.querySelectorAll("#header-donate, #footer-donate").forEach((a) => { a.href = DONATE_URL; });
+
 renderOverview();
 renderFilters();
 renderSpaces();
