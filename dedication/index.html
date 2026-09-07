@@ -10,7 +10,7 @@
 
   WHERE TO EDIT CONTENT:  scroll to  >>>>> EDIT YOUR CONTENT HERE <<<<<
     1. CAMPAIGN       – goal + amount raised
-    2. DONATE / FORM  – the Web3Forms key that emails the Rabbi
+    2. RABBI_EMAIL    – where the dedication form emails go (info@chabadsp.com)
     3. SPACES         – every dedication (name, price, who dedicated it)
     4. DONOR_BOARD    – the giving levels and the names on each
   Colors + type live in the :root block in <style>.
@@ -591,7 +591,7 @@ const CAMPAIGN = {
 
 const DONATE_URL = "https://www.jewishsp.org/dedications/";
 
-const CONTACT_FORM_KEY = "REPLACE-WITH-YOUR-WEB3FORMS-ACCESS-KEY";
+const RABBI_EMAIL = "info@chabadsp.com";
 
 const SPACES = [
   { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
@@ -793,16 +793,14 @@ document.getElementById("interest-form").addEventListener("submit",async e=>{
   e.preventDefault();
   const btn=document.getElementById("interest-submit"), err=document.getElementById("interest-error"), fd=new FormData(e.target);
   err.hidden=true;
-  if(!CONTACT_FORM_KEY || CONTACT_FORM_KEY.indexOf("REPLACE")===0){
-    err.textContent="This form isn't connected yet. Please see the front desk, or add your Web3Forms key."; err.hidden=false; return;
-  }
-  const payload={ access_key:CONTACT_FORM_KEY, subject:"New dedication interest: "+fd.get("space"), from_name:"Lobby Dedication Board",
-    "Interested in":fd.get("space"), "Name":fd.get("name"), "Phone or email":fd.get("contact"), "Message":fd.get("note")||"(none)", botcheck:!!fd.get("botcheck") };
+  if(fd.get("botcheck")) return; // honeypot: silently ignore bots
+  const payload={ _subject:"New dedication interest: "+fd.get("space"), _template:"table", _captcha:"false",
+    "Interested in":fd.get("space"), "Name":fd.get("name"), "Phone or email":fd.get("contact"), "Message":fd.get("note")||"(none)" };
   btn.disabled=true; btn.textContent="Sending…";
   try{
-    const res=await fetch("https://api.web3forms.com/submit",{ method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(payload) });
+    const res=await fetch("https://formsubmit.co/ajax/"+encodeURIComponent(RABBI_EMAIL),{ method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(payload) });
     const data=await res.json();
-    if(!data.success) throw new Error(data.message||"send failed");
+    if(String(data.success)!=="true") throw new Error(data.message||"send failed");
     document.getElementById("interest-form-wrap").hidden=true;
     document.getElementById("interest-thanks").hidden=false;
     interestTimer=setTimeout(closeInterest,6000);
