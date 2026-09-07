@@ -343,9 +343,10 @@
     border-left: 1px solid var(--rule-2);
   }
   @keyframes slidein { from { transform: translateX(30px); opacity:.6 } to { transform: none; opacity: 1 } }
-  .sheet-fig { position: relative; background: var(--espresso); overflow: hidden; height: clamp(180px,26vh,260px); }
-  .sheet-fig img { position: absolute; right: -6%; bottom: -10%; width: 78%; opacity: .82; }
-  .sheet-fig .fig-no { position: absolute; left: clamp(24px,4vw,40px); top: clamp(22px,3vw,34px); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+  .sheet-fig { position: relative; background: var(--espresso); overflow: hidden; height: clamp(200px,30vh,300px); }
+  .sheet-fig .fig-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sheet-fig .fig-draw { position: absolute; right: -6%; bottom: -10%; width: 78%; opacity: .82; }
+  .sheet-fig .fig-no { position: absolute; left: clamp(16px,2.4vw,26px); top: clamp(14px,2vw,22px); z-index: 2; font-family: var(--sans); font-size: 11.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--ivory); background: rgba(37,24,15,.6); padding: 6px 12px; }
   .sheet-body { padding: clamp(28px,4vw,46px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .sheet-body .kicker { color: var(--gold); }
   .sheet-body h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(32px,5vw,52px); line-height: 1; margin: 10px 0 0; }
@@ -594,61 +595,61 @@ const DONATE_URL = "https://www.jewishsp.org/dedications/";
 const RABBI_EMAIL = "info@chabadsp.com";
 
 const SPACES = [
-  { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
-  { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "", blurb: "" },
-  { name: "The Atrium", category: "Building", amount: null, status: "dedicated", dedicatedBy: "The Alexander Family", memo: "", image: "", blurb: "" },
-  { name: "Education Wing", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Morris Willner", memo: "", image: "", blurb: "" },
-  { name: "The Lounge", category: "Community", amount: 400000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A warm, comfortable gathering space for the community to relax and connect." },
-  { name: "Hebrew School Naming", category: "Education", amount: 360000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name our Hebrew school, where the next generation learns and grows." },
-  { name: "Sky Rooftop Deck", category: "Outdoors", amount: null, status: "dedicated", dedicatedBy: "Dr. Jeffrey and Wendy Miller", memo: "", image: "", blurb: "" },
-  { name: "The Grand Glass Stairwell", category: "Building", amount: 250000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A striking glass stairwell at the heart of the new building." },
-  { name: "Social Hall", category: "Community", amount: null, status: "dedicated", dedicatedBy: "The Buns Family", memo: "", image: "", blurb: "" },
-  { name: "Ner Tamid", category: "Sacred Spaces", amount: 200000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The eternal light above the ark, a symbol of God's constant presence." },
-  { name: "The Chabad Hub", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The central space connecting our programs, people, and daily life." },
-  { name: "Sanctuary Doors — שערי היכל", category: "Sacred Spaces", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The beautiful doors that welcome everyone into the sanctuary." },
-  { name: "Outdoor Terrace & Play Area", category: "Outdoors", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "An outdoor space for families, children, and celebrations." },
-  { name: "Institute of Jewish Learning", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Herman Forbes Charitable Trust", memo: "", image: "", blurb: "" },
-  { name: "Ark (Aron Kodesh)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Morris and Lillian Tabacinic", memo: "", image: "", blurb: "" },
-  { name: "Dairy Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Herman OB\"M and Rebecca Ovadia", memo: "", image: "", blurb: "" },
-  { name: "Wall of Honor Dedication", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the Wall of Honor that recognizes our community's builders." },
-  { name: "Tribute to the Rebbe", category: "Sacred Spaces", amount: 120000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A dedicated tribute honoring the Lubavitcher Rebbe." },
-  { name: "Backup Generator", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Steven and Nicole Cohen", memo: "", image: "", blurb: "" },
-  { name: "Chabad Cares", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting our community outreach and acts of kindness." },
-  { name: "Shomer Yisrael — Security System", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Keeping our community safe with a comprehensive security system." },
-  { name: "Commercial Meat Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Dr. Larry and Alice Ettinger", memo: "", image: "", blurb: "" },
-  { name: "Lift of Life", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Lane and Suzanne Mercer", memo: "", image: "", blurb: "" },
-  { name: "Library / Conference Room", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ms. Judy Goodman", memo: "", image: "", blurb: "" },
-  { name: "The Lifted Path — Accessibility Upgrade", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Making every space welcoming and accessible to all." },
-  { name: "Women's Circle Naming", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Name the home of our women's programming and gatherings." },
-  { name: "Holocaust Memorial", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Abraham Reichbach", memo: "", image: "", blurb: "" },
-  { name: "Commercial Appliances — Meat", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Linda Weiss & The Wein Family", memo: "", image: "", blurb: "" },
-  { name: "Education Office", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Gideon Hecht", memo: "", image: "", blurb: "" },
-  { name: "Memorial Board", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Stuart Nast", memo: "", image: "", blurb: "" },
-  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Evan Cohn and Haris Lender", memo: "", image: "", blurb: "" },
-  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Rosenbaum Family", memo: "", image: "", blurb: "" },
-  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Alon Varsha", memo: "", image: "", blurb: "" },
-  { name: "Rabbi's Study", category: "Leadership", amount: null, status: "dedicated", dedicatedBy: "Mr. Ralph and Ruth Ann Mizrahi", memo: "", image: "", blurb: "" },
-  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ronald and Debbie Berzon", memo: "", image: "", blurb: "" },
+  { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "images/3317_image.jpg", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
+  { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "images/2399_image.jpg", blurb: "" },
+  { name: "The Atrium", category: "Building", amount: null, status: "dedicated", dedicatedBy: "The Alexander Family", memo: "", image: "images/2370_image.jpg", blurb: "" },
+  { name: "Education Wing", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Morris Willner", memo: "", image: "images/2383_image.jpg", blurb: "" },
+  { name: "The Lounge", category: "Community", amount: 400000, status: "available", dedicatedBy: "", memo: "", image: "images/2372_image.jpg", blurb: "A warm, comfortable gathering space for the community to relax and connect." },
+  { name: "Hebrew School Naming", category: "Education", amount: 360000, status: "available", dedicatedBy: "", memo: "", image: "images/2384_image.jpg", blurb: "Name our Hebrew school, where the next generation learns and grows." },
+  { name: "Sky Rooftop Deck", category: "Outdoors", amount: null, status: "dedicated", dedicatedBy: "Dr. Jeffrey and Wendy Miller", memo: "", image: "images/2371_image.jpg", blurb: "" },
+  { name: "The Grand Glass Stairwell", category: "Building", amount: 250000, status: "available", dedicatedBy: "", memo: "", image: "images/3315_image.jpg", blurb: "A striking glass stairwell at the heart of the new building." },
+  { name: "Social Hall", category: "Community", amount: null, status: "dedicated", dedicatedBy: "The Buns Family", memo: "", image: "images/2373_image.jpg", blurb: "" },
+  { name: "Ner Tamid", category: "Sacred Spaces", amount: 200000, status: "available", dedicatedBy: "", memo: "", image: "images/4050_image.jpg", blurb: "The eternal light above the ark, a symbol of God's constant presence." },
+  { name: "The Chabad Hub", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "images/2379_image.jpg", blurb: "The central space connecting our programs, people, and daily life." },
+  { name: "Sanctuary Doors — שערי היכל", category: "Sacred Spaces", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "images/4053_image.jpg", blurb: "The beautiful doors that welcome everyone into the sanctuary." },
+  { name: "Outdoor Terrace & Play Area", category: "Outdoors", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "images/4051_image.jpg", blurb: "An outdoor space for families, children, and celebrations." },
+  { name: "Institute of Jewish Learning", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Herman Forbes Charitable Trust", memo: "", image: "images/2385_image.jpg", blurb: "" },
+  { name: "Ark (Aron Kodesh)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Morris and Lillian Tabacinic", memo: "", image: "images/2400_image.jpg", blurb: "" },
+  { name: "Dairy Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Herman OB\"M and Rebecca Ovadia", memo: "", image: "images/2394_image.jpg", blurb: "" },
+  { name: "Wall of Honor Dedication", category: "Community", amount: 180000, status: "available", dedicatedBy: "", memo: "", image: "images/4049_image.jpg", blurb: "Name the Wall of Honor that recognizes our community's builders." },
+  { name: "Tribute to the Rebbe", category: "Sacred Spaces", amount: 120000, status: "available", dedicatedBy: "", memo: "", image: "images/2374_image.jpg", blurb: "A dedicated tribute honoring the Lubavitcher Rebbe." },
+  { name: "Backup Generator", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Steven and Nicole Cohen", memo: "", image: "images/2391_image.jpg", blurb: "" },
+  { name: "Chabad Cares", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "images/3318_image.jpg", blurb: "Supporting our community outreach and acts of kindness." },
+  { name: "Commercial Meat Kitchen", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Dr. Larry and Alice Ettinger", memo: "", image: "images/2392_image.jpg", blurb: "" },
+  { name: "Shomer Yisrael — Security System", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "images/2390_image.jpg", blurb: "Keeping our community safe with a comprehensive security system." },
+  { name: "Lift of Life", category: "Building & Systems", amount: null, status: "dedicated", dedicatedBy: "Dr. Lane and Suzanne Mercer", memo: "", image: "images/2389_image.jpg", blurb: "" },
+  { name: "Library / Conference Room", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ms. Judy Goodman", memo: "", image: "images/2386_image.jpg", blurb: "" },
+  { name: "The Lifted Path — Accessibility Upgrade", category: "Building & Systems", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "images/4052_image.jpg", blurb: "Making every space welcoming and accessible to all." },
+  { name: "Women's Circle Naming", category: "Community", amount: 100000, status: "available", dedicatedBy: "", memo: "", image: "images/2376_image.jpg", blurb: "Name the home of our women's programming and gatherings." },
+  { name: "Holocaust Memorial", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Abraham Reichbach", memo: "", image: "images/2375_image.jpg", blurb: "" },
+  { name: "Commercial Appliances — Meat", category: "Kitchen", amount: null, status: "dedicated", dedicatedBy: "Linda Weiss & The Wein Family", memo: "", image: "images/2395_image.jpg", blurb: "" },
+  { name: "Education Office", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Mr. Gideon Hecht", memo: "", image: "images/2388_image.jpg", blurb: "" },
+  { name: "Memorial Board", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Stuart Nast", memo: "", image: "images/2401_image.jpg", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Evan Cohn and Haris Lender", memo: "", image: "images/3635_image.jpg", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "The Rosenbaum Family", memo: "", image: "images/3486_image.jpg", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Alon Varsha", memo: "", image: "images/3485_image.jpg", blurb: "" },
+  { name: "Rabbi's Study", category: "Leadership", amount: null, status: "dedicated", dedicatedBy: "Mr. Ralph and Ruth Ann Mizrahi", memo: "", image: "images/2369_image.jpg", blurb: "" },
+  { name: "Classroom", category: "Education", amount: null, status: "dedicated", dedicatedBy: "Ronald and Debbie Berzon", memo: "", image: "images/2387_image.jpg", blurb: "" },
   { name: "Landscaping", category: "Outdoors", amount: 50000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The gardens and greenery that surround our new home." },
-  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Alex and Lena Rogachevsky", memo: "", image: "", blurb: "" },
-  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Kevin Lane", memo: "", image: "", blurb: "" },
-  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Keyvan and Stepanie Kohan", memo: "", image: "", blurb: "" },
-  { name: "Windows to Jerusalem (4)", category: "Windows & Art", amount: 45000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "A set of four windows connecting us to Jerusalem." },
-  { name: "Synagogue Seating", category: "Sacred Spaces", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The seating where our community comes together in prayer." },
-  { name: "Torah Platform (Bima)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Murray and Debby Bevitz", memo: "", image: "", blurb: "" },
-  { name: "Audio Visual System", category: "Building & Systems", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "The sound and visual systems that bring every event to life." },
-  { name: "Window Treatment (Upper Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the upper level." },
-  { name: "Window Treatment (Lower Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Elegant window treatments for the lower level." },
-  { name: "Commercial Appliances — Dairy", category: "Kitchen", amount: 25000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Professional dairy kitchen appliances for every simcha." },
-  { name: "Candle Lighting Station", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
-  { name: "Social Hall Furnishing", category: "Community", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
-  { name: "Mayim Chaim — Living Waters", category: "Sacred Spaces", amount: 18000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Supporting the living waters of our community." },
-  { name: "Washing Station (Kiyor)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "", blurb: "" },
-  { name: "Chazzan's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Michael and Gail Frye", memo: "", image: "", blurb: "" },
-  { name: "Mechitza", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Stanley and Nancy Rosenberg", memo: "", image: "", blurb: "" },
-  { name: "Prayerbook Wall Unit", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Cary and Karen Reich", memo: "", image: "", blurb: "" },
-  { name: "Rabbi's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Dan and Irene Lawson", memo: "", image: "", blurb: "" },
-  { name: "Talis Rack", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Frank and Dale Marsilio", memo: "", image: "", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Alex and Lena Rogachevsky", memo: "", image: "images/3484_image.jpg", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Kevin Lane", memo: "", image: "images/3639_image.jpg", blurb: "" },
+  { name: "Window to Jerusalem", category: "Windows & Art", amount: null, status: "dedicated", dedicatedBy: "Keyvan and Stepanie Kohan", memo: "", image: "images/3483_image.jpg", blurb: "" },
+  { name: "Windows to Jerusalem (4)", category: "Windows & Art", amount: 45000, status: "available", dedicatedBy: "", memo: "", image: "images/3316_image.jpg", blurb: "A set of four windows connecting us to Jerusalem." },
+  { name: "Synagogue Seating", category: "Sacred Spaces", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "images/2403_image.jpg", blurb: "The seating where our community comes together in prayer." },
+  { name: "Torah Platform (Bima)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Murray and Debby Bevitz", memo: "", image: "images/2402_image.jpg", blurb: "" },
+  { name: "Audio Visual System", category: "Building & Systems", amount: 36000, status: "available", dedicatedBy: "", memo: "", image: "images/2396_image.jpg", blurb: "The sound and visual systems that bring every event to life." },
+  { name: "Window Treatment (Upper Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "images/3487_image.jpg", blurb: "Elegant window treatments for the upper level." },
+  { name: "Window Treatment (Lower Level - 2)", category: "Furnishings", amount: 26000, status: "available", dedicatedBy: "", memo: "", image: "images/3488_image.jpg", blurb: "Elegant window treatments for the lower level." },
+  { name: "Commercial Appliances — Dairy", category: "Kitchen", amount: 25000, status: "available", dedicatedBy: "", memo: "", image: "images/2397_image.jpg", blurb: "Professional dairy kitchen appliances for every simcha." },
+  { name: "Candle Lighting Station", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "images/2380_image.jpg", blurb: "" },
+  { name: "Social Hall Furnishing", category: "Community", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "images/2382_image.jpg", blurb: "" },
+  { name: "Mayim Chaim — Living Waters", category: "Sacred Spaces", amount: 18000, status: "available", dedicatedBy: "", memo: "", image: "images/4057_image.jpg", blurb: "Supporting the living waters of our community." },
+  { name: "Washing Station (Kiyor)", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Anthony Cooke", memo: "", image: "images/2381_image.jpg", blurb: "" },
+  { name: "Chazzan's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Michael and Gail Frye", memo: "", image: "images/2406_image.jpg", blurb: "" },
+  { name: "Mechitza", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Stanley and Nancy Rosenberg", memo: "", image: "images/2404_image.jpg", blurb: "" },
+  { name: "Prayerbook Wall Unit", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Mr. Cary and Karen Reich", memo: "", image: "images/2405_image.jpg", blurb: "" },
+  { name: "Rabbi's Podium", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Dan and Irene Lawson", memo: "", image: "images/2408_image.jpg", blurb: "" },
+  { name: "Talis Rack", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Frank and Dale Marsilio", memo: "", image: "images/2407_image.jpg", blurb: "" },
 ];
 
 const DONOR_BOARD = [
@@ -727,8 +728,10 @@ function renderSpaces(){
 /* ---------- SPACE DETAIL SHEET ---------- */
 function openSheet(idx){
   const s=SPACES[idx], isDed=s.status==="dedicated";
-  document.getElementById("sheet-fig").innerHTML=
-    '<span class="fig-no">No. '+pad2(idx+1)+'</span><img src="building-logo.png" alt="" onerror="this.remove()">';
+  const fig = s.image
+    ? '<img class="fig-photo" src="'+s.image+'" alt="'+s.name+'" onerror="this.replaceWith(Object.assign(document.createElement(\'img\'),{className:\'fig-draw\',src:\'building-logo.png\'}))">'
+    : '<img class="fig-draw" src="building-logo.png" alt="" onerror="this.remove()">';
+  document.getElementById("sheet-fig").innerHTML = '<span class="fig-no">No. '+pad2(idx+1)+'</span>' + fig;
   let b='<span class="kicker">'+s.category+'</span><h2>'+s.name+'</h2>'+
     (s.blurb?'<p class="blurb">'+s.blurb+'</p>':'')+
     (s.amount?'<div class="sheet-row"><span class="k">Dedication</span><span class="v">'+money(s.amount)+'</span></div>':'')+
