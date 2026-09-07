@@ -1,52 +1,30 @@
 <!DOCTYPE html>
 <!--
   ============================================================================
-  DEDICATION DASHBOARD  ·  Chabad Center for Jewish Life, St. Petersburg
+  THE CAMPAIGN FOR OUR NEW HOME  ·  Chabad Center for Jewish Life, St. Petersburg
   ============================================================================
-  WHAT THIS FILE IS
-  -----------------
-  One self-contained web page (design + content + a little JavaScript, all in
-  this single file) built to run on the lobby tablet of the new building.
+  A capital-campaign "donor book" for the new building, built to run on the
+  lobby touchscreen and read well on phones and desktops. One self-contained
+  file: an editorial architectural design (serif headlines, thin rules, ivory
+  space) with a highly legible, large-target touch interface.
 
-  A visitor walks in, taps the screen, and can explore:
-    • which spaces in the building have already been dedicated (and by whom),
-    • which spaces are still available (with pictures + the dedication amount),
-    • the Donor Board levels ($1,800 Chai up to the $2,500,000 building naming),
-    • and an overview of the whole campaign.
-
-  HOW TO PUT IT ON THE TABLET
-  ---------------------------
-  This page is hosted on GitHub Pages. Once pushed, open it on the tablet at:
-      https://mendel-ctrl.github.io/dedication/
-  Then use the tablet's browser "Add to Home Screen" / kiosk/guided-access
-  mode so it fills the whole screen and can't be closed by a visitor.
-
-  ============================================================================
-  WHERE TO EDIT THINGS  (this is the important part for you!)
-  ============================================================================
-  You almost never need to touch the design. To change the CONTENT, scroll
-  down to the big section titled:
-
-        >>>>>  EDIT YOUR CONTENT HERE  <<<<<
-
-  There you'll find three simple lists you can edit like filling in a form:
-     1. CAMPAIGN   – the overall goal + a headline number or two
-     2. SPACES     – every dedicatable space (name, price, photo, who took it)
-     3. DONOR_BOARD – the giving levels and the names on each level
-
-  To recolor the whole page, edit the colors in the ":root" block in <style>.
+  WHERE TO EDIT CONTENT:  scroll to  >>>>> EDIT YOUR CONTENT HERE <<<<<
+    1. CAMPAIGN       – goal + amount raised
+    2. DONATE / FORM  – the Web3Forms key that emails the Rabbi
+    3. SPACES         – every dedication (name, price, who dedicated it)
+    4. DONOR_BOARD    – the giving levels and the names on each
+  Colors + type live in the :root block in <style>.
   ============================================================================
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#3d2b1f">
-<title>Dedication Opportunities · Chabad St. Petersburg</title>
-<meta name="description" content="Explore dedication and naming opportunities in the new Chabad Center for Jewish Life, St. Petersburg.">
+<meta name="theme-color" content="#4A3020">
+<title>The Campaign for Our New Home · Chabad St. Petersburg</title>
+<meta name="description" content="Dedication and naming opportunities in the new Chabad Center for Jewish Life, St. Petersburg — a permanent capital campaign.">
 
-<!-- Offline / "Add to Home Screen" support so the page runs full-screen on the
-     iPad and keeps working even if the WiFi drops. See sw.js and manifest.json. -->
+<!-- Offline / Add-to-Home-Screen support for the kiosk (see sw.js, manifest.json) -->
 <link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -54,527 +32,512 @@
 <meta name="apple-mobile-web-app-title" content="Dedications">
 <link rel="apple-touch-icon" href="icon-180.png">
 
-<!-- Fonts: Playfair Display (elegant serif) + Poppins (clean sans).
-     These match the look of your other Chabad SP pages. -->
+<!-- Type: Cormorant Garamond (editorial serif voice) + Inter (legible kiosk sans) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   /* =========================================================================
-     COLORS + FONTS  ·  change a value here and it updates everywhere
-     Warm "cream + walnut wood" palette to match the new building.
+     1. THE SYSTEM  ·  three colors, two typefaces
      ========================================================================= */
   :root {
-    --paper:      #FBF7EF;   /* main page background – warm cream */
-    --cream:      #F4EBDA;   /* soft cream – cards / panels */
-    --cream-2:    #EADDC6;   /* deeper cream – section bands */
-    --sand:       #E0CFB0;   /* sandy edge tone */
+    --espresso: #4A3020;   /* authority — text, dark bands */
+    --ivory:    #F5EFE3;   /* warmth, breathing room — the page */
+    --gold:     #B88A3E;   /* reserved accent — meaningful rules, top honors */
 
-    --walnut:     #3D2B1F;   /* deep espresso walnut – headers/text */
-    --walnut-2:   #58402F;   /* mid walnut */
-    --walnut-3:   #7A5C43;   /* light walnut */
-    --wood:       #6B4A31;   /* wood-grain brown */
+    /* tones derived only from the three hues (opacity of espresso on ivory) */
+    --soft:   rgba(74,48,32,.62);   /* quiet supporting copy */
+    --faint:  rgba(74,48,32,.42);   /* very quiet */
+    --rule:   rgba(74,48,32,.20);   /* thin hairline */
+    --rule-2: rgba(74,48,32,.34);   /* stronger hairline */
+    --wash:   rgba(74,48,32,.045);  /* barely-there field tint */
+    --on-dark:      #F5EFE3;
+    --on-dark-soft: rgba(245,239,227,.66);
 
-    --gold:       #B0894A;   /* warm brass / gold – the accent color */
-    --gold-soft:  #C9A25C;   /* brighter gold for highlights */
-    --gold-tint:  #F0E4CC;   /* pale gold wash */
-
-    --ink:        #2A211A;   /* near-black body text */
-    --muted:      #766753;   /* soft secondary text (darkened for readability) */
-    --line:       rgba(61,43,31,.14);   /* hairline dividers */
-    --line-2:     rgba(61,43,31,.28);
-
-    --available:  #7C8B5A;   /* muted olive – "available" status */
-    --dedicated:  #B0894A;   /* gold – "dedicated" status */
-
-    --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
-    /* Kiosk-optimized UI font: Inter (crisp on touchscreens), falling back to
-       the iPad's own SF Pro system font, then Roboto — all sharp at a glance. */
+    --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
     --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-    --shadow: 0 18px 40px -22px rgba(61,43,31,.45);
-    --radius: 18px;
+    --edge: clamp(20px, 5vw, 88px);   /* page side margin */
+    --maxw: 1320px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
 
-  /* On a kiosk we don't want visitors accidentally selecting text or
-     triggering the browser's long-press menu. */
   body {
     font-family: var(--sans);
-    color: var(--ink);
-    background:
-      radial-gradient(1200px 800px at 80% -10%, #FFFDF8 0%, transparent 60%),
-      linear-gradient(180deg, var(--paper) 0%, #F6EFE2 100%);
-    line-height: 1.55;
-    -webkit-user-select: none;
-    user-select: none;
+    color: var(--espresso);
+    background: var(--ivory);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-user-select: none; user-select: none;
     overflow-x: hidden;
-    min-height: 100vh;
   }
-
   img { max-width: 100%; display: block; }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  .serif { font-family: var(--serif); }
+  ::selection { background: var(--gold); color: #fff; }
 
-  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 clamp(18px, 3vw, 44px); }
+  .shell { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--edge); }
 
-  .serif  { font-family: var(--serif); }
-  .italic { font-style: italic; }
+  /* Small uppercase sans label — the only "category" treatment on the site */
+  .kicker {
+    font-family: var(--sans); font-size: clamp(11px,1vw,12.5px); font-weight: 600;
+    letter-spacing: .26em; text-transform: uppercase; color: var(--gold);
+  }
+  .kicker.muted { color: var(--faint); }
 
-  .eyebrow {
-    font-size: clamp(11px, 1.1vw, 13px);
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--gold);
+  /* Thin rules — the primary structural device, replacing cards */
+  .rule    { border: 0; border-top: 1px solid var(--rule); }
+  .rule-2  { border: 0; border-top: 1px solid var(--rule-2); }
+  .rule-gold { border: 0; border-top: 1.5px solid var(--gold); }
+
+  /* =========================================================================
+     2. BUTTONS  ·  squared (modest 2px), large touch targets, high contrast
+     ========================================================================= */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 54px; padding: 15px 30px; border-radius: 2px;
+    font-family: var(--sans); font-weight: 600; font-size: clamp(13px,1.3vw,15px);
+    letter-spacing: .12em; text-transform: uppercase; text-decoration: none;
+    transition: background .16s, color .16s, border-color .16s;
+  }
+  .btn-primary { background: var(--espresso); color: var(--ivory); }
+  .btn-primary:active { background: #3a2519; }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-gold:active { filter: brightness(.94); }
+  .btn-ghost { background: transparent; color: var(--espresso); border: 1.5px solid var(--rule-2); }
+  .btn-ghost:active { border-color: var(--espresso); }
+  .btn-onDark { background: var(--gold); color: #fff; }
+  .btn-line { /* text-only editorial link-button */
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px;
+    font-family: var(--sans); font-weight: 600; font-size: 13px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--espresso); border-bottom: 1.5px solid var(--gold);
+    padding: 2px 0; background: none;
   }
 
   /* =========================================================================
-     TOP HEADER BAR
+     3. CHROME  ·  masthead + nav (sticky). Squared, institutional.
      ========================================================================= */
-  header.topbar {
-    position: sticky; top: 0; z-index: 40;
-    background: rgba(61,43,31,.96);
-    color: var(--cream);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid rgba(201,162,92,.35);
+  .chrome { position: sticky; top: 0; z-index: 60; background: var(--ivory); }
+
+  .masthead { background: var(--espresso); color: var(--ivory); }
+  .masthead .shell { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 84px; padding-top: 12px; padding-bottom: 12px; }
+  .mh-brand { display: flex; align-items: center; gap: 18px; min-width: 0; }
+  .mh-logo { height: 54px; width: auto; max-width: 240px; object-fit: contain; flex-shrink: 0; }
+  .mh-mark { /* fallback if logo image missing */
+    width: 46px; height: 46px; flex-shrink: 0; display: grid; place-items: center;
+    border: 1px solid var(--gold); color: var(--gold); font-family: var(--serif); font-size: 26px; font-weight: 600;
   }
-  .topbar .wrap {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; padding-top: 14px; padding-bottom: 14px;
+  .mh-word .name { font-family: var(--serif); font-size: clamp(19px,2vw,25px); font-weight: 600; letter-spacing: .02em; line-height: 1.05; color: #fff; }
+  .mh-word .sub  { font-size: clamp(9.5px,1vw,11px); letter-spacing: .24em; text-transform: uppercase; color: var(--gold); margin-top: 4px; }
+  .mh-right { display: flex; align-items: center; gap: clamp(16px,2.4vw,34px); flex-shrink: 0; }
+  .mh-clock { text-align: right; line-height: 1.2; }
+  .mh-clock b { display: block; font-family: var(--serif); font-size: 19px; font-weight: 500; color: #fff; }
+  .mh-clock span { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--on-dark-soft); }
+
+  nav.nav { border-bottom: 1px solid var(--rule-2); background: var(--ivory); }
+  nav.nav .shell { display: flex; gap: clamp(6px,2vw,40px); align-items: stretch; }
+  .nav-tab {
+    position: relative; min-height: 58px; padding: 18px 4px 16px; background: none;
+    font-family: var(--sans); font-weight: 600; font-size: clamp(12px,1.3vw,14px);
+    letter-spacing: .16em; text-transform: uppercase; color: var(--faint); white-space: nowrap;
+    transition: color .16s;
   }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  /* Building logo (white line-art PNG) on the walnut header bar. */
-  .brand-logo { height: 58px; width: auto; max-width: 340px; object-fit: contain; }
-  .brand .mark {
-    width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
-    display: grid; place-items: center;
-    background: linear-gradient(145deg, var(--gold-soft), var(--gold));
-    color: var(--walnut); font-family: var(--serif); font-weight: 700; font-size: 24px;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
-  }
-  .brand .txt b { display: block; font-family: var(--serif); font-size: clamp(16px,1.7vw,20px); font-weight: 600; letter-spacing: .01em; color: #fff; }
-  .brand .txt span { display: block; font-size: clamp(10px,1vw,12px); letter-spacing: .18em; text-transform: uppercase; color: var(--gold-soft); }
-  .topbar .clock { text-align: right; font-size: 13px; color: rgba(244,235,218,.75); }
-  .topbar .clock b { display: block; font-family: var(--serif); font-size: 20px; color: #fff; font-weight: 500; }
+  .nav-tab:active { color: var(--espresso); }
+  .nav-tab.active { color: var(--espresso); }
+  .nav-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); }
+
+  .view { display: none; }
+  .view.active { display: block; animation: rise .5s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
   /* =========================================================================
-     TAB NAVIGATION  (Overview / Building Spaces / Donor Board)
+     4. OVERVIEW  ·  editorial opening spread (asymmetric, drawing bleeds right)
      ========================================================================= */
-  nav.tabs { position: sticky; top: 74px; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--line); }
-  nav.tabs .wrap { display: flex; gap: 6px; padding-top: 8px; padding-bottom: 0; overflow-x: auto; }
-  .tab {
-    position: relative; padding: 19px 26px 17px; font-size: clamp(15px,1.5vw,18px);
-    min-height: 56px; font-weight: 600; color: var(--muted); white-space: nowrap; border-radius: 12px 12px 0 0;
-    transition: color .2s;
+  .opening { position: relative; padding: clamp(40px,7vw,96px) 0 clamp(28px,4vw,56px); overflow: hidden; }
+  .opening .shell { position: relative; z-index: 2; }
+  .opening-head { max-width: 17ch; }
+  .opening h1 {
+    font-family: var(--serif); font-weight: 600; color: var(--espresso);
+    font-size: clamp(52px, 9.2vw, 132px); line-height: .96; letter-spacing: -.015em; margin: 18px 0 0;
   }
-  .tab:hover { color: var(--walnut-2); }
-  .tab.active { color: var(--walnut); }
-  .tab.active::after {
-    content: ''; position: absolute; left: 18px; right: 18px; bottom: 0; height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-soft)); border-radius: 3px 3px 0 0;
+  .opening h1 em { font-style: italic; color: var(--gold); }
+  .opening-lead { max-width: 46ch; margin-top: 26px; color: var(--soft); font-size: clamp(15px,1.7vw,19px); line-height: 1.65; }
+  /* the architectural drawing, large, bleeding off the right edge */
+  .opening-draw {
+    position: absolute; z-index: 1; right: -6%; top: 50%; transform: translateY(-46%);
+    width: min(58%, 760px); opacity: .9; pointer-events: none;
+  }
+  @media (max-width: 900px) {
+    .opening-draw { position: static; transform: none; width: 94%; margin: 20px auto 12px; opacity: .92; }
+    .opening-head { max-width: none; }
+  }
+  /* Mobile masthead: simplify so nothing collides; keep a big Donate target */
+  @media (max-width: 720px) {
+    .masthead .shell { flex-wrap: wrap; min-height: 0; gap: 12px 16px; padding-top: 14px; padding-bottom: 14px; }
+    .mh-clock { display: none; }
+    .mh-brand { flex: 1 1 auto; gap: 13px; }
+    .mh-logo { height: 42px; }
+    .mh-word .name { font-size: 17px; }
+    .mh-word .sub { display: none; }
+    .mh-right { flex: 1 1 100%; }
+    .mh-right .btn { width: 100%; }
+    nav.nav .shell { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   }
 
-  .view { display: none; animation: fade .45s ease; }
-  .view.active { display: block; }
-  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  /* Campaign standing — typographic, not a card */
+  .standing-wrap { padding: clamp(30px,5vw,64px) 0; border-top: 1px solid var(--rule); }
+  .standing-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(28px,5vw,80px); align-items: end; }
+  @media (max-width: 820px){ .standing-grid { grid-template-columns: 1fr; gap: 34px; } }
+  .raised-num { font-family: var(--serif); font-weight: 600; font-size: clamp(52px,8vw,104px); line-height: .9; letter-spacing: -.01em; }
+  .raised-of { margin-top: 12px; color: var(--soft); font-size: clamp(14px,1.5vw,17px); }
+  .raised-of b { color: var(--espresso); font-weight: 600; }
+  .progress { margin-top: 22px; }
+  .progress-track { height: 3px; background: var(--rule-2); position: relative; }
+  .progress-fill { position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--gold); transition: width 1.5s cubic-bezier(.2,.8,.2,1); }
+  .progress-legend { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .progress-legend b { color: var(--gold); font-weight: 700; }
+  /* standing figures, divided by thin rules — no boxes */
+  .standing { display: flex; flex-wrap: wrap; }
+  .standing-item { padding: 6px clamp(18px,3vw,40px); }
+  .standing-item + .standing-item { border-left: 1px solid var(--rule); }
+  .standing-item:first-child { padding-left: 0; }
+  .standing-num { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(38px,5vw,60px); line-height: 1; }
+  .standing-lbl { display: block; margin-top: 8px; font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--soft); }
 
-  section { padding: clamp(26px, 4vw, 52px) 0; }
+  /* Building-naming feature — full-bleed espresso band, drawing bleeding right */
+  .naming { position: relative; background: var(--espresso); color: var(--ivory); margin-top: clamp(30px,5vw,60px); overflow: hidden; }
+  .naming .shell { position: relative; z-index: 2; padding-top: clamp(46px,7vw,96px); padding-bottom: clamp(46px,7vw,96px); }
+  .naming-inner { max-width: 30ch; }
+  .naming h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(38px,6vw,84px); line-height: .98; color: #fff; margin: 16px 0 0; }
+  .naming p { color: var(--on-dark-soft); font-size: clamp(14px,1.6vw,18px); line-height: 1.6; margin-top: 20px; max-width: 40ch; }
+  .naming-amt { font-family: var(--serif); font-weight: 600; font-size: clamp(34px,5vw,56px); color: var(--gold); margin: 26px 0 6px; }
+  .naming-avail { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--on-dark-soft); }
+  .naming-cta { margin-top: 30px; }
+  .naming-draw { position: absolute; z-index: 1; right: -4%; bottom: -8%; width: min(52%, 680px); opacity: .5; pointer-events: none; }
+  @media (max-width: 900px){ .naming-draw { opacity: .22; width: 78%; right: -8%; bottom: -6%; } .naming-inner { max-width: none; } }
 
   /* =========================================================================
-     OVERVIEW  ·  hero + big progress + stat tiles
+     5. SECTION HEADERS  ·  shared editorial header (asymmetric)
      ========================================================================= */
-  .hero { text-align: center; padding-bottom: clamp(18px,2.5vw,30px); }
-  .hero h1 {
-    font-family: var(--serif); font-weight: 600; line-height: 1.05;
-    font-size: clamp(34px, 5.6vw, 68px); color: var(--walnut); letter-spacing: -.01em; margin: 12px auto 14px; max-width: 15ch;
-  }
-  .hero h1 em { font-style: italic; color: var(--gold); }
-  .hero p.lead { max-width: 60ch; margin: 0 auto; color: var(--walnut-2); font-size: clamp(15px,1.7vw,20px); }
-
-  /* Progress card */
-  .progress-card {
-    background: linear-gradient(160deg, var(--walnut) 0%, #2E2016 100%);
-    color: var(--cream); border-radius: 26px; padding: clamp(24px,3.5vw,44px);
-    box-shadow: var(--shadow); position: relative; overflow: hidden; margin-top: 8px;
-    border: 1px solid rgba(201,162,92,.3);
-  }
-  .progress-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(600px 300px at 90% 0%, rgba(201,162,92,.16), transparent 70%);
-    pointer-events: none;
-  }
-  .progress-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px; position: relative; }
-  .progress-top .raised { font-family: var(--serif); font-size: clamp(38px,6vw,74px); font-weight: 600; line-height: 1; color: #fff; }
-  .progress-top .raised small { display: block; font-family: var(--sans); font-size: clamp(11px,1.1vw,13px); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-soft); font-weight: 600; margin-bottom: 6px; }
-  .progress-top .goal { text-align: right; color: rgba(244,235,218,.8); font-size: clamp(13px,1.3vw,16px); }
-  .progress-top .goal b { font-family: var(--serif); color: #fff; font-size: clamp(20px,2.6vw,30px); font-weight: 500; display: block; }
-
-  .bar { height: 18px; border-radius: 20px; background: rgba(255,255,255,.12); margin: 22px 0 12px; overflow: hidden; position: relative; }
-  .bar > span { display: block; height: 100%; width: 0; border-radius: 20px; background: linear-gradient(90deg, var(--gold), var(--gold-soft)); transition: width 1.6s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 18px rgba(201,162,92,.5); }
-  .bar-labels { display: flex; justify-content: space-between; font-size: 13px; color: rgba(244,235,218,.75); }
-  .bar-labels b { color: var(--gold-soft); }
-
-  /* Stat tiles */
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 26px; }
-  .stat {
-    background: var(--cream); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 22px 24px; text-align: center;
-  }
-  .stat .num { font-family: var(--serif); font-size: clamp(30px,3.6vw,46px); font-weight: 600; color: var(--walnut); line-height: 1; }
-  .stat .num.gold { color: var(--gold); }
-  .stat .lbl { margin-top: 8px; font-size: clamp(11px,1.1vw,13px); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-
-  /* Building-naming feature banner */
-  .naming {
-    margin-top: 30px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 0;
-    border-radius: 26px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line);
-  }
-  .naming .left { background: var(--cream); padding: clamp(26px,3.4vw,46px); display: flex; flex-direction: column; justify-content: center; }
-  .naming .right {
-    background: linear-gradient(155deg, #6B4A31, #3D2B1F); color: var(--cream);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-    padding: clamp(26px,3.4vw,46px); position: relative;
-  }
-  .naming .right::after { content: ''; position: absolute; inset: 14px; border: 1px solid rgba(201,162,92,.4); border-radius: 16px; pointer-events: none; }
-  .naming h2 { font-family: var(--serif); font-size: clamp(26px,3.2vw,40px); color: var(--walnut); font-weight: 600; line-height: 1.1; margin: 10px 0 12px; }
-  .naming p { color: var(--walnut-2); font-size: clamp(14px,1.5vw,17px); max-width: 42ch; }
-  .naming .price { font-family: var(--serif); font-size: clamp(40px,6vw,70px); font-weight: 700; color: #fff; line-height: 1; }
-  .naming .price small { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-soft); font-weight: 600; margin-bottom: 10px; }
-  .naming .avail-pill { margin-top: 16px; }
-
-  /* =========================================================================
-     SHARED: section heading
-     ========================================================================= */
-  .sec-head { text-align: center; margin-bottom: clamp(22px,3vw,38px); }
-  .sec-head h2 { font-family: var(--serif); font-size: clamp(28px,4vw,50px); font-weight: 600; color: var(--walnut); line-height: 1.05; margin: 10px 0 8px; }
+  .section { padding: clamp(44px,7vw,104px) 0; }
+  .sec-head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding-bottom: clamp(24px,3vw,40px); }
+  @media (max-width: 760px){ .sec-head { grid-template-columns: 1fr; } }
+  .sec-head h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(36px,6vw,76px); line-height: .98; letter-spacing: -.01em; margin-top: 14px; max-width: 16ch; }
   .sec-head h2 em { font-style: italic; color: var(--gold); }
-  .sec-head p { color: var(--walnut-2); max-width: 58ch; margin: 0 auto; font-size: clamp(14px,1.5vw,18px); }
-
-  /* Status pill */
-  .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 6px 13px; border-radius: 999px; }
-  .pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-  .pill.available { color: var(--available); background: rgba(124,139,90,.14); }
-  .pill.dedicated { color: var(--dedicated); background: rgba(176,137,74,.15); }
+  .sec-head .sec-note { max-width: 34ch; color: var(--soft); font-size: clamp(14px,1.5vw,17px); line-height: 1.6; padding-bottom: 6px; }
 
   /* =========================================================================
-     FILTER CHIPS  (All / Available / Dedicated)
+     6. BUILDING SPACES  ·  an architectural catalog / index (no cards)
      ========================================================================= */
-  .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 28px; }
-  .chip {
-    display: inline-flex; align-items: center; min-height: 48px;
-    padding: 12px 26px; border-radius: 999px; font-size: clamp(15px,1.5vw,17px); font-weight: 600;
-    background: var(--cream); color: var(--walnut-2); border: 1px solid var(--line);
-    transition: all .18s;
+  .filters { display: flex; flex-wrap: wrap; gap: clamp(18px,4vw,44px); align-items: center; padding: 6px 0 4px; border-top: 1px solid var(--rule-2); border-bottom: 1px solid var(--rule); }
+  .filter {
+    min-height: 52px; padding: 12px 2px; background: none; font-family: var(--sans);
+    font-weight: 600; font-size: clamp(12px,1.3vw,14px); letter-spacing: .16em; text-transform: uppercase;
+    color: var(--faint); position: relative; transition: color .16s;
   }
-  .chip:hover { border-color: var(--gold); }
-  .chip.active { background: var(--walnut); color: var(--cream); border-color: var(--walnut); }
-  .chip .count { opacity: .6; font-weight: 500; margin-left: 4px; }
+  .filter .fcount { font-family: var(--serif); font-weight: 600; letter-spacing: 0; font-size: 1.35em; margin-left: 8px; text-transform: none; }
+  .filter:active { color: var(--espresso); }
+  .filter.active { color: var(--espresso); }
+  .filter.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--gold); }
+
+  .index { border-top: 1px solid var(--rule); }
+  .entry {
+    display: grid; grid-template-columns: clamp(44px,5vw,84px) 1fr auto; align-items: baseline;
+    gap: clamp(14px,3vw,40px); width: 100%; text-align: left;
+    padding: clamp(20px,2.6vw,30px) 0; border-bottom: 1px solid var(--rule); background: none;
+    transition: background .16s;
+  }
+  .entry:hover { background: var(--wash); }
+  .entry-no { font-family: var(--sans); font-weight: 600; font-size: 13px; letter-spacing: .08em; color: var(--faint); padding-top: 8px; }
+  .entry-name { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(24px,3.4vw,40px); line-height: 1.04; letter-spacing: -.005em; }
+  .entry-cat { display: block; margin-top: 7px; font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--soft); }
+  .entry-tail { text-align: right; white-space: nowrap; padding-left: 8px; }
+  .entry-price { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(22px,2.8vw,32px); line-height: 1; }
+  .entry-take { display: block; margin-top: 9px; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+  .entry.is-ded .entry-name { color: var(--soft); font-weight: 500; }
+  .entry-ded { display: block; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--faint); }
+  .entry-by  { display: block; margin-top: 8px; font-family: var(--serif); font-style: italic; font-size: clamp(16px,1.9vw,21px); color: var(--espresso); }
+  .index-empty { padding: 60px 0; text-align: center; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--faint); }
+
+  /* a full-width architectural drawing composition inside the catalog */
+  .catalog-plate { position: relative; margin: clamp(30px,5vw,60px) 0; padding: clamp(30px,4vw,56px) 0; border-top: 1px solid var(--rule); overflow: hidden; }
+  .catalog-plate .plate-draw { width: min(64%, 640px); opacity: .5; }
+  .catalog-plate .plate-cap { position: absolute; right: 0; bottom: clamp(30px,4vw,56px); max-width: 22ch; text-align: right; }
+  .catalog-plate .plate-cap .kicker { display: block; margin-bottom: 8px; }
+  .catalog-plate .plate-cap p { font-family: var(--serif); font-style: italic; font-size: clamp(18px,2.4vw,28px); color: var(--soft); line-height: 1.25; }
+  @media (max-width: 720px){ .catalog-plate .plate-cap { position: static; text-align: left; max-width: none; margin-top: 20px; } .catalog-plate .plate-draw { width: 88%; } }
 
   /* =========================================================================
-     SPACES GRID + CARDS
+     7. DONOR BOARD  ·  a permanent recognition program (typographic, no pills)
      ========================================================================= */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: clamp(16px,2vw,26px); }
+  .board { }
+  .level { padding: clamp(30px,5vw,68px) 0; border-top: 1px solid var(--rule); }
+  .level-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .level-name { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; line-height: .95; }
+  .level-amt { font-family: var(--sans); font-size: clamp(12px,1.4vw,15px); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+  .level hr { margin: clamp(18px,2.4vw,30px) 0 clamp(20px,2.6vw,32px); }
+  .level-names { }
+  .dn { display: block; font-family: var(--serif); color: var(--espresso); line-height: 1.55; break-inside: avoid; }
+  .dn--open { font-style: italic; color: var(--faint); }
 
-  .card {
-    background: var(--cream); border: 1px solid var(--line); border-radius: var(--radius);
-    overflow: hidden; text-align: left; display: flex; flex-direction: column;
-    transition: transform .18s ease, box-shadow .18s ease, border-color .18s;
-    box-shadow: 0 2px 0 rgba(61,43,31,.03);
-  }
-  .card:hover, .card:active { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--gold); }
+  /* prestige hierarchy: scale + space + columns step down per level */
+  .level--lead      { padding-top: clamp(40px,6vw,90px); }
+  .level--lead .level-name { font-size: clamp(52px,8vw,104px); }
+  .level--lead .level-names { columns: 1; margin-top: 6px; }
+  .level--lead .dn  { font-size: clamp(30px,4.6vw,58px); font-weight: 600; line-height: 1.15; }
 
-  /* The image area. If a real photo URL is given it shows the photo;
-     otherwise it shows an elegant wood-tone tile with a serif monogram. */
-  .card .thumb {
-    aspect-ratio: 16/10; position: relative; overflow: hidden;
-    background: linear-gradient(150deg, var(--wood), var(--walnut));
-    display: grid; place-items: center;
-  }
-  .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .card .thumb .mono {
-    font-family: var(--serif); font-size: 64px; font-weight: 600; color: rgba(240,228,204,.9);
-    text-shadow: 0 2px 12px rgba(0,0,0,.3);
-  }
-  .card .thumb::after { /* subtle inner frame */
-    content: ''; position: absolute; inset: 10px; border: 1px solid rgba(240,228,204,.25); border-radius: 10px; pointer-events: none;
-  }
-  .card .thumb .cat { position: absolute; top: 12px; left: 12px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--walnut); background: rgba(244,235,218,.92); padding: 5px 11px; border-radius: 999px; }
-  .card .thumb .status { position: absolute; top: 12px; right: 12px; }
+  .level--pillar .level-name { font-size: clamp(38px,5.2vw,64px); }
+  .level--pillar .level-names { columns: 2; column-gap: clamp(30px,5vw,64px); }
+  .level--pillar .dn { font-size: clamp(21px,2.6vw,30px); padding: 4px 0; }
 
-  .card .body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
-  .card .body h3 { font-family: var(--serif); font-size: clamp(18px,1.9vw,23px); font-weight: 600; color: var(--walnut); line-height: 1.15; }
-  .card .body .who { font-size: 13.5px; color: var(--muted); font-style: italic; margin-top: 5px; min-height: 1.2em; }
-  .card .foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 16px; }
-  .card .price { font-family: var(--serif); font-size: clamp(20px,2.2vw,26px); font-weight: 600; color: var(--walnut); }
-  .card .price.taken { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; opacity: .7; font-size: 18px; }
-  .card .cta { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
-  .card.is-dedicated .cta { color: var(--muted); }
+  .level--visionary .level-name { font-size: clamp(32px,4.4vw,52px); }
+  .level--visionary .level-names { columns: 3; column-gap: clamp(26px,4vw,52px); }
+  .level--visionary .dn { font-size: clamp(18px,2.1vw,24px); padding: 3px 0; }
 
-  .empty { text-align: center; color: var(--muted); padding: 60px 20px; font-style: italic; font-family: var(--serif); font-size: 20px; }
+  .level--std .level-name { font-size: clamp(27px,3.6vw,42px); }
+  .level--std .level-names { columns: 4; column-gap: clamp(22px,3vw,44px); }
+  .level--std .dn { font-size: clamp(16px,1.8vw,20px); padding: 2px 0; color: var(--espresso); }
+
+  @media (max-width: 900px){
+    .level--visionary .level-names { columns: 2; }
+    .level--std .level-names { columns: 2; }
+  }
+  @media (max-width: 560px){
+    .level--pillar .level-names, .level--visionary .level-names, .level--std .level-names { columns: 1; }
+  }
+
+  .board-note { padding: clamp(30px,5vw,60px) 0 0; border-top: 1px solid var(--rule); margin-top: clamp(20px,3vw,40px); max-width: 60ch; color: var(--soft); font-size: 14.5px; line-height: 1.6; }
 
   /* =========================================================================
-     DETAIL MODAL  (opens when you tap a space)
+     8. CLOSING / FOOTER  ·  espresso, invitation
      ========================================================================= */
-  .modal-back {
-    position: fixed; inset: 0; z-index: 100; background: rgba(42,33,26,.6); backdrop-filter: blur(4px);
-    display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;
-  }
-  .modal-back.open { display: flex; animation: fade .25s ease; }
-  .modal {
-    background: var(--paper); border-radius: 24px; max-width: 920px; width: 100%; overflow: hidden;
-    box-shadow: 0 40px 80px -20px rgba(0,0,0,.5); display: grid; grid-template-columns: 1fr 1fr; max-height: 92vh;
-  }
-  .modal .m-img { position: relative; background: linear-gradient(150deg, var(--wood), var(--walnut)); min-height: 320px; display: grid; place-items: center; }
-  .modal .m-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-  .modal .m-img .mono { font-family: var(--serif); font-size: 120px; color: rgba(240,228,204,.9); }
-  .modal .m-body { padding: clamp(24px,3vw,40px); overflow-y: auto; }
-  .modal .m-body .cat { color: var(--gold); }
-  .modal .m-body h2 { font-family: var(--serif); font-size: clamp(26px,3.2vw,40px); font-weight: 600; color: var(--walnut); line-height: 1.1; margin: 8px 0 14px; }
-  .modal .m-body .blurb { color: var(--walnut-2); font-size: clamp(14px,1.6vw,17px); margin-bottom: 20px; }
-  .modal .m-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-top: 1px solid var(--line); }
-  .modal .m-row .k { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-  .modal .m-row .v { font-family: var(--serif); font-size: clamp(20px,2.4vw,28px); color: var(--walnut); font-weight: 600; }
-  .modal .dedicated-note { background: var(--gold-tint); border: 1px solid rgba(176,137,74,.3); border-radius: 14px; padding: 18px 20px; margin-top: 8px; }
-  .modal .dedicated-note .k { color: var(--gold); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; }
-  .modal .dedicated-note .name { font-family: var(--serif); font-size: clamp(20px,2.4vw,28px); color: var(--walnut); font-weight: 600; margin-top: 4px; }
-  .modal .dedicated-note .memo { font-style: italic; color: var(--walnut-2); margin-top: 6px; font-size: 15px; }
-  .modal .m-cta { margin-top: 22px; }
-  .m-close { position: absolute; top: 14px; right: 14px; z-index: 5; width: 52px; height: 52px; border-radius: 50%; background: rgba(244,235,218,.95); color: var(--walnut); font-size: 26px; display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+  footer.close { background: var(--espresso); color: var(--ivory); border-top: 2px solid var(--gold); }
+  footer.close .shell { padding: clamp(48px,7vw,110px) var(--edge); }
+  footer.close .kicker { color: var(--gold); }
+  footer.close h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(38px,6vw,80px); line-height: .98; color: #fff; margin: 16px 0 0; max-width: 16ch; }
+  footer.close p { color: var(--on-dark-soft); font-size: clamp(15px,1.7vw,19px); line-height: 1.6; margin: 22px 0 0; max-width: 46ch; }
+  .close-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 34px; }
+  .close-meta { margin-top: clamp(40px,6vw,72px); padding-top: 26px; border-top: 1px solid rgba(245,239,227,.18); display: flex; flex-wrap: wrap; gap: 10px 40px; align-items: center; }
+  .close-meta a { color: var(--gold); text-decoration: none; font-weight: 600; letter-spacing: .04em; }
+  .close-meta .addr { color: var(--on-dark-soft); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; margin-left: auto; }
 
   /* =========================================================================
-     DONATE / INTEREST FORM POPUP  (emails the Rabbi)
+     9. SPACE DETAIL — full-height editorial overlay (squared)
      ========================================================================= */
-  .interest { position: relative; background: var(--paper); border-radius: 24px; max-width: 560px; width: 100%; padding: clamp(26px,3.4vw,42px); box-shadow: 0 40px 80px -20px rgba(0,0,0,.5); }
-  .interest h2 { font-family: var(--serif); font-size: clamp(24px,3vw,34px); font-weight: 600; color: var(--walnut); line-height: 1.12; margin: 8px 0 8px; }
-  .interest .i-sub { color: var(--walnut-2); font-size: clamp(14px,1.6vw,17px); margin-bottom: 22px; }
-  .interest form { display: flex; flex-direction: column; gap: 16px; }
-  .interest label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-  .interest input[type="text"], .interest input:not([type]), .interest textarea {
-    font-family: var(--sans); font-size: 17px; color: var(--ink); background: var(--cream);
-    border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 16px; min-height: 52px; width: 100%;
+  .overlay { position: fixed; inset: 0; z-index: 100; background: rgba(37,24,15,.72); display: none; }
+  .overlay.open { display: block; animation: fade .22s ease; }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+  .sheet {
+    position: absolute; top: 0; right: 0; bottom: 0; width: min(680px, 100%); background: var(--ivory);
+    display: grid; grid-template-rows: auto 1fr; overflow: hidden; animation: slidein .3s cubic-bezier(.2,.8,.2,1);
+    border-left: 1px solid var(--rule-2);
+  }
+  @keyframes slidein { from { transform: translateX(30px); opacity:.6 } to { transform: none; opacity: 1 } }
+  .sheet-fig { position: relative; background: var(--espresso); overflow: hidden; height: clamp(180px,26vh,260px); }
+  .sheet-fig img { position: absolute; right: -6%; bottom: -10%; width: 78%; opacity: .82; }
+  .sheet-fig .fig-no { position: absolute; left: clamp(24px,4vw,40px); top: clamp(22px,3vw,34px); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+  .sheet-body { padding: clamp(28px,4vw,46px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .sheet-body .kicker { color: var(--gold); }
+  .sheet-body h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(32px,5vw,52px); line-height: 1; margin: 10px 0 0; }
+  .sheet-body .blurb { color: var(--soft); font-size: clamp(15px,1.7vw,18px); line-height: 1.6; margin-top: 18px; max-width: 46ch; }
+  .sheet-row { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; padding: 20px 0; border-top: 1px solid var(--rule); margin-top: 24px; }
+  .sheet-row .k { font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--soft); }
+  .sheet-row .v { font-family: var(--serif); font-weight: 600; font-size: clamp(24px,3vw,34px); }
+  .sheet-row .v.avail { color: var(--gold); }
+  .sheet-ded { margin-top: 24px; padding-top: 22px; border-top: 1.5px solid var(--gold); }
+  .sheet-ded .k { font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+  .sheet-ded .name { font-family: var(--serif); font-size: clamp(26px,3.4vw,38px); font-weight: 600; margin-top: 8px; line-height: 1.08; }
+  .sheet-ded .memo { font-family: var(--serif); font-style: italic; color: var(--soft); margin-top: 10px; font-size: 18px; }
+  .sheet-cta { margin-top: 30px; }
+  .sheet-cta .btn { width: 100%; }
+  .sheet-cta .call { margin-top: 16px; color: var(--soft); font-size: 14px; line-height: 1.5; }
+  .sheet-cta .call a { color: var(--espresso); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--gold); }
+  .x-close { position: absolute; top: 0; right: 0; z-index: 5; width: 60px; height: 60px; display: grid; place-items: center; background: var(--ivory); color: var(--espresso); font-size: 24px; border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+
+  /* =========================================================================
+     10. DEDICATION / EMAIL POPUP  (squared, editorial, legible)
+     ========================================================================= */
+  .modal-back { position: fixed; inset: 0; z-index: 110; background: rgba(37,24,15,.72); display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+  .modal-back.open { display: flex; animation: fade .2s ease; }
+  .askbox { position: relative; background: var(--ivory); width: 100%; max-width: 560px; padding: clamp(28px,4vw,48px); border-top: 3px solid var(--gold); }
+  .askbox h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(28px,4vw,42px); line-height: 1.02; margin: 10px 0 10px; }
+  .askbox .a-sub { color: var(--soft); font-size: clamp(14px,1.6vw,17px); line-height: 1.55; margin-bottom: 26px; }
+  .askbox form { display: flex; flex-direction: column; gap: 20px; }
+  .askbox label { display: flex; flex-direction: column; gap: 9px; font-size: 11.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); }
+  .askbox input[type=text], .askbox input:not([type]), .askbox textarea {
+    font-family: var(--sans); font-size: 17px; color: var(--espresso); background: var(--wash);
+    border: 1px solid var(--rule-2); border-radius: 2px; padding: 15px 16px; min-height: 54px; width: 100%;
     -webkit-user-select: text; user-select: text; transition: border-color .15s;
   }
-  .interest input:focus, .interest textarea:focus { outline: none; border-color: var(--gold); }
-  .interest textarea { min-height: 66px; resize: none; }
-  .interest .btn-gold { width: 100%; justify-content: center; margin-top: 4px; }
-  .interest .ierr { color: #9B4A2F; background: rgba(155,74,47,.1); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
-  .interest .i-thanks { text-align: center; padding: 14px 0 6px; }
-  .interest .i-thanks .check { width: 68px; height: 68px; margin: 0 auto 16px; border-radius: 50%; background: rgba(124,139,90,.16); display: grid; place-items: center; }
-  .interest .i-thanks h2 { margin-top: 0; }
-  .interest .i-thanks p { color: var(--walnut-2); font-size: 17px; }
+  .askbox input:focus, .askbox textarea:focus { outline: none; border-color: var(--gold); }
+  .askbox textarea { min-height: 70px; resize: none; line-height: 1.5; }
+  .askbox .btn { width: 100%; margin-top: 2px; }
+  .askbox .ierr { color: #7a2e15; background: rgba(122,46,21,.08); border-left: 3px solid #7a2e15; padding: 13px 15px; font-size: 14.5px; line-height: 1.45; }
+  .a-thanks { text-align: center; padding: 12px 0 4px; }
+  .a-thanks .mark { width: 64px; height: 64px; margin: 0 auto 20px; border: 1.5px solid var(--gold); display: grid; place-items: center; }
+  .a-thanks h2 { margin: 0; }
+  .a-thanks p { color: var(--soft); font-size: 17px; line-height: 1.55; margin-top: 10px; }
 
-  /* Big call-to-action button */
-  .btn-gold {
-    display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border-radius: 999px;
-    background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color: #fff; font-weight: 600;
-    font-size: clamp(14px,1.5vw,17px); box-shadow: 0 12px 26px -12px rgba(176,137,74,.9); letter-spacing: .02em;
-    text-decoration: none;
-  }
-  .btn-gold:active { transform: scale(.98); }
-  .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 14px 28px; border-radius: 999px; border: 1.5px solid var(--gold); color: var(--walnut); font-weight: 600; font-size: 16px; text-decoration: none; }
-
-  /* =========================================================================
-     DONOR BOARD
-     ========================================================================= */
-  .board-wrap { max-width: 980px; margin: 0 auto; }
-  .tier {
-    display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start;
-    background: var(--cream); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: clamp(20px,2.4vw,30px); margin-bottom: 16px; position: relative; overflow: hidden;
-  }
-  .tier::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--tier-color, var(--gold)); }
-  .tier .t-head { }
-  .tier .t-name { font-family: var(--serif); font-size: clamp(20px,2.3vw,28px); font-weight: 600; color: var(--walnut); line-height: 1.1; }
-  .tier .t-price { font-family: var(--serif); font-size: clamp(22px,2.6vw,32px); font-weight: 700; color: var(--tier-color, var(--gold)); margin-top: 4px; }
-  .tier .t-price small { font-family: var(--sans); font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: .04em; }
-  .tier .t-sub { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 10px; }
-  .tier .t-names { display: flex; flex-wrap: wrap; gap: 8px 10px; align-content: flex-start; }
-  .tier .t-names span { background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px; font-size: clamp(13px,1.4vw,15.5px); color: var(--walnut-2); font-weight: 500; }
-  .tier .t-names .open { color: var(--available); border-style: dashed; border-color: rgba(124,139,90,.5); font-style: italic; }
-  .tier .t-names.none { color: var(--muted); font-style: italic; font-family: var(--serif); font-size: 17px; }
-
-  .board-note { text-align: center; margin-top: 26px; color: var(--muted); font-size: 14px; max-width: 60ch; margin-left: auto; margin-right: auto; }
-
-  /* =========================================================================
-     FOOTER  ·  contact / how to dedicate
-     ========================================================================= */
-  footer.foot {
-    background: linear-gradient(160deg, var(--walnut), #2E2016); color: var(--cream);
-    text-align: center; padding: clamp(34px,5vw,64px) 0; margin-top: 20px;
-  }
-  footer.foot h2 { font-family: var(--serif); font-size: clamp(26px,3.4vw,44px); font-weight: 600; color: #fff; margin-bottom: 12px; }
-  footer.foot h2 em { color: var(--gold-soft); font-style: italic; }
-  footer.foot p { color: rgba(244,235,218,.85); max-width: 54ch; margin: 0 auto 22px; font-size: clamp(14px,1.6vw,18px); }
-  footer.foot .contact { display: flex; flex-wrap: wrap; gap: 12px 30px; justify-content: center; margin-top: 24px; font-size: clamp(14px,1.5vw,17px); }
-  footer.foot .contact a, footer.foot .contact span { color: var(--gold-soft); font-weight: 600; text-decoration: none; }
-  footer.foot .addr { margin-top: 18px; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: rgba(244,235,218,.55); }
-
-  /* =========================================================================
-     RESPONSIVE  ·  stack the two-column layouts on narrow / portrait screens
-     ========================================================================= */
-  @media (max-width: 820px) {
-    .naming { grid-template-columns: 1fr; }
-    .modal { grid-template-columns: 1fr; max-height: 94vh; }
-    .modal .m-img { min-height: 200px; }
-    .tier { grid-template-columns: 1fr; gap: 16px; }
-    nav.tabs { top: 70px; }
-  }
-
-  /* Respect visitors who prefer reduced motion */
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce){ * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
 
-  <!-- ======================= TOP HEADER BAR ======================= -->
-  <header class="topbar">
-    <div class="wrap">
-      <div class="brand">
-        <!-- Building logo: drop the file in as dedication/building-logo.png
-             (transparent background). It is auto-recolored white to sit on the
-             walnut bar. If the file is missing, the gold "ח" mark shows instead. -->
-        <img src="building-logo.png" alt="Chabad — A Center for Jewish Life" class="brand-logo" id="brand-logo"
-             onload="var m=document.getElementById('brand-mark'); if(m) m.style.display='none';"
-             onerror="this.remove();">
-        <div class="mark" id="brand-mark">ח</div>
-        <div class="txt">
-          <b>Chabad Center for Jewish Life</b>
-          <span>St. Petersburg · Dedication Opportunities</span>
+  <!-- =========================== CHROME =========================== -->
+  <div class="chrome">
+    <div class="masthead">
+      <div class="shell">
+        <div class="mh-brand">
+          <img class="mh-logo" src="building-logo.png" alt="Chabad — A Center for Jewish Life" id="brand-logo"
+               onload="var m=document.getElementById('brand-mark'); if(m) m.remove();" onerror="this.remove();">
+          <div class="mh-mark" id="brand-mark">ח</div>
+          <div class="mh-word">
+            <div class="name">Chabad · A Center for Jewish Life</div>
+            <div class="sub">St. Petersburg — Capital Campaign</div>
+          </div>
         </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:clamp(14px,2vw,26px)">
-        <a class="btn-gold" id="header-donate" href="#" style="padding:14px 26px;font-size:15px;min-height:48px">Donate Now</a>
-        <div class="clock">
-          <b id="clock-time">—</b>
-          <span id="clock-date">Welcome</span>
+        <div class="mh-right">
+          <div class="mh-clock"><b id="clock-time">—</b><span id="clock-date">Welcome</span></div>
+          <button class="btn btn-gold" id="header-donate">Make a Dedication</button>
         </div>
       </div>
     </div>
-  </header>
+    <nav class="nav">
+      <div class="shell">
+        <button class="nav-tab active" data-view="overview">The Campaign</button>
+        <button class="nav-tab" data-view="spaces">Building Spaces</button>
+        <button class="nav-tab" data-view="board">Wall of Honor</button>
+      </div>
+    </nav>
+  </div>
 
-  <!-- ======================= TAB NAVIGATION ======================= -->
-  <nav class="tabs">
-    <div class="wrap">
-      <button class="tab active" data-view="overview">Overview</button>
-      <button class="tab" data-view="spaces">Building Spaces</button>
-      <button class="tab" data-view="board">Donor Board</button>
-    </div>
-  </nav>
-
-  <!-- ======================= VIEW 1: OVERVIEW ======================= -->
+  <!-- =========================== OVERVIEW =========================== -->
   <div class="view active" id="view-overview">
-    <section>
-      <div class="wrap">
-        <div class="hero">
-          <div class="eyebrow">A Home for Generations</div>
-          <h1 class="serif">Build a <em>legacy</em> in the new Chabad Center</h1>
-          <p class="lead" id="hero-lead">Explore the spaces and dedication opportunities that will shape our new home in the heart of downtown St. Petersburg.</p>
+    <section class="opening">
+      <img class="opening-draw" src="building-line.png" alt="" aria-hidden="true">
+      <div class="shell">
+        <div class="opening-head">
+          <span class="kicker">The Campaign for Our New Home</span>
+          <h1>A house of <em>light</em> for generations.</h1>
         </div>
+        <p class="opening-lead">In the heart of downtown St. Petersburg, we are building a permanent home for Jewish life. Every space within it carries a name, a family, a legacy.</p>
+      </div>
+    </section>
 
-        <!-- PROGRESS CARD (numbers are filled in by JavaScript from CAMPAIGN) -->
-        <div class="progress-card">
-          <div class="progress-top">
-            <div class="raised"><small>Raised toward our new home</small><span id="raised-amt">$0</span></div>
-            <div class="goal">Campaign goal<b id="goal-amt">$0</b></div>
+    <div class="standing-wrap">
+      <div class="shell">
+        <div class="standing-grid">
+          <div>
+            <span class="kicker muted">Raised toward our new home</span>
+            <div class="raised-num serif" id="raised-amt">$0</div>
+            <div class="raised-of">of <b id="goal-amt">$0</b> — the campaign goal</div>
+            <div class="progress">
+              <div class="progress-track"><div class="progress-fill" id="bar-fill"></div></div>
+              <div class="progress-legend"><span id="pct-label"><b>0%</b> funded</span><span id="remaining-label">—</span></div>
+            </div>
           </div>
-          <div class="bar"><span id="bar-fill"></span></div>
-          <div class="bar-labels"><span id="pct-label"><b>0%</b> funded</span><span id="remaining-label">—</span></div>
+          <div class="standing" id="stat-line"></div>
         </div>
+      </div>
+    </div>
 
-        <!-- STAT TILES (filled in by JavaScript) -->
-        <div class="stats" id="stat-tiles"></div>
-
-        <!-- BUILDING-NAMING FEATURE -->
-        <div class="naming">
-          <div class="left">
-            <div class="eyebrow">The Cornerstone Opportunity</div>
-            <h2 class="serif">Name the entire building</h2>
-            <p>The most enduring tribute of all. Give your family's name — or the name of someone you love — to our new home, carried across every space within it for generations to come.</p>
-            <div class="avail-pill"><span class="pill available">Available</span></div>
-          </div>
-          <div class="right">
-            <div class="price"><small>Building naming rights</small>$2.5M</div>
-            <button class="btn-ghost" style="margin-top:20px;border-color:var(--gold-soft);color:var(--cream)" onclick="showView('board')">See all levels →</button>
-          </div>
+    <section class="naming">
+      <img class="naming-draw" src="building-logo.png" alt="" aria-hidden="true">
+      <div class="shell">
+        <div class="naming-inner">
+          <span class="kicker">The Cornerstone Opportunity</span>
+          <h2>Name the building.</h2>
+          <p>The most enduring tribute of all — your family's name upon our new home, carried across every space within it, for generations to come.</p>
+          <div class="naming-amt">$2,500,000</div>
+          <div class="naming-avail">Available</div>
+          <div class="naming-cta"><button class="btn btn-onDark" id="naming-cta">Begin the Conversation</button></div>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- ======================= VIEW 2: BUILDING SPACES ======================= -->
+  <!-- =========================== BUILDING SPACES =========================== -->
   <div class="view" id="view-spaces">
-    <section>
-      <div class="wrap">
+    <section class="section">
+      <div class="shell">
         <div class="sec-head">
-          <div class="eyebrow">Room by Room</div>
-          <h2 class="serif">Dedicate a <em>space</em></h2>
-          <p>Every room tells a story. Tap any space to see what it looks like, its dedication, and how to make it yours.</p>
+          <div>
+            <span class="kicker">Dedication Opportunities</span>
+            <h2>The building, <em>room by room</em>.</h2>
+          </div>
+          <p class="sec-note">An architectural catalog of every named space — from the sanctuary to the smallest detail. Select any entry to learn more.</p>
         </div>
 
-        <!-- Filter chips (built by JavaScript so the counts stay accurate) -->
         <div class="filters" id="space-filters"></div>
+        <div class="index" id="space-index"></div>
 
-        <!-- The grid of space cards (built by JavaScript) -->
-        <div class="grid" id="space-grid"></div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ======================= VIEW 3: DONOR BOARD ======================= -->
-  <div class="view" id="view-board">
-    <section>
-      <div class="wrap">
-        <div class="sec-head">
-          <div class="eyebrow">The Wall of Honor</div>
-          <h2 class="serif">Join the <em>Donor Board</em></h2>
-          <p>Not every gift is tied to a room. These giving levels place your name permanently on our donor wall — every gift, at every level, helps build our new home.</p>
+        <div class="catalog-plate">
+          <img class="plate-draw" src="building-line.png" alt="" aria-hidden="true">
+          <div class="plate-cap">
+            <span class="kicker">The New Building</span>
+            <p>Every line drawn, a place for someone to belong.</p>
+          </div>
         </div>
-        <div class="board-wrap" id="board-list"></div>
-        <p class="board-note">Every level is payable over one to three years. To reserve a level or discuss a custom dedication, please speak with the Rabbi.</p>
       </div>
     </section>
   </div>
 
-  <!-- ======================= FOOTER ======================= -->
-  <footer class="foot">
-    <div class="wrap">
-      <div class="eyebrow" style="color:var(--gold-soft)">Ready to make it yours?</div>
-      <h2 class="serif">Let's talk about your <em>dedication</em></h2>
-      <p>Speak with Rabbi Alter Korf about reserving a space or joining the donor board. Every dedication helps build a Jewish home for St. Petersburg.</p>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
-        <a class="btn-gold" id="footer-donate" href="#">Donate Now</a>
-        <a class="btn-ghost" href="tel:+17273444900" style="border-color:var(--gold-soft);color:var(--cream)">Call 727-344-4900</a>
+  <!-- =========================== WALL OF HONOR =========================== -->
+  <div class="view" id="view-board">
+    <section class="section">
+      <div class="shell">
+        <div class="sec-head">
+          <div>
+            <span class="kicker">Our Founding Donors</span>
+            <h2>The <em>Wall of Honor</em>.</h2>
+          </div>
+          <p class="sec-note">With profound gratitude to the families whose generosity is building a Jewish home for St. Petersburg.</p>
+        </div>
+        <div class="board" id="board-list"></div>
+        <p class="board-note">Every level is payable over one to three years. To join the Wall of Honor or discuss a dedication, please speak with the Rabbi.</p>
       </div>
-      <div class="contact">
+    </section>
+  </div>
+
+  <!-- =========================== CLOSING =========================== -->
+  <footer class="close">
+    <div class="shell">
+      <span class="kicker">A Place at the Heart of It</span>
+      <h2>Add your family's name to our new home.</h2>
+      <p>Speak with Rabbi Alter Korf about a dedication, a naming opportunity, or joining the Wall of Honor.</p>
+      <div class="close-actions">
+        <button class="btn btn-gold" id="footer-donate">Make a Dedication</button>
+        <a class="btn btn-ghost" style="border-color:rgba(245,239,227,.32);color:var(--ivory)" href="tel:+17273444900">Call 727·344·4900</a>
+      </div>
+      <div class="close-meta">
         <a href="mailto:info@chabadsp.com">info@chabadsp.com</a>
         <a href="https://www.chabadsp.com" target="_blank" rel="noopener">chabadsp.com</a>
+        <span class="addr">533 4th Street North · St. Petersburg, FL</span>
       </div>
-      <div class="addr">533 4th Street North · St. Petersburg, FL 33701</div>
     </div>
   </footer>
 
-  <!-- ======================= DETAIL MODAL ======================= -->
-  <div class="modal-back" id="modal-back">
-    <div class="modal" id="modal">
-      <button class="m-close" id="modal-close" aria-label="Close">×</button>
-      <div class="m-img" id="m-img"></div>
-      <div class="m-body" id="m-body"></div>
-    </div>
+  <!-- =========================== SPACE DETAIL SHEET =========================== -->
+  <div class="overlay" id="overlay">
+    <aside class="sheet">
+      <button class="x-close" id="sheet-close" aria-label="Close">×</button>
+      <div class="sheet-fig" id="sheet-fig"></div>
+      <div class="sheet-body" id="sheet-body"></div>
+    </aside>
   </div>
 
-  <!-- ======================= DONATE / INTEREST POPUP ======================= -->
+  <!-- =========================== DEDICATION POPUP =========================== -->
   <div class="modal-back" id="interest-back">
-    <div class="interest">
-      <button class="m-close" id="interest-close" aria-label="Close">×</button>
-
-      <!-- The form -->
+    <div class="askbox">
+      <button class="x-close" id="interest-close" style="border:0;background:none" aria-label="Close">×</button>
       <div id="interest-form-wrap">
-        <div class="eyebrow">Make a dedication</div>
+        <span class="kicker">Make a Dedication</span>
         <h2 id="interest-title">I'd like to dedicate this space</h2>
-        <p class="i-sub" id="interest-sub">Leave your details and Rabbi Korf will reach out to you personally.</p>
+        <p class="a-sub" id="interest-sub">Leave your details and Rabbi Korf will reach out to you personally.</p>
         <form id="interest-form">
           <label>Your name
             <input type="text" name="name" required autocomplete="name" placeholder="Your full name">
@@ -586,19 +549,14 @@
             <textarea name="note" placeholder="Optional message"></textarea>
           </label>
           <input type="hidden" name="space" id="interest-space">
-          <!-- spam trap: real people leave this empty -->
           <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
-          <button type="submit" class="btn-gold" id="interest-submit">Send to Rabbi Korf</button>
+          <button type="submit" class="btn btn-primary" id="interest-submit">Send to Rabbi Korf</button>
           <div class="ierr" id="interest-error" hidden></div>
         </form>
       </div>
-
-      <!-- The thank-you (shown after a successful send) -->
-      <div class="i-thanks" id="interest-thanks" hidden>
-        <div class="check">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#7C8B5A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        </div>
-        <h2>Thank you!</h2>
+      <div class="a-thanks" id="interest-thanks" hidden>
+        <div class="mark"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B88A3E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h2 class="serif">With gratitude.</h2>
         <p>Rabbi Korf has been notified and will be in touch with you soon.</p>
       </div>
     </div>
@@ -607,56 +565,20 @@
 <script>
 /* ============================================================================
  *  >>>>>  EDIT YOUR CONTENT HERE  <<<<<
- * ============================================================================
- *  Everything below the "END OF EDIT AREA" line is the app engine — you can
- *  leave that alone. Just change the three lists here.
- *
- *  ABOUT THE DATA BELOW:
- *  The rooms, prices, dedicators and donor names are the REAL data pulled from
- *  jewishsp.org/dedications/ and jewishsp.org/donors/. To update as gifts come
- *  in: change a space's status from "available" to "dedicated" and fill in its
- *  "dedicatedBy", or add a family to the right level in the DONOR_BOARD list.
+ *  The rooms, prices, dedicators and donor names below are the REAL data from
+ *  jewishsp.org/dedications and /donors. To update: change a space's status
+ *  to "dedicated" and fill "dedicatedBy", or add a family to a DONOR_BOARD level.
  * ========================================================================== */
 
-/* ---- 1. CAMPAIGN -----------------------------------------------------------
-   The overall numbers shown on the Overview screen. */
 const CAMPAIGN = {
   goal:   10900000,   // total campaign goal, in dollars (no commas)
   raised:  8100707,   // amount raised so far, in dollars
 };
 
-/* ---- DONATE LINK ------------------------------------------------------------
-   Where the "Donate Now" / "Donate toward this space" buttons send people.
-   This points at your existing chabadsp.com dedications page — no new payment
-   setup needed. If you have a more specific donate link, paste it here. */
 const DONATE_URL = "https://www.jewishsp.org/dedications/";
 
-/* ---- DONATE EMAIL FORM ------------------------------------------------------
-   When someone taps "Donate toward this space" (or "Donate Now"), a short form
-   pops up. When they send it, an email goes straight to Rabbi Korf telling him
-   who wants to dedicate which space. This uses Web3Forms — a free service, no
-   server or coding needed.
-
-   ONE-TIME SETUP:
-     1. Go to  https://web3forms.com
-     2. Type in the email address the notifications should go to
-        (e.g. Rabbi Korf's email, or info@chabadsp.com).
-     3. It emails you back an "Access Key" — paste it between the quotes below.
-   Until you paste a real key, the form will tell the visitor it isn't set up. */
 const CONTACT_FORM_KEY = "REPLACE-WITH-YOUR-WEB3FORMS-ACCESS-KEY";
 
-/* ---- 2. SPACES -------------------------------------------------------------
-   Every dedicatable room/space in the building. For each one:
-     name        – the name of the space
-     category    – a short group label (shown as a little tag)
-     amount      – the dedication price, in dollars (no commas)
-     status      – "available"  OR  "dedicated"
-     dedicatedBy – who dedicated it (only used when status is "dedicated")
-     memo        – optional "in memory / in honor of..." line
-     image       – a photo URL. Leave as "" (empty) to show the elegant
-                   monogram placeholder instead of a photo.
-     blurb       – a sentence describing the space (shown in the detail view)
-   TIP: to add a new space, copy one { ... } block and paste it in the list. */
 const SPACES = [
   { name: "Preschool Dedication", category: "Education", amount: 600000, status: "available", dedicatedBy: "", memo: "", image: "", blurb: "Bright, joyful classrooms where our youngest begin their Jewish journey." },
   { name: "Sanctuary", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Dr. Michael and Elizabeth Zimmer", memo: "", image: "", blurb: "" },
@@ -715,14 +637,6 @@ const SPACES = [
   { name: "Talis Rack", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Frank and Dale Marsilio", memo: "", image: "", blurb: "" },
 ];
 
-/* ---- 3. DONOR BOARD --------------------------------------------------------
-   The giving levels on the donor wall (NOT tied to a specific room).
-   For each level:
-     name   – the name of the level
-     amount – the price for this level, in dollars
-     color  – a small accent color (any web color / hex code)
-     donors – a list of names already on this level. Use [] for none yet.
-   Listed from highest to lowest. */
 const DONOR_BOARD = [
   { name: "Lead", amount: 500000, color: "#6B4A31", donors: ["Dr. Michael and Elizabeth Zimmer"] },
   { name: "Pillar", amount: 250000, color: "#7A5C43", donors: ["Alexander Family","Michael and Margot Benstock","The Buns Family","Dr. Steven and Nicole Cohen","Dr. Jeffrey and Wendy Miller","Herman OB\"M and Rebecca Ovadia","Aron and Esther Raihshtein","Ambassador Mel and Betty Sembler OBM","Morris Willner"] },
@@ -734,303 +648,160 @@ const DONOR_BOARD = [
 ];
 
 /* ============================================================================
- *  END OF EDIT AREA — the app engine is below. You can leave it alone.
+ *  END OF EDIT AREA — the engine is below.
  * ========================================================================== */
 
-/* --- Small helper: format a number of dollars as "$1,800" etc. --- */
-function money(n) {
-  return "$" + Number(n).toLocaleString("en-US");
-}
-/* Shorter money for tight spots: 1000000 -> "$1M", 250000 -> "$250K" */
-function moneyShort(n) {
-  if (n >= 1000000) return "$" + (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + "M";
-  if (n >= 1000)    return "$" + Math.round(n / 1000) + "K";
-  return "$" + n;
-}
-/* First letter of a name, for the monogram placeholder */
-function monogram(name) {
-  const skip = ["the", "a", "an"];
-  const words = name.split(" ").filter(w => !skip.includes(w.toLowerCase()));
-  return (words[0] || name).charAt(0).toUpperCase();
-}
+function money(n){ return "$" + Number(n).toLocaleString("en-US"); }
+function pad2(n){ return String(n).padStart(2,"0"); }
 
-/* ---------- TAB SWITCHING ---------- */
-function showView(name) {
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.getElementById("view-" + name).classList.add("active");
-  const tab = document.querySelector('.tab[data-view="' + name + '"]');
-  if (tab) tab.classList.add("active");
+/* ---------- NAVIGATION ---------- */
+function showView(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("view-"+name).classList.add("active");
+  const tab=document.querySelector('.nav-tab[data-view="'+name+'"]'); if(tab) tab.classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => showView(tab.dataset.view));
-});
+document.querySelectorAll(".nav-tab").forEach(t=>t.addEventListener("click",()=>showView(t.dataset.view)));
 
-/* ---------- OVERVIEW: fill in the numbers ---------- */
-function renderOverview() {
-  const goal = CAMPAIGN.goal, raised = CAMPAIGN.raised;
-  const pct = Math.min(100, Math.round((raised / goal) * 100));
-
-  document.getElementById("raised-amt").textContent = money(raised);
-  document.getElementById("goal-amt").textContent   = money(goal);
-  document.getElementById("pct-label").innerHTML     = "<b>" + pct + "%</b> funded";
-  document.getElementById("remaining-label").textContent = money(goal - raised) + " to go";
-
-  // animate the bar shortly after load
-  setTimeout(() => { document.getElementById("bar-fill").style.width = pct + "%"; }, 300);
-
-  // stat tiles, computed from the SPACES list
-  const dedicated = SPACES.filter(s => s.status === "dedicated").length;
-  const available = SPACES.filter(s => s.status === "available").length;
-  const tiles = [
-    { num: SPACES.length,        lbl: "Spaces in the building", gold: false },
-    { num: available,            lbl: "Still available",        gold: true  },
-    { num: dedicated,            lbl: "Already dedicated",      gold: false },
-    { num: DONOR_BOARD.length,   lbl: "Giving levels",          gold: false },
-  ];
-  document.getElementById("stat-tiles").innerHTML = tiles.map(t =>
-    '<div class="stat"><div class="num' + (t.gold ? " gold" : "") + '">' + t.num + '</div><div class="lbl">' + t.lbl + '</div></div>'
-  ).join("");
+/* ---------- OVERVIEW ---------- */
+function renderOverview(){
+  const goal=CAMPAIGN.goal, raised=CAMPAIGN.raised, pct=Math.min(100,Math.round(raised/goal*100));
+  document.getElementById("raised-amt").textContent=money(raised);
+  document.getElementById("goal-amt").textContent=money(goal);
+  document.getElementById("pct-label").innerHTML="<b>"+pct+"%</b> funded";
+  document.getElementById("remaining-label").textContent=money(goal-raised)+" remaining";
+  setTimeout(()=>{ document.getElementById("bar-fill").style.width=pct+"%"; }, 350);
+  const avail=SPACES.filter(s=>s.status==="available").length;
+  const stats=[[SPACES.length,"Dedications"],[avail,"Still Available"],[DONOR_BOARD.length,"Giving Levels"]];
+  document.getElementById("stat-line").innerHTML=stats.map(([n,l])=>
+    '<div class="standing-item"><span class="standing-num serif">'+n+'</span><span class="standing-lbl">'+l+'</span></div>').join("");
 }
 
-/* ---------- SPACES: filter chips + card grid ---------- */
-let currentFilter = "all";
-
-function renderFilters() {
-  const all = SPACES.length;
-  const avail = SPACES.filter(s => s.status === "available").length;
-  const ded = SPACES.filter(s => s.status === "dedicated").length;
-  const chips = [
-    { key: "all",        label: "All Spaces",  count: all },
-    { key: "available",  label: "Available",   count: avail },
-    { key: "dedicated",  label: "Dedicated",   count: ded },
-  ];
-  document.getElementById("space-filters").innerHTML = chips.map(c =>
-    '<button class="chip' + (c.key === currentFilter ? " active" : "") + '" data-filter="' + c.key + '">' +
-    c.label + '<span class="count">' + c.count + '</span></button>'
-  ).join("");
-  document.querySelectorAll(".chip").forEach(chip => {
-    chip.addEventListener("click", () => { currentFilter = chip.dataset.filter; renderFilters(); renderSpaces(); });
-  });
+/* ---------- BUILDING SPACES (catalog) ---------- */
+let currentFilter="all";
+function renderFilters(){
+  const all=SPACES.length, avail=SPACES.filter(s=>s.status==="available").length, ded=SPACES.length-avail;
+  const chips=[["all","All",all],["available","Available",avail],["dedicated","Dedicated",ded]];
+  document.getElementById("space-filters").innerHTML=chips.map(([k,l,c])=>
+    '<button class="filter'+(k===currentFilter?" active":"")+'" data-filter="'+k+'">'+l+'<span class="fcount">'+c+'</span></button>').join("");
+  document.querySelectorAll(".filter").forEach(f=>f.addEventListener("click",()=>{ currentFilter=f.dataset.filter; renderFilters(); renderSpaces(); }));
 }
-
-function thumbHTML(space) {
-  // Show a real photo if one is provided, otherwise the monogram tile.
-  const inner = space.image
-    ? '<img src="' + space.image + '" alt="' + space.name + '" loading="lazy">'
-    : '<span class="mono">' + monogram(space.name) + '</span>';
-  const statusClass = space.status === "dedicated" ? "dedicated" : "available";
-  const statusText  = space.status === "dedicated" ? "Dedicated" : "Available";
-  return '<div class="thumb">' + inner +
-         '<span class="cat">' + space.category + '</span>' +
-         '<span class="status"><span class="pill ' + statusClass + '">' + statusText + '</span></span>' +
-         '</div>';
-}
-
-function renderSpaces() {
-  const list = SPACES.filter(s => currentFilter === "all" ? true : s.status === currentFilter);
-  const grid = document.getElementById("space-grid");
-
-  if (list.length === 0) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No spaces in this view.</div>';
-    return;
-  }
-
-  grid.innerHTML = list.map((space) => {
-    const idx = SPACES.indexOf(space); // stable id back into the full list
-    const isDed = space.status === "dedicated";
-    const who = isDed
-      ? '<div class="who">Dedicated by ' + space.dedicatedBy + '</div>'
-      : '<div class="who">Awaiting its dedicator</div>';
-    // Reserved rooms have no public price (amount is null) — show nothing there.
-    const price = !space.amount
-      ? '<span></span>'
-      : isDed
-        ? '<div class="price taken">' + money(space.amount) + '</div>'
-        : '<div class="price">' + money(space.amount) + '</div>';
-    const cta = isDed ? "View dedication" : "Dedicate this →";
-    return '<button class="card ' + (isDed ? "is-dedicated" : "") + '" data-idx="' + idx + '">' +
-             thumbHTML(space) +
-             '<div class="body"><h3>' + space.name + '</h3>' + who +
-               '<div class="foot">' + price + '<span class="cta">' + cta + '</span></div>' +
-             '</div>' +
+function renderSpaces(){
+  const list=SPACES.filter(s=>currentFilter==="all"?true:s.status===currentFilter);
+  const el=document.getElementById("space-index");
+  if(!list.length){ el.innerHTML='<div class="index-empty">No spaces in this view.</div>'; return; }
+  el.innerHTML=list.map((space,i)=>{
+    const idx=SPACES.indexOf(space), isDed=space.status==="dedicated";
+    const tail=isDed
+      ? '<span class="entry-ded">Dedicated</span><span class="entry-by">'+space.dedicatedBy+'</span>'
+      : (space.amount?'<span class="entry-price serif">'+money(space.amount)+'</span>':'')+'<span class="entry-take">Available →</span>';
+    return '<button class="entry '+(isDed?"is-ded":"")+'" data-idx="'+idx+'">'+
+             '<span class="entry-no">'+pad2(i+1)+'</span>'+
+             '<span class="entry-main"><span class="entry-name serif">'+space.name+'</span><span class="entry-cat">'+space.category+'</span></span>'+
+             '<span class="entry-tail">'+tail+'</span>'+
            '</button>';
   }).join("");
-
-  grid.querySelectorAll(".card").forEach(card => {
-    card.addEventListener("click", () => openModal(parseInt(card.dataset.idx, 10)));
-  });
+  el.querySelectorAll(".entry").forEach(en=>en.addEventListener("click",()=>openSheet(parseInt(en.dataset.idx,10))));
 }
 
-/* ---------- DETAIL MODAL ---------- */
-function openModal(idx) {
-  const s = SPACES[idx];
-  const isDed = s.status === "dedicated";
-
-  document.getElementById("m-img").innerHTML = s.image
-    ? '<img src="' + s.image + '" alt="' + s.name + '">'
-    : '<span class="mono">' + monogram(s.name) + '</span>';
-
-  let body =
-    '<div class="eyebrow cat">' + s.category + '</div>' +
-    '<h2>' + s.name + '</h2>' +
-    (s.blurb ? '<p class="blurb">' + s.blurb + '</p>' : '') +
-    // Only show the dedication amount when we have one (reserved rooms don't).
-    (s.amount ? '<div class="m-row"><span class="k">Dedication</span><span class="v">' + money(s.amount) + '</span></div>' : '') +
-    '<div class="m-row"><span class="k">Status</span><span class="pill ' + (isDed ? "dedicated" : "available") + '">' + (isDed ? "Dedicated" : "Available") + '</span></div>';
-
-  if (isDed) {
-    body += '<div class="dedicated-note"><div class="k">Dedicated by</div><div class="name">' + s.dedicatedBy + '</div>' +
-            (s.memo ? '<div class="memo">' + s.memo + '</div>' : '') + '</div>';
+/* ---------- SPACE DETAIL SHEET ---------- */
+function openSheet(idx){
+  const s=SPACES[idx], isDed=s.status==="dedicated";
+  document.getElementById("sheet-fig").innerHTML=
+    '<span class="fig-no">No. '+pad2(idx+1)+'</span><img src="building-logo.png" alt="" onerror="this.remove()">';
+  let b='<span class="kicker">'+s.category+'</span><h2>'+s.name+'</h2>'+
+    (s.blurb?'<p class="blurb">'+s.blurb+'</p>':'')+
+    (s.amount?'<div class="sheet-row"><span class="k">Dedication</span><span class="v">'+money(s.amount)+'</span></div>':'')+
+    '<div class="sheet-row"><span class="k">Status</span><span class="v '+(isDed?"":"avail")+'">'+(isDed?"Dedicated":"Available")+'</span></div>';
+  if(isDed){
+    b+='<div class="sheet-ded"><div class="k">Dedicated by</div><div class="name">'+s.dedicatedBy+'</div>'+
+       (s.memo?'<div class="memo">'+s.memo+'</div>':'')+'</div>';
   } else {
-    body += '<div class="m-cta"><button class="btn-gold" id="m-donate-btn">Donate toward this space</button></div>' +
-            '<p style="margin-top:14px;color:var(--muted);font-size:14px">Or call the Rabbi at <a href="tel:+17273444900" style="color:var(--gold);font-weight:600;text-decoration:none">727-344-4900</a> to reserve the full dedication.</p>';
+    b+='<div class="sheet-cta"><button class="btn btn-primary" id="sheet-donate">Dedicate This Space</button>'+
+       '<p class="call">Or call Rabbi Korf at <a href="tel:+17273444900">727·344·4900</a> to arrange the full dedication.</p></div>';
   }
-
-  document.getElementById("m-body").innerHTML = body;
-  // The "Donate toward this space" button opens the email popup for THIS space.
-  const dbtn = document.getElementById("m-donate-btn");
-  if (dbtn) dbtn.addEventListener("click", () => { closeModal(); openInterest(s.name); });
-  document.getElementById("modal-back").classList.add("open");
+  document.getElementById("sheet-body").innerHTML=b;
+  const d=document.getElementById("sheet-donate");
+  if(d) d.addEventListener("click",()=>{ closeSheet(); openInterest(s.name); });
+  document.getElementById("overlay").classList.add("open");
 }
-function closeModal() { document.getElementById("modal-back").classList.remove("open"); }
-document.getElementById("modal-close").addEventListener("click", closeModal);
-document.getElementById("modal-back").addEventListener("click", (e) => {
-  if (e.target.id === "modal-back") closeModal(); // tap outside the card closes it
-});
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeInterest(); } });
+function closeSheet(){ document.getElementById("overlay").classList.remove("open"); }
+document.getElementById("sheet-close").addEventListener("click",closeSheet);
+document.getElementById("overlay").addEventListener("click",e=>{ if(e.target.id==="overlay") closeSheet(); });
 
-/* ---------- DONATE / INTEREST EMAIL POPUP ---------- */
-let interestTimer = null;
-
-function openInterest(spaceName) {
-  const title = document.getElementById("interest-title");
-  const sub   = document.getElementById("interest-sub");
-  if (spaceName) {
-    document.getElementById("interest-space").value = spaceName;
-    title.textContent = "Dedicate: " + spaceName;
-    sub.textContent = "Leave your details and Rabbi Korf will reach out to you personally about this dedication.";
-  } else {
-    document.getElementById("interest-space").value = "General donation";
-    title.textContent = "I'd like to make a gift";
-    sub.textContent = "Leave your details and Rabbi Korf will reach out to you personally.";
-  }
-  // reset to the fresh form (in case it was left on the thank-you screen)
-  document.getElementById("interest-form").reset();
-  document.getElementById("interest-error").hidden = true;
-  document.getElementById("interest-form-wrap").hidden = false;
-  document.getElementById("interest-thanks").hidden = true;
-  document.getElementById("interest-back").classList.add("open");
-}
-
-function closeInterest() {
-  document.getElementById("interest-back").classList.remove("open");
-  if (interestTimer) { clearTimeout(interestTimer); interestTimer = null; }
-}
-
-document.getElementById("interest-close").addEventListener("click", closeInterest);
-document.getElementById("interest-back").addEventListener("click", (e) => {
-  if (e.target.id === "interest-back") closeInterest();
-});
-
-document.getElementById("interest-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById("interest-submit");
-  const err = document.getElementById("interest-error");
-  const fd  = new FormData(e.target);
-  err.hidden = true;
-
-  // Guard: form not set up yet.
-  if (!CONTACT_FORM_KEY || CONTACT_FORM_KEY.indexOf("REPLACE") === 0) {
-    err.textContent = "This form isn't connected yet. Please see the front desk, or add your Web3Forms key.";
-    err.hidden = false;
-    return;
-  }
-
-  const payload = {
-    access_key: CONTACT_FORM_KEY,
-    subject: "New dedication interest: " + fd.get("space"),
-    from_name: "Lobby Dedication Board",
-    "Interested in": fd.get("space"),
-    "Name": fd.get("name"),
-    "Phone or email": fd.get("contact"),
-    "Message": fd.get("note") || "(none)",
-    botcheck: !!fd.get("botcheck"),
-  };
-
-  btn.disabled = true;
-  btn.textContent = "Sending…";
-  try {
-    const res = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.message || "send failed");
-    // Show thank-you, then auto-reset so the next visitor gets a fresh form.
-    document.getElementById("interest-form-wrap").hidden = true;
-    document.getElementById("interest-thanks").hidden = false;
-    interestTimer = setTimeout(closeInterest, 6000);
-  } catch (ex) {
-    err.textContent = "Sorry — that didn't go through. Please try again, or see the front desk.";
-    err.hidden = false;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Send to Rabbi Korf";
-  }
-});
-
-/* ---------- DONOR BOARD ---------- */
-function renderBoard() {
-  document.getElementById("board-list").innerHTML = DONOR_BOARD.map(tier => {
-    const names = tier.donors && tier.donors.length
-      ? '<div class="t-names">' + tier.donors.map(n => '<span>' + n + '</span>').join("") + '</div>'
-      : '<div class="t-names none">Be the first at this level</div>';
-    const count = tier.donors ? tier.donors.length : 0;
-    return '<div class="tier" style="--tier-color:' + tier.color + '">' +
-             '<div class="t-head">' +
-               '<div class="t-name">' + tier.name + '</div>' +
-               '<div class="t-price">' + money(tier.amount) + '<small> &amp; up</small></div>' +
-               '<div class="t-sub">' + (count === 0 ? "Open" : count + (count === 1 ? " dedicator" : " dedicators")) + '</div>' +
-             '</div>' +
-             names +
-           '</div>';
+/* ---------- WALL OF HONOR ---------- */
+function renderBoard(){
+  const cls=["level--lead","level--pillar","level--visionary"];
+  document.getElementById("board-list").innerHTML=DONOR_BOARD.map((tier,i)=>{
+    const lvl=cls[i]||"level--std";
+    const names=(tier.donors&&tier.donors.length)
+      ? tier.donors.map(n=>'<span class="dn">'+n+'</span>').join("")
+      : '<span class="dn dn--open">Awaiting its first supporter</span>';
+    const ruleCls=i<2?"rule-gold":"rule";
+    return '<section class="level '+lvl+'">'+
+             '<div class="level-head"><h3 class="level-name serif">'+tier.name+'</h3>'+
+               '<div class="level-amt">'+money(tier.amount)+' and above</div></div>'+
+             '<hr class="'+ruleCls+'">'+
+             '<div class="level-names">'+names+'</div>'+
+           '</section>';
   }).join("");
 }
 
-/* ---------- LIVE CLOCK (nice touch for a lobby screen) ---------- */
-function tickClock() {
-  const now = new Date();
-  document.getElementById("clock-time").textContent =
-    now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-  document.getElementById("clock-date").textContent =
-    now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+/* ---------- DEDICATION / EMAIL POPUP ---------- */
+let interestTimer=null;
+function openInterest(spaceName){
+  const t=document.getElementById("interest-title"), sub=document.getElementById("interest-sub");
+  if(spaceName){ document.getElementById("interest-space").value=spaceName; t.textContent="Dedicate — "+spaceName;
+    sub.textContent="Leave your details and Rabbi Korf will reach out to you personally about this dedication."; }
+  else { document.getElementById("interest-space").value="General inquiry"; t.textContent="I'd like to make a gift";
+    sub.textContent="Leave your details and Rabbi Korf will reach out to you personally."; }
+  document.getElementById("interest-form").reset();
+  document.getElementById("interest-error").hidden=true;
+  document.getElementById("interest-form-wrap").hidden=false;
+  document.getElementById("interest-thanks").hidden=true;
+  document.getElementById("interest-back").classList.add("open");
 }
+function closeInterest(){ document.getElementById("interest-back").classList.remove("open"); if(interestTimer){clearTimeout(interestTimer);interestTimer=null;} }
+document.getElementById("interest-close").addEventListener("click",closeInterest);
+document.getElementById("interest-back").addEventListener("click",e=>{ if(e.target.id==="interest-back") closeInterest(); });
+document.querySelectorAll("#header-donate, #footer-donate, #naming-cta").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); openInterest(null); }));
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeSheet(); closeInterest(); } });
 
-/* ---------- START EVERYTHING ---------- */
-// The "Donate Now" buttons (header + footer) open the email popup.
-document.querySelectorAll("#header-donate, #footer-donate").forEach((a) => {
-  a.addEventListener("click", (e) => { e.preventDefault(); openInterest(null); });
+document.getElementById("interest-form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const btn=document.getElementById("interest-submit"), err=document.getElementById("interest-error"), fd=new FormData(e.target);
+  err.hidden=true;
+  if(!CONTACT_FORM_KEY || CONTACT_FORM_KEY.indexOf("REPLACE")===0){
+    err.textContent="This form isn't connected yet. Please see the front desk, or add your Web3Forms key."; err.hidden=false; return;
+  }
+  const payload={ access_key:CONTACT_FORM_KEY, subject:"New dedication interest: "+fd.get("space"), from_name:"Lobby Dedication Board",
+    "Interested in":fd.get("space"), "Name":fd.get("name"), "Phone or email":fd.get("contact"), "Message":fd.get("note")||"(none)", botcheck:!!fd.get("botcheck") };
+  btn.disabled=true; btn.textContent="Sending…";
+  try{
+    const res=await fetch("https://api.web3forms.com/submit",{ method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"}, body:JSON.stringify(payload) });
+    const data=await res.json();
+    if(!data.success) throw new Error(data.message||"send failed");
+    document.getElementById("interest-form-wrap").hidden=true;
+    document.getElementById("interest-thanks").hidden=false;
+    interestTimer=setTimeout(closeInterest,6000);
+  } catch(ex){ err.textContent="Sorry — that didn't go through. Please try again, or see the front desk."; err.hidden=false; }
+  finally{ btn.disabled=false; btn.textContent="Send to Rabbi Korf"; }
 });
 
-renderOverview();
-renderFilters();
-renderSpaces();
-renderBoard();
-tickClock();
-setInterval(tickClock, 15000); // update the clock every 15 seconds
-
-/* ---------- OFFLINE SAFETY NET ----------
-   Turn on the service worker (sw.js) so the page keeps working if the WiFi
-   drops. This only runs when the page is served over the web (https), not
-   when you open the file directly on a computer — that's normal. */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => { /* offline support unavailable — page still works */ });
-  });
+/* ---------- CLOCK ---------- */
+function tickClock(){
+  const now=new Date();
+  document.getElementById("clock-time").textContent=now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  document.getElementById("clock-date").textContent=now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
 }
+
+/* ---------- START ---------- */
+renderOverview(); renderFilters(); renderSpaces(); renderBoard(); tickClock();
+setInterval(tickClock,15000);
+
+/* Offline safety net for the kiosk */
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); }); }
 </script>
 </body>
 </html>
