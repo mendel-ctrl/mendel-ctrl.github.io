@@ -1,0 +1,5 @@
+{
+  "_comment": "Optional. Copy to favorites.json to show ONLY these zones/scenes in the app, in this order. Names must match your Casambi groups/scenes (run: python casambi_ctrl.py discover to see them). Delete favorites.json to show everything.",
+  "groups": ["Sanctuary", "Social Hall", "Lobby"],
+  "scenes": ["Shabbat", "Event", "Cleanup", "Goodnight"]
+}

@@ -111,6 +111,49 @@ Claude reads [`CLAUDE.md`](./CLAUDE.md) + `devices.json`, then runs the right
 
 ---
 
+---
+
+## The web app (button page)
+
+`app.py` serves a phone-friendly page: every Casambi **group** becomes a light
+zone with On / Off + a dimmer, and every **scene** becomes a one-tap button —
+all auto-built from your network, plus a "Turn Everything Off" button.
+
+The secrets stay on the server; the browser only ever calls this app, never
+Casambi directly.
+
+### Try it right now (demo, no key needed)
+
+```bash
+cd casambi
+python3 -m venv .venv && ./.venv/bin/pip install -r requirements.txt
+CASAMBI_APP_DEMO=1 ./.venv/bin/python app.py
+# open http://localhost:8080 — fake zones/scenes, nothing real changes
+```
+
+### Run it for real (on the always-on VM)
+
+```bash
+cp .env.example .env          # paste in API key + network admin email/password
+echo 'CASAMBI_APP_PIN=1234' >> .env   # a shared PIN so only staff can use it
+./run.sh                      # logs in, discovers your network, serves the app
+```
+
+Then open `http://<the-VM-address>:8080` on your phone and enter the PIN.
+
+To keep it always running (starts on boot, restarts if it crashes), install the
+included `casambi-app.service` — see the comments at the top of that file.
+
+**Show only your main zones:** by default the app shows *every* group and scene.
+To trim it to the ones you actually use, copy `favorites.json.example` to
+`favorites.json` and list the names you want (in the order you want them).
+
+**Access & safety:** always set `CASAMBI_APP_PIN`. For use beyond your own
+network, put the app behind your existing setup (VPN, or a reverse proxy with
+HTTPS) rather than opening the port to the whole internet.
+
+---
+
 ## Security notes
 
 - This directory lives in a **public** repo. The *code* is safe to publish; the

@@ -20,3 +20,6 @@ vm-automation/
 casambi/.env
 casambi/.casambi_session.json
 casambi/devices.json
+casambi/favorites.json
+casambi/.venv/
+casambi/__pycache__/

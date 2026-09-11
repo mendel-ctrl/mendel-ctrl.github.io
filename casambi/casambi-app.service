@@ -1,0 +1,28 @@
+# systemd unit to keep the lighting app running on the VM.
+#
+# Install (edit the two paths + user to match your VM):
+#   sudo cp casambi-app.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now casambi-app
+#   systemctl status casambi-app        # check it's running
+#   journalctl -u casambi-app -f        # watch its logs
+#
+# Secrets come from casambi/.env (loaded by the app), so none live here.
+
+[Unit]
+Description=Casambi lighting web app (Chabad Center)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# --- edit these three lines for your VM ---
+User=YOUR_VM_USER
+WorkingDirectory=/home/YOUR_VM_USER/casambi
+ExecStart=/home/YOUR_VM_USER/casambi/run.sh
+# ------------------------------------------
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

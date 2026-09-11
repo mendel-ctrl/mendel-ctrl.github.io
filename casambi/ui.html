@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Chabad Center Lights</title>
+<style>
+  :root {
+    --bg: #f4f2ee; --card: #ffffff; --ink: #1d1b17; --muted: #6b6459;
+    --line: #e4dfd6; --accent: #c8892b; --accent-ink: #ffffff;
+    --on: #2e7d55; --off: #8a8178; --danger: #b23b3b;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 6px 20px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17150f; --card: #23201a; --ink: #f2ede3; --muted: #a89f90;
+      --line: #34302a; --accent: #e0a13f; --accent-ink: #1a1712;
+      --on: #4fb383; --off: #6f675d; --danger: #d66;
+      --shadow: 0 1px 3px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  h1 { font-size: 1.35rem; margin: 0; letter-spacing: -.01em; }
+  .net { color: var(--muted); font-size: .85rem; }
+  h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 28px 0 12px; }
+  #status { min-height: 20px; margin: 10px 0 0; font-size: .9rem; color: var(--muted); }
+  #status.err { color: var(--danger); }
+
+  /* Scenes */
+  .scenes { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .scene {
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 14px; padding: 18px 14px; font-size: 1.05rem; font-weight: 600;
+    box-shadow: var(--shadow); cursor: pointer; transition: transform .06s ease;
+    display: flex; align-items: center; justify-content: center; text-align: center; min-height: 64px;
+  }
+  .scene:active { transform: scale(.97); }
+  .scene.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  /* Light zones */
+  .zone { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+          padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .zone-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .zone-name { font-weight: 600; font-size: 1.08rem; }
+  .btns { display: flex; gap: 8px; }
+  .btn { border: 1px solid var(--line); background: transparent; color: var(--ink);
+         border-radius: 10px; padding: 9px 16px; font-size: .95rem; font-weight: 600; cursor: pointer; }
+  .btn:active { transform: scale(.96); }
+  .btn.on { background: var(--on); color: #fff; border-color: var(--on); }
+  .btn.off { background: var(--card); color: var(--off); }
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  input[type=range] { flex: 1; accent-color: var(--accent); height: 28px; }
+  .pct { width: 46px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .alloff { width: 100%; margin-top: 20px; padding: 16px; border-radius: 14px;
+            border: 1px solid var(--line); background: var(--card); color: var(--danger);
+            font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: var(--shadow); }
+  .alloff:active { transform: scale(.99); }
+
+  /* PIN gate */
+  #gate { position: fixed; inset: 0; background: var(--bg); display: none;
+          align-items: center; justify-content: center; padding: 24px; }
+  #gate.show { display: flex; }
+  .gatebox { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+             padding: 28px 24px; box-shadow: var(--shadow); width: 100%; max-width: 320px; text-align: center; }
+  .gatebox h3 { margin: 0 0 16px; }
+  #pin { width: 100%; padding: 14px; font-size: 1.4rem; text-align: center; letter-spacing: .3em;
+         border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+  .gatebox button { margin-top: 14px; width: 100%; padding: 14px; border: 0; border-radius: 10px;
+                    background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 1rem; cursor: pointer; }
+  .demo-tag { display: inline-block; margin-left: 8px; font-size: .7rem; background: var(--accent);
+              color: var(--accent-ink); padding: 2px 7px; border-radius: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+  <div id="gate">
+    <div class="gatebox">
+      <h3>Enter PIN</h3>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••">
+      <button onclick="submitPin()">Unlock</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header>
+      <h1>Lights <span id="demo" class="demo-tag" hidden>DEMO</span></h1>
+      <span class="net" id="net"></span>
+    </header>
+    <div id="status">Loading…</div>
+
+    <h2>Scenes</h2>
+    <div class="scenes" id="scenes"></div>
+
+    <h2>Light Zones</h2>
+    <div id="zones"></div>
+
+    <button class="alloff" onclick="allOff()">Turn Everything Off</button>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let PIN = localStorage.getItem("casambi_pin") || "";
+
+function headers() {
+  const h = { "Content-Type": "application/json" };
+  if (PIN) h["X-App-Pin"] = PIN;
+  return h;
+}
+function setStatus(msg, isErr) {
+  const s = $("status"); s.textContent = msg; s.className = isErr ? "err" : "";
+}
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (res.status === 401) { showGate(); throw new Error("PIN required"); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || ("Error " + res.status));
+  return data;
+}
+
+function showGate() { $("gate").classList.add("show"); $("pin").focus(); }
+function hideGate() { $("gate").classList.remove("show"); }
+function submitPin() {
+  PIN = $("pin").value.trim();
+  localStorage.setItem("casambi_pin", PIN);
+  hideGate();
+  load();
+}
+$("pin") && $("pin").addEventListener("keydown", e => { if (e.key === "Enter") submitPin(); });
+
+async function boot() {
+  try {
+    const cfg = await api("/api/config");
+    $("net").textContent = cfg.network_name || "";
+    if (cfg.demo) $("demo").hidden = false;
+    if (cfg.pin_required && !PIN) { showGate(); return; }
+    load();
+  } catch (e) { setStatus(e.message, true); }
+}
+
+async function load() {
+  try {
+    setStatus("Loading…");
+    const cat = await api("/api/catalog", { headers: headers() });
+    renderScenes(cat.scenes || []);
+    renderZones(cat.groups || []);
+    setStatus("Ready.");
+  } catch (e) { setStatus(e.message, true); }
+}
+
+function renderScenes(scenes) {
+  const box = $("scenes"); box.innerHTML = "";
+  if (!scenes.length) { box.innerHTML = "<p style='color:var(--muted)'>No scenes found. Create scenes in the Casambi app.</p>"; return; }
+  scenes.forEach(s => {
+    const b = document.createElement("button");
+    b.className = "scene"; b.textContent = s.name;
+    b.onclick = async () => {
+      document.querySelectorAll(".scene").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      try { await api("/api/scene", { method: "POST", headers: headers(), body: JSON.stringify({ name: s.name }) });
+            setStatus("Scene: " + s.name); }
+      catch (e) { setStatus(e.message, true); b.classList.remove("active"); }
+    };
+    box.appendChild(b);
+  });
+}
+
+function renderZones(groups) {
+  const box = $("zones"); box.innerHTML = "";
+  if (!groups.length) { box.innerHTML = "<p style='color:var(--muted)'>No groups found. Group your lights into zones in the Casambi app (e.g. Sanctuary, Lobby).</p>"; return; }
+  groups.forEach(g => {
+    const zone = document.createElement("div"); zone.className = "zone";
+    zone.innerHTML = `
+      <div class="zone-top">
+        <span class="zone-name">${g.name}</span>
+        <div class="btns">
+          <button class="btn on">On</button>
+          <button class="btn off">Off</button>
+        </div>
+      </div>
+      <div class="slider-row">
+        <input type="range" min="0" max="100" value="0">
+        <span class="pct">0%</span>
+      </div>`;
+    const range = zone.querySelector("input");
+    const pct = zone.querySelector(".pct");
+    const send = async (level) => {
+      range.value = Math.round(level * 100); pct.textContent = range.value + "%";
+      try { await api("/api/group", { method: "POST", headers: headers(), body: JSON.stringify({ name: g.name, level }) });
+            setStatus(`${g.name} → ${range.value}%`); }
+      catch (e) { setStatus(e.message, true); }
+    };
+    zone.querySelector(".btn.on").onclick = () => send(1.0);
+    zone.querySelector(".btn.off").onclick = () => send(0.0);
+    range.oninput = () => { pct.textContent = range.value + "%"; };
+    range.onchange = () => send(range.value / 100);
+    box.appendChild(zone);
+  });
+}
+
+async function allOff() {
+  if (!confirm("Turn ALL lights off?")) return;
+  try {
+    setStatus("Turning everything off…");
+    await api("/api/alloff", { method: "POST", headers: headers() });
+    document.querySelectorAll(".zone input").forEach(r => { r.value = 0; r.nextElementSibling.textContent = "0%"; });
+    document.querySelectorAll(".scene").forEach(x => x.classList.remove("active"));
+    setStatus("All off.");
+  } catch (e) { setStatus(e.message, true); }
+}
+
+boot();
+</script>
+</body>
+</html>

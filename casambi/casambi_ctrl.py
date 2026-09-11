@@ -50,6 +50,15 @@ SESSION_FILE = HERE / ".casambi_session.json"   # gitignored: holds a session id
 CATALOG_FILE = HERE / "devices.json"            # gitignored: building layout
 
 
+class CasambiError(Exception):
+    """A user-facing problem (bad credentials, unknown light, no catalog, ...).
+
+    Domain errors raise this instead of calling sys.exit, so the same functions
+    are safe to import into a long-running server (app.py). The CLI's main()
+    catches it and prints a clean message.
+    """
+
+
 # --------------------------------------------------------------------------- #
 # Config / secrets
 # --------------------------------------------------------------------------- #
@@ -84,7 +93,7 @@ def get_config():
         if not val
     ]
     if missing:
-        sys.exit(
+        raise CasambiError(
             "Missing required config: "
             + ", ".join(missing)
             + "\nSet them in casambi/.env (copy .env.example) or as env vars."
@@ -116,13 +125,13 @@ def create_network_session(cfg):
         timeout=30,
     )
     if resp.status_code == 401:
-        sys.exit("Authentication failed (401). Check CASAMBI_EMAIL / CASAMBI_PASSWORD.")
+        raise CasambiError("Authentication failed (401). Check CASAMBI_EMAIL / CASAMBI_PASSWORD.")
     if resp.status_code == 403:
-        sys.exit("Forbidden (403). Your CASAMBI_API_KEY may be wrong or not yet active.")
+        raise CasambiError("Forbidden (403). Your CASAMBI_API_KEY may be wrong or not yet active.")
     resp.raise_for_status()
     networks = resp.json()
     if not networks:
-        sys.exit("No networks returned for these credentials.")
+        raise CasambiError("No networks returned for these credentials.")
 
     chosen_id, chosen = None, None
     for net_id, net in networks.items():
@@ -135,7 +144,7 @@ def create_network_session(cfg):
             break
     if chosen is None:
         names = ", ".join(n.get("name", "?") for n in networks.values())
-        sys.exit(f"Network '{cfg['network_name']}' not found. Available: {names}")
+        raise CasambiError(f"Network '{cfg['network_name']}' not found. Available: {names}")
 
     return {
         "network_id": chosen.get("id", chosen_id),
@@ -212,7 +221,7 @@ def build_catalog(network):
 
 def load_catalog():
     if not CATALOG_FILE.exists():
-        sys.exit("No catalog yet. Run:  python casambi_ctrl.py discover")
+        raise CasambiError("No catalog yet. Run:  python casambi_ctrl.py discover")
     return json.loads(CATALOG_FILE.read_text())
 
 
@@ -234,9 +243,9 @@ def resolve(catalog, kind, target):
         return matches[0]
     if len(matches) > 1:
         names = ", ".join(f"{m['name']} (id {m['id']})" for m in matches)
-        sys.exit(f"'{target}' is ambiguous in {kind}: {names}. Be more specific or use the id.")
+        raise CasambiError(f"'{target}' is ambiguous in {kind}: {names}. Be more specific or use the id.")
     known = ", ".join(it.get("name", "?") for it in items) or "(none)"
-    sys.exit(f"No {kind[:-1]} matching '{target}'. Known {kind}: {known}")
+    raise CasambiError(f"No {kind[:-1]} matching '{target}'. Known {kind}: {known}")
 
 
 # --------------------------------------------------------------------------- #
@@ -429,7 +438,10 @@ def build_parser():
 
 def main():
     args = build_parser().parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except CasambiError as exc:
+        sys.exit(str(exc))
 
 
 if __name__ == "__main__":
