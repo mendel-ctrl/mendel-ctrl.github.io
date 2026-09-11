@@ -43,6 +43,8 @@
   }
   .scene:active { transform: scale(.97); }
   .scene.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .scene.quick { border-left: 4px solid var(--accent); }
+  .scene.quick.active { border-left-color: var(--accent-ink); }
 
   /* Light zones */
   .zone { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
@@ -148,27 +150,34 @@ async function load() {
   try {
     setStatus("Loading…");
     const cat = await api("/api/catalog", { headers: headers() });
-    renderScenes(cat.scenes || []);
+    renderScenes(cat.custom_scenes || [], cat.scenes || []);
     renderZones(cat.groups || []);
     setStatus("Ready.");
   } catch (e) { setStatus(e.message, true); }
 }
 
-function renderScenes(scenes) {
+function makeScene(name, endpoint, isQuick) {
+  const b = document.createElement("button");
+  b.className = "scene" + (isQuick ? " quick" : "");
+  b.textContent = name;
+  b.onclick = async () => {
+    document.querySelectorAll(".scene").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    try { await api(endpoint, { method: "POST", headers: headers(), body: JSON.stringify({ name }) });
+          setStatus("Scene: " + name); }
+    catch (e) { setStatus(e.message, true); b.classList.remove("active"); }
+  };
+  return b;
+}
+
+function renderScenes(quick, casambi) {
   const box = $("scenes"); box.innerHTML = "";
-  if (!scenes.length) { box.innerHTML = "<p style='color:var(--muted)'>No scenes found. Create scenes in the Casambi app.</p>"; return; }
-  scenes.forEach(s => {
-    const b = document.createElement("button");
-    b.className = "scene"; b.textContent = s.name;
-    b.onclick = async () => {
-      document.querySelectorAll(".scene").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      try { await api("/api/scene", { method: "POST", headers: headers(), body: JSON.stringify({ name: s.name }) });
-            setStatus("Scene: " + s.name); }
-      catch (e) { setStatus(e.message, true); b.classList.remove("active"); }
-    };
-    box.appendChild(b);
-  });
+  if (!quick.length && !casambi.length) {
+    box.innerHTML = "<p style='color:var(--muted)'>No scenes yet. Add quick scenes in scenes.json, or build scenes in the Casambi app.</p>";
+    return;
+  }
+  quick.forEach(s => box.appendChild(makeScene(s.name, "/api/custom", true)));
+  casambi.forEach(s => box.appendChild(makeScene(s.name, "/api/scene", false)));
 }
 
 function renderZones(groups) {

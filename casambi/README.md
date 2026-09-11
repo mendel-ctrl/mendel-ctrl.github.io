@@ -148,6 +148,23 @@ included `casambi-app.service` — see the comments at the top of that file.
 To trim it to the ones you actually use, copy `favorites.json.example` to
 `favorites.json` and list the names you want (in the order you want them).
 
+**Quick scenes (e.g. "Regular"):** you can define your own scene buttons that
+set several zones at once — *without* building scenes in the Casambi app. Copy
+`scenes.json.example` to `scenes.json` and edit. Example:
+
+```json
+{
+  "Regular": [
+    { "group": "Sanctuary", "level": 0.85 },
+    { "group": "Lobby",     "level": 1.0 },
+    { "group": "Social Hall","level": 0.75 }
+  ]
+}
+```
+
+These appear first in the Scenes row (with a gold edge). Real Casambi scenes
+appear after them. Group names must match your Casambi groups.
+
 **Access & safety:** always set `CASAMBI_APP_PIN`. For use beyond your own
 network, put the app behind your existing setup (VPN, or a reverse proxy with
 HTTPS) rather than opening the port to the whole internet.

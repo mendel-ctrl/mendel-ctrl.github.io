@@ -34,6 +34,7 @@ import casambi_ctrl as cc
 
 HERE = Path(__file__).resolve().parent
 FAVORITES_FILE = HERE / "favorites.json"
+CUSTOM_SCENES_FILE = HERE / "scenes.json"
 UI_FILE = HERE / "ui.html"
 
 DEMO = os.environ.get("CASAMBI_APP_DEMO") == "1"
@@ -62,6 +63,18 @@ DEMO_CATALOG = {
     ],
 }
 
+# App-defined "quick scenes": a name mapped to a list of zone levels. These work
+# WITHOUT you building scenes in the Casambi app — they just set several groups
+# at once. Real file: scenes.json (gitignored). This is the demo default.
+DEMO_CUSTOM_SCENES = {
+    "Regular": [
+        {"group": "Sanctuary", "level": 0.85},
+        {"group": "Lobby", "level": 1.0},
+        {"group": "Social Hall", "level": 0.75},
+        {"group": "Entrance", "level": 1.0},
+    ],
+}
+
 
 # --------------------------------------------------------------------------- #
 # Helpers
@@ -71,6 +84,19 @@ def load_favorites():
     if FAVORITES_FILE.exists():
         try:
             return json.loads(FAVORITES_FILE.read_text())
+        except (json.JSONDecodeError, OSError):
+            pass
+    return {}
+
+
+def load_custom_scenes():
+    """App-defined quick scenes (name -> [{group, level, kelvin?}, ...])."""
+    if DEMO:
+        return DEMO_CUSTOM_SCENES
+    if CUSTOM_SCENES_FILE.exists():
+        try:
+            data = json.loads(CUSTOM_SCENES_FILE.read_text())
+            return {k: v for k, v in data.items() if not k.startswith("_")}
         except (json.JSONDecodeError, OSError):
             pass
     return {}
@@ -152,6 +178,7 @@ def api_catalog():
             "network_name": catalog.get("network_name", ""),
             "groups": pick("groups"),
             "scenes": pick("scenes"),
+            "custom_scenes": [{"name": n} for n in load_custom_scenes().keys()],
         }
     )
 
@@ -191,6 +218,42 @@ def api_scene():
         level = float(data.get("level", 1.0))
         msg = {"method": "controlScene", "id": scene["id"], "level": level}
         return jsonify(do_control(msg))
+    except cc.CasambiError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"error": f"Control failed: {exc}"}), 500
+
+
+@app.route("/api/custom", methods=["POST"])
+def api_custom():
+    """Activate an app-defined quick scene: set several groups at once."""
+    err = check_pin()
+    if err:
+        return err
+    data = request.get_json(force=True, silent=True) or {}
+    name = data.get("name", "")
+    try:
+        custom = load_custom_scenes()
+        steps = custom.get(name)
+        if steps is None:  # case-insensitive fallback
+            for k, v in custom.items():
+                if k.lower() == str(name).lower():
+                    steps = v
+                    break
+        if steps is None:
+            raise cc.CasambiError(f"No quick scene named '{name}'.")
+        catalog = get_catalog()
+        for step in steps:
+            group = cc.resolve(catalog, "groups", step["group"])
+            msg = {
+                "method": "controlGroup",
+                "id": group["id"],
+                "targetControls": cc.build_target_controls(
+                    level=float(step.get("level", 1.0)), kelvin=step.get("kelvin")
+                ),
+            }
+            do_control(msg)
+        return jsonify({"ok": True})
     except cc.CasambiError as exc:
         return jsonify({"error": str(exc)}), 400
     except Exception as exc:

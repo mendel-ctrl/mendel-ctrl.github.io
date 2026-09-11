@@ -1,0 +1,21 @@
+{
+  "_comment": "App-defined QUICK SCENES. Copy this file to scenes.json and edit. Each name becomes a one-tap button that sets several zones at once — no need to build scenes in the Casambi app. Group names must match your Casambi groups (run: python casambi_ctrl.py discover to see them). level is 0.0-1.0. kelvin is optional (tunable-white fixtures).",
+
+  "Regular": [
+    { "group": "Sanctuary", "level": 0.85 },
+    { "group": "Lobby", "level": 1.0 },
+    { "group": "Social Hall", "level": 0.75 },
+    { "group": "Entrance", "level": 1.0 }
+  ],
+
+  "Kiddush": [
+    { "group": "Social Hall", "level": 1.0 },
+    { "group": "Lobby", "level": 1.0 },
+    { "group": "Sanctuary", "level": 0.3 }
+  ],
+
+  "Shiur": [
+    { "group": "Sanctuary", "level": 1.0 },
+    { "group": "Lobby", "level": 0.5 }
+  ]
+}
