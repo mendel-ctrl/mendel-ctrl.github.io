@@ -304,8 +304,9 @@
   /* prestige hierarchy: label scale, name scale, gold rule for the top two */
   .level--lead { border-top: 1.5px solid var(--gold); padding-top: clamp(24px,3vw,44px); padding-bottom: clamp(20px,2.6vw,38px); }
   .level--lead .level-name { font-size: clamp(34px,4.2vw,58px); }
-  .level--lead .level-names { columns: 1; }
-  .level--lead .dn { font-size: clamp(24px,3vw,42px); font-weight: 600; line-height: 1.2; }
+  .level--lead .level-names { columns: auto; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: clamp(26px,3.5vw,56px); row-gap: 6px; }
+  .level--lead .dn { font-size: clamp(20px,2.3vw,31px); font-weight: 600; line-height: 1.25; }
+  .level--lead .level-names .dn--add { flex-basis: 100%; }
 
   .level--pillar { border-top: 1.5px solid var(--gold); }
   .level--pillar .level-name { font-size: clamp(27px,3.1vw,42px); }
@@ -788,7 +789,6 @@ function renderBoard(){
              '<div class="level-head">'+
                '<h3 class="level-name serif">'+tier.name+'</h3>'+
                '<div class="level-amt">'+mny+' &amp; above</div>'+
-               '<div class="level-count">'+(count?count+(count===1?" family":" families"):"Open")+'</div>'+
              '</div>'+
              '<div class="level-names">'+names+'</div>'+
            '</section>';
