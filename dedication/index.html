@@ -289,6 +289,17 @@
   .level-count { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
   .dn { display: block; font-family: var(--serif); color: var(--espresso); line-height: 1.4; break-inside: avoid; }
   .dn--open { font-style: italic; color: var(--faint); }
+  /* "Add your name here" — the one open space each level offers, as a tap target */
+  .dn--add { display: inline-flex; align-items: center; gap: 9px; width: fit-content; margin-top: 12px;
+    padding: 12px 20px; min-height: 48px; box-sizing: border-box; border: 1.5px solid var(--gold);
+    background: transparent; color: var(--gold); font-family: var(--sans); font-weight: 600;
+    font-size: 13px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+    border-radius: 2px; -webkit-tap-highlight-color: transparent; transition: background .15s, color .15s; }
+  .dn--add:hover, .dn--add:active { background: var(--gold); color: var(--ivory); }
+  .dn-add-plus { font-size: 18px; line-height: 1; font-weight: 400; }
+  /* keep the button one uniform size across every level (higher specificity than the tier name-scale rules) */
+  .level .level-names .dn--add { font-size: 13px; line-height: 1.2; }
+  .level--lead .level-names .dn--add { margin-top: 20px; }
 
   /* prestige hierarchy: label scale, name scale, gold rule for the top two */
   .level--lead { border-top: 1.5px solid var(--gold); padding-top: clamp(24px,3vw,44px); padding-bottom: clamp(20px,2.6vw,38px); }
@@ -652,15 +663,19 @@ const SPACES = [
   { name: "Talis Rack", category: "Sacred Spaces", amount: null, status: "dedicated", dedicatedBy: "Frank and Dale Marsilio", memo: "", image: "images/2407_image.jpg", blurb: "" },
 ];
 
+// Each level has a `total` = how many dedication spaces it holds. Names below
+// fill those spaces top to bottom; any remaining spaces show a single
+// "Add your name here" button on the wall. To add a donor, just type their
+// name into the matching `donors` list (and it fills the next open space).
 const DONOR_BOARD = [
-  { name: "Lead", amount: 500000, color: "#6B4A31", donors: ["Dr. Michael and Elizabeth Zimmer"] },
-  { name: "Pillar", amount: 360000, color: "#725239", donors: [] },
-  { name: "Cornerstone", amount: 250000, color: "#7A5C43", donors: ["Alexander Family","Michael and Margot Benstock","The Buns Family","Dr. Steven and Nicole Cohen","Dr. Jeffrey and Wendy Miller","Herman OB\"M and Rebecca Ovadia","Aron and Esther Raihshtein","Ambassador Mel and Betty Sembler OBM","Morris Willner"] },
-  { name: "Visionary", amount: 100000, color: "#8A6A3E", donors: ["Alexander Family","Stephen and Vicky Baker","Sherran Blair","Evan Cohn and Haris Lender","Dr. Andrew and Meredith Cooper","Bill Edwards","Dr. Larry and Alice Ettinger","Herman Forbes Charitable Trust","Steven Goodman OB\"M and Judy Goodman","Samuel and Janet Hammer","Gideon Hecht","Dr. Lane and Suzanne Mercer","Steven and Mona Press","Abraham Reichbach","Morris and Lillian Tabacinic","Anonymous Donor"] },
-  { name: "Founder", amount: 50000, color: "#9C7A45", donors: ["Antony Cooke","Rosenbaum Family","Peter and Lani Ford","Lenny Gartner","Rabbi Gedale Korf OB\"M","Ralph and Ruth Ann Mizrahi","Stuart Nast","Andrew Pozin","Steven Raymund","Dr. Richard Shelsky","Susan Turner OB\"M","Alon Varsha"] },
-  { name: "Benefactor", amount: 18000, color: "#B0894A", donors: ["Dr. Warren and Naomi Abel","Bob Barnum OB\"M","Murray and Debby Bevitz","David and Heather Delrahim","Keyvan and Stephanie Kohan","Leonid and Alla Komanovsky","Steven and Belinda Konigsberg","Kevin Lane","Dr. Dan and Irene Lawson","Dr. Adam and Jamee Miller","Aaron Raihshtein","Cary and Karen Reich","Ruvane Richman","Alex and Lena Rogachevsky","Dr. Stanley and Nancy Rosenberg","Ken and JP Sherman","Michael and Selena Shimshoni","Mark and Judy Teitelbaum","Drs. Israel and Katie Wojnowich"] },
-  { name: "Sponsor", amount: 5000, color: "#BE9A5A", donors: ["Mickael Boutboul","David Colman","Michael and Jenna Cvetetic","Patrick Ehrlich","Deitch Family","The Wein Family","Elie and Kory Farkas","Michael and Gail Frye","Ross Gelfand","Ethel Goldberg","Madelaine Goldish","Mordechai and Esther Goldstein","Dr. Mark and Judy Gordon","Bryan and Robyn Greenberg","Beth Shalom Gulfport","Herman & Waterman Families","Mauricio and Deborah Lan","Ted Mallin","Frank and Dale Marsilio","Barbara Mazer","Michael Morris","Daniel & Maggie Penello","Marcia Person","Roger Rovell","Robert Shapiro","Linda Weiss"] },
-  { name: "Donor", amount: 1800, color: "#C9A25C", donors: ["Amnon Abayov","Marcia Bressler","Beverly Cohen","Patrick Erlich","Max Glazer","Hilbert Haghnazarzadeh","Oleg and Katherine Iossem","Brian and Susan Kagan","Richard and Judith Kuskin","Linda Lerner","Robert Murray","Eileen Richman","Daniel and Ronith Sheffer","Steven and Elizabeth Sussman","Shari Cohen William Boesch","Drs Steven Bloom and Charlene Wygodski","Anonymous Donor"] },
+  { name: "Lead", amount: 500000, color: "#6B4A31", total: 3, donors: ["Dr. Michael and Elizabeth Zimmer","The Korf Family"] },
+  { name: "Platinum", amount: 360000, color: "#725239", total: 6, donors: ["Alexander Family","The Buns Family","Dr. Jeffrey and Wendy Miller","Morris Willner","Morris and Lillian Tabacinic"] },
+  { name: "Pillar", amount: 250000, color: "#7A5C43", total: 6, donors: ["Michael and Margot Benstock","Dr. Steven and Nicole Cohen","Herman OB\"M and Rebecca Ovadia","Ambassador Mel and Betty Sembler OBM","Aaron Raihshtein"] },
+  { name: "Visionary", amount: 100000, color: "#8A6A3E", total: 14, donors: ["Stephen and Vicky Baker","Sherran Blair","Evan Cohn and Haris Lender","Dr. Andrew and Meredith Cooper","Dr. Larry and Alice Ettinger","Herman Forbes Charitable Trust","Steven Goodman OB\"M and Judy Goodman","Samuel and Janet Hammer","Gideon Hecht","Dr. Lane and Suzanne Mercer","Abraham Reichbach","Anonymous Donor"] },
+  { name: "Founder", amount: 50000, color: "#9C7A45", total: 18, donors: ["Antony Cooke","Bill Edwards","Rosenbaum Family","Peter and Lani Ford","Lenny Gartner","Rabbi Gedale Korf OB\"M","Ralph and Ruth Ann Mizrahi","Stuart Nast","Andrew Pozin","Steven and Mona Press","Steven Raymund","Dr. Richard Shelsky","Susan Turner OB\"M","Alon Varsha","Bob Barnum OB\"M","Mark and Judy Teitelbaum"] },
+  { name: "Benefactors", amount: 36000, color: "#A67C44", total: 24, donors: ["Dr. Warren and Naomi Abel","Murray and Debby Bevitz","David and Heather Delrahim","Keyvan and Stephanie Kohan","Leonid and Alla Komanovsky","Steven and Belinda Konigsberg","Kevin Lane","Dr. Dan and Irene Lawson","Dr. Adam and Jamee Miller","Cary and Karen Reich","Ruvane Richman","Alex and Lena Rogachevsky","Dr. Stanley and Nancy Rosenberg","Ken and JP Sherman","Michael and Selena Shimshoni","Drs. Israel and Katie Wojnowich"] },
+  { name: "Donor", amount: 18000, color: "#B0894A", total: 31, donors: ["Mickael Boutboul","David Colman","Michael and Jenna Cvetetic","Deitch Family","The Wein Family","Elie and Kory Farkas","Michael and Gail Frye","Ross Gelfand","Ethel Goldberg","Madelaine Goldish","Mordechai and Esther Goldstein","Dr. Mark and Judy Gordon","Bryan and Robyn Greenberg","Beth Shalom Gulfport","Herman & Waterman Families","Mauricio and Deborah Lan","Maurice Loeb","Ted Mallin","Frank and Dale Marsilio","Barbara Mazer","Michael Morris","Daniel & Maggie Penello","Marcia Person","Roger Rovell","Robert Shapiro","Linda Weiss"] },
+  { name: "Sponsor", amount: 1800, color: "#C9A25C", total: 24, donors: ["Amnon Abayov","Beverly Cohen","Shari Cohen & William Boesch","Patrick Erlich","Daniel Gigi","Max Glazer","Hilbert Haghnazarzadeh","Oleg and Katherine Iossem","Brian and Susan Kagan","Richard and Judith Kuskin","Linda Lerner","Robert Murray","Eileen Richman","Daniel and Ronith Sheffer","Steven and Elizabeth Sussman","Drs Steven Bloom and Charlene Wygodski","Anonymous Donor"] },
 ];
 
 /* ============================================================================
@@ -759,13 +774,20 @@ function renderBoard(){
   document.getElementById("board-list").innerHTML=DONOR_BOARD.map((tier,i)=>{
     const lvl=cls[i]||"level--std";
     const count=tier.donors?tier.donors.length:0;
-    const names=count
-      ? tier.donors.map(n=>'<span class="dn">'+n+'</span>').join("")
-      : '<span class="dn dn--open">Awaiting its first supporter</span>';
+    const open=tier.total?Math.max(0,tier.total-count):0;
+    const mny=money(tier.amount);
+    let names=tier.donors.map(n=>'<span class="dn">'+n+'</span>').join("");
+    if(open>0){
+      names+='<button type="button" class="dn dn--add" '+
+               'onclick="openInterest(\'Wall of Honor — '+tier.name+' ('+mny+')\')">'+
+               '<span class="dn-add-plus">+</span> Add your name here</button>';
+    } else if(count===0){
+      names='<span class="dn dn--open">Awaiting its first supporter</span>';
+    }
     return '<section class="level '+lvl+'">'+
              '<div class="level-head">'+
                '<h3 class="level-name serif">'+tier.name+'</h3>'+
-               '<div class="level-amt">'+money(tier.amount)+' &amp; above</div>'+
+               '<div class="level-amt">'+mny+' &amp; above</div>'+
                '<div class="level-count">'+(count?count+(count===1?" family":" families"):"Open")+'</div>'+
              '</div>'+
              '<div class="level-names">'+names+'</div>'+
