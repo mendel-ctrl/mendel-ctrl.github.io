@@ -19,6 +19,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Chabad Lighting Control</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lights">
+<meta name="theme-color" content="#1f5f8b">
 <style>
 :root{
   --bg:#eef1f4; --panel:#fff; --ink:#18222e; --muted:#5d6b7a; --line:#d9dfe6; --soft:#f5f7f9;
@@ -57,6 +64,20 @@ input[type=range]{flex:1;accent-color:var(--light)}
 .offline{font-size:12px;color:var(--bad)}
 .error{color:var(--bad);font-size:14px;min-height:1.2em}
 .empty{color:var(--muted);font-size:14px}
+body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#mainView{display:flex;flex-direction:column;gap:22px}
+.headbtns{display:flex;flex-wrap:wrap;gap:8px}
+.edit-list{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.edit-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.edit-row:first-child{border-top:0}
+.edit-row.hid input[type=text]{opacity:.5}
+.edit-row input[type=text]{width:100%;font:15px system-ui,sans-serif;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink)}
+.star{font-size:22px;line-height:1;padding:4px 8px;border:0;background:none;color:var(--line)}
+.star[aria-pressed="true"]{color:var(--light)}
+.showbtn{font-size:13px;padding:6px 10px}
+.showbtn[aria-pressed="false"]{color:var(--muted);text-decoration:line-through}
+.hint{color:var(--muted);font-size:14px;margin:0 0 14px;max-width:60ch}
+.install{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted)}
 #setup{max-width:420px;margin:8vh auto;padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:10px}
 #setup p{margin:0 0 6px;color:var(--muted);font-size:14px}
 #setup label{font-weight:600;font-size:14px;margin-top:6px}
@@ -87,16 +108,32 @@ input[type=range]{flex:1;accent-color:var(--light)}
       <h1>Lighting</h1>
       <div class="status"><span class="dot" id="dot"></span><span id="statusText">Connecting...</span></div>
     </div>
-    <div class="row">
+    <div class="headbtns">
       <button class="primary" data-kind="all" data-level="1">All lights on</button>
       <button data-kind="all" data-level="0">All lights off</button>
+      <button id="editBtn">Customize</button>
     </div>
   </header>
   <div class="error" id="error"></div>
 
+  <div id="mainView">
+  <section id="favSection" hidden><h2>Favorites</h2><div class="grid" id="favorites"></div></section>
   <section><h2>Scenes</h2><div class="row" id="scenes"></div></section>
   <section><h2>Groups</h2><div class="grid" id="groups"></div></section>
   <section><h2>Individual lights</h2><div class="grid" id="lights"></div></section>
+  </div>
+
+  <div id="editView" hidden>
+    <p class="hint">Tap the star to add something to Favorites at the top. Tap Shown to hide things you don't use. Type a new name to rename it (this doesn't change the name in the Casambi app). Changes save on this phone right away.</p>
+    <section><h2>Scenes</h2><div class="edit-list" id="editScenes"></div></section>
+    <section style="margin-top:18px"><h2>Groups</h2><div class="edit-list" id="editGroups"></div></section>
+    <section style="margin-top:18px"><h2>Individual lights</h2><div class="edit-list" id="editLights"></div></section>
+    <div class="row" style="margin-top:18px"><button class="primary" id="doneBtn">Done</button></div>
+  </div>
+
+  <div class="install" id="installTip">
+    <b>Put this on your home screen:</b> on iPhone, tap the Share button, then "Add to Home Screen." On Android, tap the ⋮ menu, then "Add to Home screen" or "Install app."
+  </div>
 
   <div><button class="link" id="forget">Sign out and forget this device</button></div>
 </div>
@@ -111,6 +148,15 @@ const $ = (s) => document.querySelector(s);
 // Saved on this device: { apiKey, networkId, sessionId, networkName }
 let saved = null;
 try { saved = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch {}
+
+// This phone's own choices: favorites, hidden items and nicknames.
+const PREFS_KEY = "chabad-lights-prefs";
+let prefs = { fav: {}, hidden: {}, names: {} };
+try { prefs = { ...prefs, ...JSON.parse(localStorage.getItem(PREFS_KEY)) }; } catch {}
+function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch {} }
+const keyOf = (kind, id) => `${kind}:${id}`;
+const nameOf = (kind, item) => prefs.names[keyOf(kind, item.id)] || item.name;
+let editing = false;
 
 const state = { lights: new Map(), groups: [], scenes: [], connected: false, gatewayOnline: false };
 let socket = null, pingTimer = null, dragging = false, retryTimer = null;
@@ -238,11 +284,11 @@ const byPosition = (a, b) => a.position - b.position || a.name.localeCompare(b.n
 function card(kind, item, level, extra = "") {
   const pct = Math.round(level * 100);
   return `<div class="card ${pct > 0 ? "on" : ""}">
-    <div class="top"><b>${esc(item.name)}</b><span class="pct">${kind === "group" ? "" : pct + "%"}</span></div>
+    <div class="top"><b>${esc(nameOf(kind, item))}</b><span class="pct">${kind === "group" ? "" : pct + "%"}</span></div>
     ${extra}
     <div class="controls">
       <button data-kind="${kind}" data-id="${item.id}" data-level="1">On</button>
-      <input type="range" min="0" max="100" step="5" value="${kind === "group" ? 50 : pct}" data-kind="${kind}" data-id="${item.id}" aria-label="${esc(item.name)} brightness">
+      <input type="range" min="0" max="100" step="5" value="${kind === "group" ? 50 : pct}" data-kind="${kind}" data-id="${item.id}" aria-label="${esc(nameOf(kind, item))} brightness">
       <button data-kind="${kind}" data-id="${item.id}" data-level="0">Off</button>
     </div>
   </div>`;
@@ -252,17 +298,76 @@ function render() {
   const ok = state.connected && state.gatewayOnline;
   $("#dot").classList.toggle("ok", ok);
   $("#statusText").textContent = !state.connected ? "Connecting to Casambi..." : !state.gatewayOnline ? "Connected, waiting to hear from the Casambi gateway" : `Connected to ${saved.networkName || "Casambi"}`;
-  $("#scenes").innerHTML = state.scenes.length ? [...state.scenes].sort(byPosition).map((s) => `<button data-kind="scene" data-id="${s.id}" data-level="1">${esc(s.name)}</button>`).join("") : `<p class="empty">No scenes set up in Casambi yet.</p>`;
-  $("#groups").innerHTML = state.groups.length ? [...state.groups].sort(byPosition).map((g) => card("group", g, 0)).join("") : `<p class="empty">No groups set up in Casambi yet.</p>`;
-  const lights = [...state.lights.values()].sort((a, b) => a.name.localeCompare(b.name));
-  $("#lights").innerHTML = lights.length ? lights.map((l) => card("light", l, l.dimLevel, l.online ? "" : `<span class="offline">Offline</span>`)).join("") : `<p class="empty">No lights found.</p>`;
+  const visible = (kind) => (x) => !prefs.hidden[keyOf(kind, x.id)];
+  const scenes = [...state.scenes].sort(byPosition);
+  const groups = [...state.groups].sort(byPosition);
+  const lights = [...state.lights.values()].sort((a, b) => nameOf("light", a).localeCompare(nameOf("light", b)));
+  const sceneBtn = (s) => `<button data-kind="scene" data-id="${s.id}" data-level="1">${esc(nameOf("scene", s))}</button>`;
+  const lightCard = (l) => card("light", l, l.dimLevel, l.online ? "" : `<span class="offline">Offline</span>`);
+
+  if (editing) {
+    // Don't redraw while someone is typing a new name.
+    if (!(document.activeElement && document.activeElement.dataset && document.activeElement.dataset.name)) renderEdit(scenes, groups, lights);
+    return;
+  }
+
+  const favScenes = scenes.filter((s) => prefs.fav[keyOf("scene", s.id)]);
+  const favGroups = groups.filter((g) => prefs.fav[keyOf("group", g.id)]);
+  const favLights = lights.filter((l) => prefs.fav[keyOf("light", l.id)]);
+  const hasFav = favScenes.length + favGroups.length + favLights.length > 0;
+  $("#favSection").hidden = !hasFav;
+  $("#favorites").innerHTML = hasFav ? [
+    favScenes.length ? `<div class="card"><b>Scenes</b><div class="row">${favScenes.map(sceneBtn).join("")}</div></div>` : "",
+    ...favGroups.map((g) => card("group", g, 0)),
+    ...favLights.map(lightCard),
+  ].join("") : "";
+
+  const vs = scenes.filter(visible("scene")), vg = groups.filter(visible("group")), vl = lights.filter(visible("light"));
+  $("#scenes").innerHTML = vs.length ? vs.map(sceneBtn).join("") : `<p class="empty">No scenes to show.</p>`;
+  $("#groups").innerHTML = vg.length ? vg.map((g) => card("group", g, 0)).join("") : `<p class="empty">No groups to show.</p>`;
+  $("#lights").innerHTML = vl.length ? vl.map(lightCard).join("") : `<p class="empty">No lights to show.</p>`;
 }
 
+function renderEdit(scenes, groups, lights) {
+  const row = (kind, item) => {
+    const k = keyOf(kind, item.id), shown = !prefs.hidden[k];
+    return `<div class="edit-row ${shown ? "" : "hid"}">
+      <button class="star" data-fav="${k}" aria-pressed="${!!prefs.fav[k]}" aria-label="Favorite ${esc(item.name)}">★</button>
+      <input type="text" id="name-${k.replace(":", "-")}" data-name="${k}" value="${esc(nameOf(kind, item))}" placeholder="${esc(item.name)}" aria-label="Name for ${esc(item.name)}">
+      <button class="showbtn" data-hide="${k}" aria-pressed="${shown}">${shown ? "Shown" : "Hidden"}</button>
+    </div>`;
+  };
+  const empty = `<p class="empty" style="padding:10px 12px;margin:0">None.</p>`;
+  $("#editScenes").innerHTML = scenes.map((s) => row("scene", s)).join("") || empty;
+  $("#editGroups").innerHTML = groups.map((g) => row("group", g)).join("") || empty;
+  $("#editLights").innerHTML = lights.map((l) => row("light", l)).join("") || empty;
+}
+
+function setEditing(on) {
+  editing = on;
+  $("#mainView").hidden = on; $("#editView").hidden = !on;
+  $("#editBtn").textContent = on ? "Done" : "Customize";
+  render();
+}
+$("#editBtn").addEventListener("click", () => setEditing(!editing));
+$("#doneBtn").addEventListener("click", () => { setEditing(false); window.scrollTo(0, 0); });
+
 document.addEventListener("click", (e) => {
+  const fav = e.target.closest("button[data-fav]");
+  if (fav) { const k = fav.dataset.fav; if (prefs.fav[k]) delete prefs.fav[k]; else prefs.fav[k] = true; savePrefs(); render(); return; }
+  const hide = e.target.closest("button[data-hide]");
+  if (hide) { const k = hide.dataset.hide; if (prefs.hidden[k]) delete prefs.hidden[k]; else prefs.hidden[k] = true; savePrefs(); render(); return; }
   const b = e.target.closest("button[data-kind]");
   if (b) send(b.dataset.kind, b.dataset.id, Number(b.dataset.level));
 });
-document.addEventListener("input", (e) => { if (e.target.type === "range") dragging = true; });
+document.addEventListener("input", (e) => {
+  if (e.target.type === "range") dragging = true;
+  if (e.target.dataset.name) {
+    const k = e.target.dataset.name, v = e.target.value.trim();
+    if (v && v !== e.target.placeholder) prefs.names[k] = v; else delete prefs.names[k];
+    savePrefs();
+  }
+});
 document.addEventListener("change", (e) => {
   if (e.target.type !== "range") return;
   dragging = false;
@@ -279,6 +384,9 @@ async function start() {
     $("#error").textContent = err.message.includes("fetch") ? "Couldn't reach Casambi. Check the internet connection." : err.message;
   }
 }
+
+const installed = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+if (installed) $("#installTip").hidden = true;
 
 if (saved && saved.apiKey && saved.sessionId) start(); else showSetup();
 </script>
