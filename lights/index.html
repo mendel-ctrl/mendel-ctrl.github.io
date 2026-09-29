@@ -1,0 +1,286 @@
+<!doctype html>
+<!--
+  CHABAD LIGHTING CONTROL
+  =================================================================
+  Controls the Casambi lights straight from the browser. Nothing to
+  install. Open this page, type the Casambi details once, and it
+  remembers them on this device only.
+
+  No passwords or keys are written in this file. They are typed in
+  by the person using the page and kept in that browser only. After
+  the first sign-in the network password is thrown away; only the
+  API key and a Casambi "session ID" are kept.
+
+  Casambi documentation: https://developer.casambi.com/
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Chabad Lighting Control</title>
+<style>
+:root{
+  --bg:#eef1f4; --panel:#fff; --ink:#18222e; --muted:#5d6b7a; --line:#d9dfe6; --soft:#f5f7f9;
+  --accent:#1f5f8b; --light:#d99a1e; --ok:#2f8a57; --bad:#c0392b;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#10161d; --panel:#18212b; --ink:#e6ecf2; --muted:#94a2b1; --line:#2a3642; --soft:#1e2833;
+  --accent:#5aa3d8; --light:#f0b94a; --ok:#5cc28a; --bad:#ef6f61; color-scheme:dark;
+}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 48px;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+h1{margin:0;font-size:24px}
+h2{margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--bad)}
+.dot.ok{background:var(--ok)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:600 14px system-ui,sans-serif;cursor:pointer;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);padding:10px 16px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.link{border:0;background:none;color:var(--muted);padding:4px 0;font-weight:500;text-decoration:underline}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.card .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card b{font-size:15px}
+.pct{font:13px ui-monospace,Menlo,monospace;color:var(--muted);min-width:4ch;text-align:right}
+.card.on .pct{color:var(--light)}
+.controls{display:flex;align-items:center;gap:8px}
+.controls button{padding:6px 10px;font-size:13px}
+input[type=range]{flex:1;accent-color:var(--light)}
+.offline{font-size:12px;color:var(--bad)}
+.error{color:var(--bad);font-size:14px;min-height:1.2em}
+.empty{color:var(--muted);font-size:14px}
+#setup{max-width:420px;margin:8vh auto;padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:10px}
+#setup p{margin:0 0 6px;color:var(--muted);font-size:14px}
+#setup label{font-weight:600;font-size:14px;margin-top:6px}
+#setup small{color:var(--muted);font-size:12.5px}
+#setup input{font:16px system-ui,sans-serif;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink)}
+#setup button{margin-top:10px}
+</style>
+</head>
+<body>
+
+<form id="setup" hidden autocomplete="off">
+  <h1>Lighting Control</h1>
+  <p>Type your Casambi details once. They are saved on this device only.</p>
+  <label for="apiKey">Casambi API key</label>
+  <input id="apiKey" required spellcheck="false">
+  <label for="email">Network email</label>
+  <input id="email" type="email" required spellcheck="false">
+  <small>The email set on the Casambi network, not your personal Casambi login.</small>
+  <label for="password">Network password</label>
+  <input id="password" type="password" required>
+  <button class="primary" type="submit" id="connectBtn">Connect</button>
+  <div class="error" id="setupError"></div>
+</form>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <div>
+      <h1>Lighting</h1>
+      <div class="status"><span class="dot" id="dot"></span><span id="statusText">Connecting...</span></div>
+    </div>
+    <div class="row">
+      <button class="primary" data-kind="all" data-level="1">All lights on</button>
+      <button data-kind="all" data-level="0">All lights off</button>
+    </div>
+  </header>
+  <div class="error" id="error"></div>
+
+  <section><h2>Scenes</h2><div class="row" id="scenes"></div></section>
+  <section><h2>Groups</h2><div class="grid" id="groups"></div></section>
+  <section><h2>Individual lights</h2><div class="grid" id="lights"></div></section>
+
+  <div><button class="link" id="forget">Sign out and forget this device</button></div>
+</div>
+
+<script>
+const API = "https://door.casambi.com/v1";
+const SOCKET_URL = "wss://door.casambi.com/v1/bridge/";
+const WIRE = 1;
+const SAVE_KEY = "chabad-casambi";
+const $ = (s) => document.querySelector(s);
+
+// Saved on this device: { apiKey, networkId, sessionId, networkName }
+let saved = null;
+try { saved = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch {}
+
+const state = { lights: new Map(), groups: [], scenes: [], connected: false, gatewayOnline: false };
+let socket = null, pingTimer = null, dragging = false, retryTimer = null;
+
+// ---------- Step 1: sign in (only the first time) ----------
+$("#setup").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("#setupError").textContent = "";
+  $("#connectBtn").disabled = true;
+  $("#connectBtn").textContent = "Connecting...";
+  try {
+    const apiKey = $("#apiKey").value.trim();
+    const res = await fetch(`${API}/networks/session/`, {
+      method: "POST",
+      headers: { "X-Casambi-Key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ email: $("#email").value.trim(), password: $("#password").value }),
+    });
+    if (res.status === 401) throw new Error("Casambi didn't accept these details. Check the API key, network email and network password.");
+    if (!res.ok) throw new Error(`Casambi sign-in failed (error ${res.status}). Try again in a minute.`);
+    const networks = await res.json();
+    const [networkId, info] = Object.entries(networks)[0] || [];
+    if (!networkId) throw new Error("Signed in, but no lighting network was found for this login.");
+    saved = { apiKey, networkId, sessionId: info.sessionId, networkName: info.name || "" };
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(saved)); } catch {}
+    $("#password").value = "";
+    start();
+  } catch (err) {
+    $("#setupError").textContent = err.message.includes("fetch") ? "Couldn't reach Casambi. Check the internet connection." : err.message;
+  } finally {
+    $("#connectBtn").disabled = false;
+    $("#connectBtn").textContent = "Connect";
+  }
+});
+
+function showSetup(message = "") {
+  if (socket) { socket.onclose = null; socket.close(); }
+  clearInterval(pingTimer); clearTimeout(retryTimer);
+  $("#app").hidden = true; $("#setup").hidden = false;
+  $("#setupError").textContent = message;
+  if (saved) $("#apiKey").value = saved.apiKey;
+}
+
+$("#forget").addEventListener("click", () => {
+  try { localStorage.removeItem(SAVE_KEY); } catch {}
+  saved = null;
+  $("#apiKey").value = ""; $("#email").value = "";
+  showSetup();
+});
+
+// ---------- Step 2: download lights, groups and scenes ----------
+async function loadNetwork() {
+  const res = await fetch(`${API}/networks/${saved.networkId}/state`, {
+    headers: { "X-Casambi-Key": saved.apiKey, "X-Casambi-Session": saved.sessionId },
+  });
+  if (res.status === 401 || res.status === 410) {
+    showSetup("Your Casambi sign-in expired. Please type the network email and password again.");
+    return false;
+  }
+  if (!res.ok) throw new Error(`Couldn't load the lights (error ${res.status}).`);
+  const net = await res.json();
+  const list = (x) => (Array.isArray(x) ? x : Object.values(x || {}));
+  state.lights.clear();
+  for (const u of list(net.units)) {
+    if (u.type && u.type !== "Luminaire") continue;
+    state.lights.set(u.id, { id: u.id, name: u.name || `Light ${u.id}`, dimLevel: typeof u.dimLevel === "number" ? u.dimLevel : 0, online: u.online !== false, position: u.position || 0 });
+  }
+  state.groups = list(net.groups).map((g) => ({ id: g.id, name: g.name || `Group ${g.id}`, position: g.position || 0 }));
+  state.scenes = list(net.scenes).map((s) => ({ id: s.id, name: s.name || `Scene ${s.id}`, position: s.position || 0 }));
+  if (net.name) saved.networkName = net.name;
+  return true;
+}
+
+// ---------- Step 3: live connection for commands ----------
+function connect() {
+  socket = new WebSocket(SOCKET_URL, saved.apiKey);
+  socket.binaryType = "arraybuffer";
+  socket.onopen = () => socket.send(JSON.stringify({ method: "open", id: saved.networkId, session: saved.sessionId, wire: WIRE, type: 1 }));
+  socket.onmessage = (event) => {
+    const text = typeof event.data === "string" ? event.data : new TextDecoder().decode(event.data);
+    let msg; try { msg = JSON.parse(text); } catch { return; }
+    if (msg.wireStatus === "openWireSucceed") { state.connected = true; render(); }
+    else if (msg.wireStatus === "invalidSession") { showSetup("Your Casambi sign-in expired. Please type the network email and password again."); return; }
+    if (msg.method === "unitChanged" && state.lights.has(msg.id)) {
+      const l = state.lights.get(msg.id);
+      if (typeof msg.dimLevel === "number") l.dimLevel = msg.dimLevel;
+      if (typeof msg.online === "boolean") l.online = msg.online;
+      state.gatewayOnline = true;
+      if (!dragging) render();
+    } else if (msg.method === "peerChanged") {
+      state.gatewayOnline = typeof msg.online === "boolean" ? msg.online : true;
+      render();
+    } else if (msg.method === "networkUpdated") {
+      loadNetwork().then((ok) => ok && render());
+    }
+  };
+  socket.onclose = () => {
+    state.connected = false; render();
+    clearInterval(pingTimer);
+    retryTimer = setTimeout(connect, 5000);
+  };
+  // Casambi closes the connection after 5 minutes of silence, so say hello every 4.
+  clearInterval(pingTimer);
+  pingTimer = setInterval(() => { if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ wire: WIRE, method: "ping" })); }, 4 * 60 * 1000);
+}
+
+function send(kind, id, level) {
+  if (!socket || socket.readyState !== WebSocket.OPEN || !state.connected) {
+    $("#error").textContent = "Not connected to Casambi right now. Wait a few seconds and try again.";
+    return;
+  }
+  $("#error").textContent = "";
+  id = Number(id);
+  const msg =
+    kind === "light" ? { method: "controlUnit", id, targetControls: { Dimmer: { value: level } } } :
+    kind === "group" ? { method: "controlGroup", id, level } :
+    kind === "scene" ? { method: "controlScene", id, level } :
+    { method: "controlNetwork", level };
+  socket.send(JSON.stringify({ wire: WIRE, ...msg }));
+}
+
+// ---------- The page ----------
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const byPosition = (a, b) => a.position - b.position || a.name.localeCompare(b.name);
+
+function card(kind, item, level, extra = "") {
+  const pct = Math.round(level * 100);
+  return `<div class="card ${pct > 0 ? "on" : ""}">
+    <div class="top"><b>${esc(item.name)}</b><span class="pct">${kind === "group" ? "" : pct + "%"}</span></div>
+    ${extra}
+    <div class="controls">
+      <button data-kind="${kind}" data-id="${item.id}" data-level="1">On</button>
+      <input type="range" min="0" max="100" step="5" value="${kind === "group" ? 50 : pct}" data-kind="${kind}" data-id="${item.id}" aria-label="${esc(item.name)} brightness">
+      <button data-kind="${kind}" data-id="${item.id}" data-level="0">Off</button>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const ok = state.connected && state.gatewayOnline;
+  $("#dot").classList.toggle("ok", ok);
+  $("#statusText").textContent = !state.connected ? "Connecting to Casambi..." : !state.gatewayOnline ? "Connected, waiting to hear from the Casambi gateway" : `Connected to ${saved.networkName || "Casambi"}`;
+  $("#scenes").innerHTML = state.scenes.length ? [...state.scenes].sort(byPosition).map((s) => `<button data-kind="scene" data-id="${s.id}" data-level="1">${esc(s.name)}</button>`).join("") : `<p class="empty">No scenes set up in Casambi yet.</p>`;
+  $("#groups").innerHTML = state.groups.length ? [...state.groups].sort(byPosition).map((g) => card("group", g, 0)).join("") : `<p class="empty">No groups set up in Casambi yet.</p>`;
+  const lights = [...state.lights.values()].sort((a, b) => a.name.localeCompare(b.name));
+  $("#lights").innerHTML = lights.length ? lights.map((l) => card("light", l, l.dimLevel, l.online ? "" : `<span class="offline">Offline</span>`)).join("") : `<p class="empty">No lights found.</p>`;
+}
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-kind]");
+  if (b) send(b.dataset.kind, b.dataset.id, Number(b.dataset.level));
+});
+document.addEventListener("input", (e) => { if (e.target.type === "range") dragging = true; });
+document.addEventListener("change", (e) => {
+  if (e.target.type !== "range") return;
+  dragging = false;
+  send(e.target.dataset.kind, e.target.dataset.id, Number(e.target.value) / 100);
+});
+
+async function start() {
+  $("#setup").hidden = true; $("#app").hidden = false;
+  try {
+    if (!(await loadNetwork())) return;
+    render();
+    connect();
+  } catch (err) {
+    $("#error").textContent = err.message.includes("fetch") ? "Couldn't reach Casambi. Check the internet connection." : err.message;
+  }
+}
+
+if (saved && saved.apiKey && saved.sessionId) start(); else showSetup();
+</script>
+</body>
+</html>
