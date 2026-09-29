@@ -235,6 +235,10 @@ async function loadNetwork() {
   const net = await res.json();
   const list = (x) => (Array.isArray(x) ? x : Object.values(x || {}));
   state.lights.clear();
+  state.allUnits = list(net.units).map((u) => ({
+    id: u.id, name: u.name || "",
+    onOffOnly: Array.isArray(u.controls) && !u.controls.some((c) => c.type === "Dimmer") && u.controls.some((c) => c.type === "OnOff"),
+  }));
   for (const u of list(net.units)) {
     if (u.type && u.type !== "Luminaire") continue;
     state.lights.set(u.id, { id: u.id, name: u.name || `Light ${u.id}`, dimLevel: typeof u.dimLevel === "number" ? u.dimLevel : 0, online: u.online !== false, position: u.position || 0 });
@@ -294,7 +298,8 @@ function send(kind, id, level) {
 }
 
 // ---------- The 5 building modes ----------
-// Each mode turns on the Casambi GROUPS listed (names must match the Casambi app).
+// Each mode turns on the Casambi GROUPS and single LIGHTS listed.
+// Names must match the Casambi app exactly (capital letters don't matter).
 // "all: true" turns on every light in the building.
 // Lights that aren't listed are left alone, so their motion sensors keep working.
 const MODES = [
@@ -303,7 +308,8 @@ const MODES = [
   { id: "event", name: "Event", desc: "Lobby and kitchen on. Other rooms on sensors.",
     groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage"] },
   { id: "school", name: "School", desc: "Lobby, kitchen, hallways and classrooms on. Other rooms on sensors.",
-    groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage", "1st Floor Areas", "Class Rooms"] },
+    groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage"],
+    lights: ["Hall 110", "Hall 111", "R 118 RR", "RR 119", "Class 122 RR", "Class Room RR 123"] },
   { id: "holiday", name: "Holiday", desc: "All lights on. They stay on until you tap Turn off.", all: true, canTurnOff: true },
   { id: "shabbat", name: "Shabbat", desc: "All lights on. They stay on until you tap Turn off.", all: true, canTurnOff: true },
 ];
@@ -340,7 +346,13 @@ function runMode(id, on) {
       const g = state.groups.find((x) => norm(x.name) === norm(name));
       if (g) send("group", g.id, 1); else missing.push(name);
     }
-    if (missing.length) { $("#error").textContent = `Couldn't find these groups in Casambi: ${missing.join(", ")}.`; }
+    for (const name of m.lights || []) {
+      const u = (state.allUnits || []).find((x) => norm(x.name) === norm(name));
+      if (!u) { missing.push(name); continue; }
+      if (u.onOffOnly) socket.send(JSON.stringify({ wire: WIRE, method: "controlUnit", id: u.id, targetControls: { OnOff: { value: 1 } } }));
+      else send("light", u.id, 1);
+    }
+    if (missing.length) { $("#error").textContent = `Couldn't find these in Casambi: ${missing.join(", ")}.`; }
   }
   lastMode = on ? { id, at: Date.now() } : null;
   try { if (lastMode) localStorage.setItem(MODE_KEY, JSON.stringify(lastMode)); else localStorage.removeItem(MODE_KEY); } catch {}
