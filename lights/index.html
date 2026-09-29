@@ -288,6 +288,13 @@ function send(kind, id, level) {
     return;
   }
   $("#error").textContent = "";
+  if (kind === "all") {
+    // Every light group, but never the control switches.
+    const norm = (x) => x.toLowerCase().replace(/\s+/g, " ").trim();
+    const skip = NEVER_TOUCH.map(norm);
+    for (const g of state.groups) if (!skip.includes(norm(g.name))) socket.send(JSON.stringify({ wire: WIRE, method: "controlGroup", id: g.id, level }));
+    return;
+  }
   id = Number(id);
   const msg =
     kind === "light" ? { method: "controlUnit", id, targetControls: { Dimmer: { value: level } } } :
@@ -300,8 +307,10 @@ function send(kind, id, level) {
 // ---------- The 5 building modes ----------
 // Each mode turns on the Casambi GROUPS and single LIGHTS listed.
 // Names must match the Casambi app exactly (capital letters don't matter).
-// "all: true" turns on every light in the building.
+// "all: true" turns on every group EXCEPT the ones in NEVER_TOUCH below.
 // Lights that aren't listed are left alone, so their motion sensors keep working.
+// Control switches, not lights. The buttons never turn these on or off.
+const NEVER_TOUCH = ["Controls Overides", "Future Devices"];
 const MODES = [
   { id: "regular", name: "Regular Day", desc: "Lobby on. Other rooms on sensors.",
     groups: ["Lobby/Steps", "Lobby Cove"] },
@@ -337,10 +346,10 @@ function runMode(id, on) {
     $("#error").textContent = "Not connected to Casambi right now. Wait a few seconds and try again.";
     return;
   }
+  const norm = (x) => x.toLowerCase().replace(/\s+/g, " ").trim();
   if (m.all) {
     send("all", 0, on ? 1 : 0);
   } else {
-    const norm = (x) => x.toLowerCase().replace(/\s+/g, " ").trim();
     const missing = [];
     for (const name of m.groups) {
       const g = state.groups.find((x) => norm(x.name) === norm(name));
