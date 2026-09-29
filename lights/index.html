@@ -67,6 +67,8 @@ input[type=range]{flex:1;accent-color:var(--light)}
 .search{display:flex;gap:8px}
 .search input{flex:1;min-width:0;font:16px system-ui,sans-serif;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink)}
 .card .where{font-size:12px;color:var(--muted)}
+#diag summary{cursor:pointer;color:var(--muted);font-size:14px}
+#diagLog{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;font:12px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word;max-height:60vh;overflow:auto}
 .modes{display:flex;flex-direction:column;gap:12px}
 .mode{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .mode.active{border-color:var(--light);box-shadow:0 0 0 3px color-mix(in srgb,var(--light) 22%,transparent)}
@@ -162,6 +164,12 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
   <div class="install" id="installTip">
     <b>Put this on your home screen:</b> on iPhone, tap the Share button, then "Add to Home Screen." On Android, tap the ⋮ menu, then "Add to Home screen" or "Install app."
   </div>
+
+  <details id="diag">
+    <summary>Connection details (for troubleshooting)</summary>
+    <p class="hint">Shows the last messages between this app and Casambi. Your key and password are never shown here.</p>
+    <pre id="diagLog"></pre>
+  </details>
 
   <div><button class="link" id="forget">Sign out and forget this device</button></div>
 </div>
@@ -265,6 +273,17 @@ async function loadNetwork() {
 
 // ---------- Step 3: live connection for commands ----------
 let lastProblem = "";
+function wsSend(obj) { logDiag("->", obj); socket.send(JSON.stringify(obj)); }
+// Troubleshooting log: the last 60 messages to and from Casambi (never the key or session).
+const diag = [];
+function logDiag(dir, obj) {
+  const safe = { ...obj }; delete safe.session;
+  const t = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+  diag.push(`${t} ${dir} ${JSON.stringify(safe).slice(0, 400)}`);
+  while (diag.length > 60) diag.shift();
+  const el = document.getElementById("diagLog");
+  if (el) el.textContent = diag.slice().reverse().join("\n");
+}
 function connect() {
   // Close any old connection first, so we never have two open.
   clearTimeout(retryTimer);
@@ -272,10 +291,14 @@ function connect() {
   state.connected = false;
   socket = new WebSocket(SOCKET_URL, saved.apiKey);
   socket.binaryType = "arraybuffer";
-  socket.onopen = () => socket.send(JSON.stringify({ method: "open", id: saved.networkId, session: saved.sessionId, wire: WIRE, type: 1 }));
+  socket.onopen = () => {
+    logDiag("->", { method: "open", wire: WIRE, type: 1 });
+    socket.send(JSON.stringify({ method: "open", id: saved.networkId, session: saved.sessionId, wire: WIRE, type: 1 }));
+  };
   socket.onmessage = (event) => {
     const text = typeof event.data === "string" ? event.data : new TextDecoder().decode(event.data);
-    let msg; try { msg = JSON.parse(text); } catch { return; }
+    let msg; try { msg = JSON.parse(text); } catch { logDiag("<-", { raw: text.slice(0, 200) }); return; }
+    logDiag("<-", msg);
     if (msg.wireStatus === "openWireSucceed") { state.connected = true; lastProblem = ""; render(); }
     else if (msg.wireStatus === "invalidSession") { showSetup("Your Casambi sign-in expired. Please type the network email and password again."); return; }
     else if (msg.wireStatus) { lastProblem = `Casambi says: ${msg.wireStatus}`; render(); }
@@ -293,6 +316,7 @@ function connect() {
     }
   };
   socket.onclose = (event) => {
+    logDiag("x ", { closed: event && event.code, reason: event && event.reason });
     state.connected = false;
     if (!lastProblem && event && event.code && event.code !== 1000) lastProblem = `Connection closed (code ${event.code})`;
     render();
@@ -301,7 +325,7 @@ function connect() {
   };
   // Casambi closes the connection after 5 minutes of silence, so say hello every 4.
   clearInterval(pingTimer);
-  pingTimer = setInterval(() => { if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ wire: WIRE, method: "ping" })); }, 4 * 60 * 1000);
+  pingTimer = setInterval(() => { if (socket.readyState === WebSocket.OPEN) wsSend({ wire: WIRE, method: "ping" }); }, 4 * 60 * 1000);
 }
 
 function send(kind, id, level) {
@@ -314,7 +338,7 @@ function send(kind, id, level) {
     // Every light group, but never the control switches.
     const norm = (x) => x.toLowerCase().replace(/\s+/g, " ").trim();
     const skip = NEVER_TOUCH.map(norm);
-    for (const g of state.groups) if (!skip.includes(norm(g.name))) socket.send(JSON.stringify({ wire: WIRE, method: "controlGroup", id: g.id, level }));
+    for (const g of state.groups) if (!skip.includes(norm(g.name))) wsSend({ wire: WIRE, method: "controlGroup", id: g.id, level });
     return;
   }
   id = Number(id);
@@ -323,7 +347,7 @@ function send(kind, id, level) {
     kind === "group" ? { method: "controlGroup", id, level } :
     kind === "scene" ? { method: "controlScene", id, level } :
     { method: "controlNetwork", level };
-  socket.send(JSON.stringify({ wire: WIRE, ...msg }));
+  wsSend({ wire: WIRE, ...msg });
 }
 
 // ---------- The 5 building modes ----------
@@ -382,7 +406,7 @@ function runMode(id, on) {
     for (const name of m.lights || []) {
       const u = (state.allUnits || []).find((x) => norm(x.name) === norm(name));
       if (!u) { missing.push(name); continue; }
-      if (u.onOffOnly) socket.send(JSON.stringify({ wire: WIRE, method: "controlUnit", id: u.id, targetControls: { OnOff: { value: 1 } } }));
+      if (u.onOffOnly) wsSend({ wire: WIRE, method: "controlUnit", id: u.id, targetControls: { OnOff: { value: 1 } } });
       else send("light", u.id, 1);
     }
     if (missing.length) { $("#error").textContent = `Couldn't find these in Casambi: ${missing.join(", ")}.`; }
