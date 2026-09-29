@@ -64,6 +64,16 @@ input[type=range]{flex:1;accent-color:var(--light)}
 .offline{font-size:12px;color:var(--bad)}
 .error{color:var(--bad);font-size:14px;min-height:1.2em}
 .empty{color:var(--muted);font-size:14px}
+.modes{display:flex;flex-direction:column;gap:12px}
+.mode{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.mode.active{border-color:var(--light);box-shadow:0 0 0 3px color-mix(in srgb,var(--light) 22%,transparent)}
+.mode h3{margin:0;font-size:19px}
+.mode p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.mode .acts{display:flex;gap:8px}
+.mode .acts button{padding:12px 18px;font-size:15px}
+.mode .badge{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--light)}
+#advanced{display:flex;flex-direction:column;gap:22px;border-top:1px solid var(--line);padding-top:18px}
+#advanced[hidden]{display:none!important}
 body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 #mainView{display:flex;flex-direction:column;gap:22px}
 .headbtns{display:flex;flex-wrap:wrap;gap:8px}
@@ -105,17 +115,20 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 <div class="wrap" id="app" hidden>
   <header>
     <div>
-      <h1>Lighting</h1>
+      <h1>Chabad Center Lights</h1>
       <div class="status"><span class="dot" id="dot"></span><span id="statusText">Connecting...</span></div>
-    </div>
-    <div class="headbtns">
-      <button class="primary" data-kind="all" data-level="1">All lights on</button>
-      <button data-kind="all" data-level="0">All lights off</button>
-      <button id="editBtn">Customize</button>
     </div>
   </header>
   <div class="error" id="error"></div>
 
+  <div class="modes" id="modes"></div>
+
+  <div id="advanced" hidden>
+  <div class="headbtns">
+    <button class="primary" data-kind="all" data-level="1">All lights on</button>
+    <button data-kind="all" data-level="0">All lights off</button>
+    <button id="editBtn">Customize</button>
+  </div>
   <div id="mainView">
   <section id="favSection" hidden><h2>Favorites</h2><div class="grid" id="favorites"></div></section>
   <section><h2>Scenes</h2><div class="row" id="scenes"></div></section>
@@ -130,6 +143,9 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
     <section style="margin-top:18px"><h2>Individual lights</h2><div class="edit-list" id="editLights"></div></section>
     <div class="row" style="margin-top:18px"><button class="primary" id="doneBtn">Done</button></div>
   </div>
+  </div>
+
+  <div><button class="link" id="moreBtn">Show all lights and groups</button></div>
 
   <div class="install" id="installTip">
     <b>Put this on your home screen:</b> on iPhone, tap the Share button, then "Add to Home Screen." On Android, tap the ⋮ menu, then "Add to Home screen" or "Install app."
@@ -277,6 +293,70 @@ function send(kind, id, level) {
   socket.send(JSON.stringify({ wire: WIRE, ...msg }));
 }
 
+// ---------- The 5 building modes ----------
+// Each mode turns on the Casambi GROUPS listed (names must match the Casambi app).
+// "all: true" turns on every light in the building.
+// Lights that aren't listed are left alone, so their motion sensors keep working.
+const MODES = [
+  { id: "regular", name: "Regular Day", desc: "Lobby on. Other rooms on sensors.",
+    groups: ["Lobby/Steps", "Lobby Cove"] },
+  { id: "event", name: "Event", desc: "Lobby and kitchen on. Other rooms on sensors.",
+    groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage"] },
+  { id: "school", name: "School", desc: "Lobby, kitchen, hallways and classrooms on. Other rooms on sensors.",
+    groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage", "1st Floor Areas", "Class Rooms"] },
+  { id: "holiday", name: "Holiday", desc: "All lights on. They stay on until you tap Turn off.", all: true, canTurnOff: true },
+  { id: "shabbat", name: "Shabbat", desc: "All lights on. They stay on until you tap Turn off.", all: true, canTurnOff: true },
+];
+const MODE_KEY = "chabad-lights-mode";
+let lastMode = null;
+try { lastMode = JSON.parse(localStorage.getItem(MODE_KEY)); } catch {}
+
+function renderModes() {
+  $("#modes").innerHTML = MODES.map((m) => {
+    const active = lastMode && lastMode.id === m.id;
+    const when = active ? new Date(lastMode.at).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) : "";
+    return `<div class="mode ${active ? "active" : ""}">
+      <div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p>${active ? `<span class="badge">Turned on ${esc(when)} on this phone</span>` : ""}</div>
+      <div class="acts">
+        <button class="primary" data-mode="${m.id}" data-on="1">Turn on</button>
+        ${m.canTurnOff ? `<button data-mode="${m.id}" data-on="0">Turn off</button>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function runMode(id, on) {
+  const m = MODES.find((x) => x.id === id);
+  if (!socket || socket.readyState !== WebSocket.OPEN || !state.connected) {
+    $("#error").textContent = "Not connected to Casambi right now. Wait a few seconds and try again.";
+    return;
+  }
+  if (m.all) {
+    send("all", 0, on ? 1 : 0);
+  } else {
+    const norm = (x) => x.toLowerCase().replace(/\s+/g, " ").trim();
+    const missing = [];
+    for (const name of m.groups) {
+      const g = state.groups.find((x) => norm(x.name) === norm(name));
+      if (g) send("group", g.id, 1); else missing.push(name);
+    }
+    if (missing.length) { $("#error").textContent = `Couldn't find these groups in Casambi: ${missing.join(", ")}.`; }
+  }
+  lastMode = on ? { id, at: Date.now() } : null;
+  try { if (lastMode) localStorage.setItem(MODE_KEY, JSON.stringify(lastMode)); else localStorage.removeItem(MODE_KEY); } catch {}
+  renderModes();
+}
+
+$("#modes").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-mode]");
+  if (b) runMode(b.dataset.mode, b.dataset.on === "1");
+});
+$("#moreBtn").addEventListener("click", () => {
+  const adv = $("#advanced");
+  adv.hidden = !adv.hidden;
+  $("#moreBtn").textContent = adv.hidden ? "Show all lights and groups" : "Hide all lights and groups";
+});
+
 // ---------- The page ----------
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const byPosition = (a, b) => a.position - b.position || a.name.localeCompare(b.name);
@@ -388,6 +468,7 @@ async function start() {
 const installed = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
 if (installed) $("#installTip").hidden = true;
 
+renderModes();
 if (saved && saved.apiKey && saved.sessionId) start(); else showSetup();
 </script>
 </body>
