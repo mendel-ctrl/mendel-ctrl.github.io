@@ -120,6 +120,7 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
     <div>
       <h1>Chabad Center Lights</h1>
       <div class="status"><span class="dot" id="dot"></span><span id="statusText">Connecting...</span></div>
+      <button id="reconnect" class="link" hidden>Reconnect now</button>
     </div>
   </header>
   <div class="error" id="error"></div>
@@ -261,15 +262,21 @@ async function loadNetwork() {
 }
 
 // ---------- Step 3: live connection for commands ----------
+let lastProblem = "";
 function connect() {
+  // Close any old connection first, so we never have two open.
+  clearTimeout(retryTimer);
+  if (socket) { socket.onclose = null; socket.onmessage = null; try { socket.close(); } catch {} }
+  state.connected = false;
   socket = new WebSocket(SOCKET_URL, saved.apiKey);
   socket.binaryType = "arraybuffer";
   socket.onopen = () => socket.send(JSON.stringify({ method: "open", id: saved.networkId, session: saved.sessionId, wire: WIRE, type: 1 }));
   socket.onmessage = (event) => {
     const text = typeof event.data === "string" ? event.data : new TextDecoder().decode(event.data);
     let msg; try { msg = JSON.parse(text); } catch { return; }
-    if (msg.wireStatus === "openWireSucceed") { state.connected = true; render(); }
+    if (msg.wireStatus === "openWireSucceed") { state.connected = true; lastProblem = ""; render(); }
     else if (msg.wireStatus === "invalidSession") { showSetup("Your Casambi sign-in expired. Please type the network email and password again."); return; }
+    else if (msg.wireStatus) { lastProblem = `Casambi says: ${msg.wireStatus}`; render(); }
     if (msg.method === "unitChanged" && state.lights.has(msg.id)) {
       const l = state.lights.get(msg.id);
       if (typeof msg.dimLevel === "number") l.dimLevel = msg.dimLevel;
@@ -283,8 +290,10 @@ function connect() {
       loadNetwork().then((ok) => ok && render());
     }
   };
-  socket.onclose = () => {
-    state.connected = false; render();
+  socket.onclose = (event) => {
+    state.connected = false;
+    if (!lastProblem && event && event.code && event.code !== 1000) lastProblem = `Connection closed (code ${event.code})`;
+    render();
     clearInterval(pingTimer);
     retryTimer = setTimeout(connect, 5000);
   };
@@ -436,7 +445,8 @@ function card(kind, item, level, extra = "") {
 function render() {
   const ok = state.connected && state.gatewayOnline;
   $("#dot").classList.toggle("ok", ok);
-  $("#statusText").textContent = !state.connected ? "Connecting to Casambi..." : !state.gatewayOnline ? "Connected, waiting to hear from the Casambi gateway" : `Connected to ${saved.networkName || "Casambi"}`;
+  $("#reconnect").hidden = state.connected;
+  $("#statusText").textContent = !state.connected ? `Not connected. Trying again...${lastProblem ? ` (${lastProblem})` : ""}` : !state.gatewayOnline ? "Connected, waiting to hear from the Casambi gateway" : `Connected to ${saved.networkName || "Casambi"}`;
   const visible = (kind) => (x) => !prefs.hidden[keyOf(kind, x.id)];
   const scenes = [...state.scenes].sort(byPosition);
   const groups = [...state.groups].sort(byPosition);
@@ -527,6 +537,22 @@ async function start() {
 
 const installed = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
 if (installed) $("#installTip").hidden = true;
+
+// Phones cut the connection when the app is in the background or the screen locks.
+// Reconnect right away when the app comes back, or when the internet comes back.
+function reconnectIfNeeded() {
+  if (!saved || $("#app").hidden) return;
+  if (!socket || socket.readyState !== WebSocket.OPEN || !state.connected) connect();
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") reconnectIfNeeded(); });
+window.addEventListener("online", reconnectIfNeeded);
+window.addEventListener("pageshow", reconnectIfNeeded);
+$("#reconnect").addEventListener("click", async () => {
+  lastProblem = "";
+  $("#statusText").textContent = "Reconnecting...";
+  try { if (await loadNetwork()) { render(); connect(); } }
+  catch (err) { $("#error").textContent = err.message; }
+});
 
 renderModes();
 if (saved && saved.apiKey && saved.sessionId) start(); else showSetup();
