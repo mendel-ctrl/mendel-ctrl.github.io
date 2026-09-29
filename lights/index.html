@@ -64,6 +64,9 @@ input[type=range]{flex:1;accent-color:var(--light)}
 .offline{font-size:12px;color:var(--bad)}
 .error{color:var(--bad);font-size:14px;min-height:1.2em}
 .empty{color:var(--muted);font-size:14px}
+.search{display:flex;gap:8px}
+.search input{flex:1;min-width:0;font:16px system-ui,sans-serif;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink)}
+.card .where{font-size:12px;color:var(--muted)}
 .modes{display:flex;flex-direction:column;gap:12px}
 .mode{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .mode.active{border-color:var(--light);box-shadow:0 0 0 3px color-mix(in srgb,var(--light) 22%,transparent)}
@@ -120,6 +123,14 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
     </div>
   </header>
   <div class="error" id="error"></div>
+
+  <div class="search">
+    <input type="search" id="search" placeholder="Search for a light or room..." autocomplete="off" aria-label="Search lights">
+    <button id="clearSearch" hidden>Clear</button>
+  </div>
+  <div id="results" hidden>
+    <div class="grid" id="resultsGrid"></div>
+  </div>
 
   <div class="modes" id="modes"></div>
 
@@ -241,7 +252,7 @@ async function loadNetwork() {
   }));
   for (const u of list(net.units)) {
     if (u.type && u.type !== "Luminaire") continue;
-    state.lights.set(u.id, { id: u.id, name: u.name || `Light ${u.id}`, dimLevel: typeof u.dimLevel === "number" ? u.dimLevel : 0, online: u.online !== false, position: u.position || 0 });
+    state.lights.set(u.id, { id: u.id, name: u.name || `Light ${u.id}`, dimLevel: typeof u.dimLevel === "number" ? u.dimLevel : 0, online: u.online !== false, position: u.position || 0, groupId: u.groupId || 0 });
   }
   state.groups = list(net.groups).map((g) => ({ id: g.id, name: g.name || `Group ${g.id}`, position: g.position || 0 }));
   state.scenes = list(net.scenes).map((s) => ({ id: s.id, name: s.name || `Scene ${s.id}`, position: s.position || 0 }));
@@ -312,13 +323,15 @@ function send(kind, id, level) {
 // Control switches, not lights. The buttons never turn these on or off.
 const NEVER_TOUCH = ["Controls Overides", "Future Devices"];
 const MODES = [
-  { id: "regular", name: "Regular Day", desc: "Lobby on. Other rooms on sensors.",
-    groups: ["Lobby/Steps", "Lobby Cove"] },
-  { id: "event", name: "Event", desc: "Lobby and kitchen on. Other rooms on sensors.",
-    groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage"] },
-  { id: "school", name: "School", desc: "Lobby, kitchen, hallways and classrooms on. Other rooms on sensors.",
+  { id: "regular", name: "Regular Day", desc: "Lobby and lobby restrooms on. Other rooms on sensors.",
+    groups: ["Lobby/Steps", "Lobby Cove"],
+    lights: ["Lobby RR 113", "Lobby RR 114"] },
+  { id: "event", name: "Event", desc: "Lobby, lobby restrooms and kitchen on. Other rooms on sensors.",
     groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage"],
-    lights: ["Hall 110", "Hall 111", "R 118 RR", "RR 119", "Class 122 RR", "Class Room RR 123"] },
+    lights: ["Lobby RR 113", "Lobby RR 114"] },
+  { id: "school", name: "School", desc: "Lobby, lobby restrooms, kitchen, hallways and classroom bathrooms on. Other rooms on sensors.",
+    groups: ["Lobby/Steps", "Lobby Cove", "Kitchen RR Storage"],
+    lights: ["Lobby RR 113", "Lobby RR 114", "Hall 110", "Hall 111", "R 118 RR", "RR 119", "Class 122 RR", "Class Room RR 123"] },
   { id: "holiday", name: "Holiday", desc: "All lights on. They stay on until you tap Turn off.", all: true, canTurnOff: true },
   { id: "shabbat", name: "Shabbat", desc: "All lights on. They stay on until you tap Turn off.", all: true, canTurnOff: true },
 ];
@@ -378,6 +391,31 @@ $("#moreBtn").addEventListener("click", () => {
   $("#moreBtn").textContent = adv.hidden ? "Show all lights and groups" : "Hide all lights and groups";
 });
 
+// ---------- Search ----------
+function renderResults() {
+  const q = $("#search").value.trim().toLowerCase();
+  const searching = q.length > 0;
+  $("#results").hidden = !searching;
+  $("#modes").hidden = searching;
+  $("#clearSearch").hidden = !searching;
+  if (!searching || dragging) return;
+  const words = q.split(/\s+/);
+  const matches = (text) => words.every((w) => text.toLowerCase().includes(w));
+  const groupName = (id) => (state.groups.find((g) => g.id === id) || {}).name || "";
+  const groups = state.groups.filter((g) => matches(`${g.name} ${nameOf("group", g)}`));
+  const lights = [...state.lights.values()]
+    .filter((l) => matches(`${l.name} ${nameOf("light", l)} ${groupName(l.groupId)}`))
+    .sort((a, b) => nameOf("light", a).localeCompare(nameOf("light", b)));
+  const html = [
+    ...groups.map((g) => card("group", g, 0, `<span class="where">Whole group</span>`)),
+    ...lights.map((l) => card("light", l, l.dimLevel,
+      `${groupName(l.groupId) ? `<span class="where">${esc(groupName(l.groupId))}</span>` : ""}${l.online ? "" : ` <span class="offline">Offline</span>`}`)),
+  ];
+  $("#resultsGrid").innerHTML = html.length ? html.join("") : `<p class="empty">Nothing matches "${esc(q)}".</p>`;
+}
+$("#search").addEventListener("input", renderResults);
+$("#clearSearch").addEventListener("click", () => { $("#search").value = ""; renderResults(); $("#search").focus(); });
+
 // ---------- The page ----------
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const byPosition = (a, b) => a.position - b.position || a.name.localeCompare(b.name);
@@ -406,6 +444,7 @@ function render() {
   const sceneBtn = (s) => `<button data-kind="scene" data-id="${s.id}" data-level="1">${esc(nameOf("scene", s))}</button>`;
   const lightCard = (l) => card("light", l, l.dimLevel, l.online ? "" : `<span class="offline">Offline</span>`);
 
+  renderResults();
   if (editing) {
     // Don't redraw while someone is typing a new name.
     if (!(document.activeElement && document.activeElement.dataset && document.activeElement.dataset.name)) renderEdit(scenes, groups, lights);
