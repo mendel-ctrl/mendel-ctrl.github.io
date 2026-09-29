@@ -253,7 +253,9 @@ async function loadNetwork() {
   }));
   for (const u of list(net.units)) {
     if (u.type && u.type !== "Luminaire") continue;
-    state.lights.set(u.id, { id: u.id, name: u.name || `Light ${u.id}`, dimLevel: typeof u.dimLevel === "number" ? u.dimLevel : 0, online: u.online !== false, position: u.position || 0, groupId: u.groupId || 0 });
+    // "online" starts as true: Casambi's stored snapshot can say offline even when the
+    // gateway reaches the light. Live updates from the gateway (below) set the real value.
+    state.lights.set(u.id, { id: u.id, name: u.name || `Light ${u.id}`, dimLevel: typeof u.dimLevel === "number" ? u.dimLevel : 0, online: true, position: u.position || 0, groupId: u.groupId || 0 });
   }
   state.groups = list(net.groups).map((g) => ({ id: g.id, name: g.name || `Group ${g.id}`, position: g.position || 0 }));
   state.scenes = list(net.scenes).map((s) => ({ id: s.id, name: s.name || `Scene ${s.id}`, position: s.position || 0 }));
