@@ -382,7 +382,7 @@ function renderModes() {
       <div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p>${active ? `<span class="badge">Turned on ${esc(when)} on this phone</span>` : ""}</div>
       <div class="acts">
         <button class="primary" data-mode="${m.id}" data-on="1">Turn on</button>
-        ${m.canTurnOff ? `<button data-mode="${m.id}" data-on="0">Turn off</button>` : ""}
+        <button data-mode="${m.id}" data-on="0">Turn off</button>
       </div>
     </div>`;
   }).join("");
@@ -401,17 +401,17 @@ function runMode(id, on) {
     const missing = [];
     for (const name of m.groups) {
       const g = state.groups.find((x) => norm(x.name) === norm(name));
-      if (g) send("group", g.id, 1); else missing.push(name);
+      if (g) send("group", g.id, on ? 1 : 0); else missing.push(name);
     }
     for (const name of m.lights || []) {
       const u = (state.allUnits || []).find((x) => norm(x.name) === norm(name));
       if (!u) { missing.push(name); continue; }
-      if (u.onOffOnly) wsSend({ wire: WIRE, method: "controlUnit", id: u.id, targetControls: { OnOff: { value: 1 } } });
-      else send("light", u.id, 1);
+      if (u.onOffOnly) wsSend({ wire: WIRE, method: "controlUnit", id: u.id, targetControls: { OnOff: { value: on ? 1 : 0 } } });
+      else send("light", u.id, on ? 1 : 0);
     }
     if (missing.length) { $("#error").textContent = `Couldn't find these in Casambi: ${missing.join(", ")}.`; }
   }
-  lastMode = on ? { id, at: Date.now() } : null;
+  lastMode = on ? { id, at: Date.now() } : (lastMode && lastMode.id === id ? null : lastMode);
   try { if (lastMode) localStorage.setItem(MODE_KEY, JSON.stringify(lastMode)); else localStorage.removeItem(MODE_KEY); } catch {}
   renderModes();
 }
