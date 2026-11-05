@@ -1,0 +1,659 @@
+<!doctype html>
+<!--
+  CYP FLAME 2026 — Chabad Young Professionals S. Pete Chanukah party
+  =================================================================
+  Live at:  https://mendel-ctrl.github.io/flame/
+
+  THINGS YOU MIGHT WANT TO EDIT (search this file for the word):
+    EVENT_DATE      the countdown target (date + time, Eastern)
+    EARLY_BIRD_END  last day of the $35 early-bird price
+    FORM_ID         the ChabadOne form that takes the registrations
+    VIDEO_ID        the YouTube recap video
+  Photos live in the "photos" folder next to this file
+  (flame-02.jpg ... flame-40.jpg). Add or remove names in PHOTOS below.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FLAME 2026 | CYP S. Pete Chanukah Party</title>
+<meta name="description" content="The best 20s & 30s Chanukah party around. Saturday, Dec. 5th, 8:00 PM on the Rooftop at Chabad, Downtown S. Pete. Open bar, gourmet latke station, live DJ and more.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="FLAME 2026 · The best 20s & 30s Chanukah party around">
+<meta property="og:description" content="Saturday · Dec. 5th · 8:00 PM · Rooftop at Chabad, Downtown S. Pete">
+<meta property="og:image" content="https://mendel-ctrl.github.io/flame/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d0624">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ---------- 1. Colors & basics (taken from the flyer) ---------- */
+:root{
+  --night:#0d0624;        /* deepest background */
+  --night-2:#170a38;      /* panels */
+  --plum:#2a0f4a;
+  --violet:#8d72d8;       /* menorah purple */
+  --lavender:#c9b8ff;
+  --wine:#7a1236;         /* red rooftop glow */
+  --gold:#e3c26a;
+  --gold-hi:#fff1b8;
+  --gold-lo:#a77b25;
+  --text:#f3eefe;
+  --muted:#b9add6;
+  --line:rgba(227,194,106,.25);
+  --gold-grad:linear-gradient(180deg,#fff6cf 0%,#f1d47e 28%,#c99a3a 55%,#f5dc8c 72%,#a77b25 100%);
+  --radius:20px;
+  --wrap:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--text);font:400 17px/1.6 Montserrat,system-ui,sans-serif;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+.wrap{width:min(var(--wrap),100% - 32px);margin-inline:auto}
+.serif{font-family:Cinzel,Georgia,serif}
+.gold{background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{font:600 13px/1.2 Cinzel,serif;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+h2{font:800 clamp(32px,5vw,54px)/1.05 Montserrat,sans-serif;letter-spacing:-.01em;margin:.35em 0 .4em;text-transform:uppercase}
+section{position:relative;padding:clamp(72px,10vw,120px) 0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.6em;padding:16px 30px;border-radius:999px;font:800 14px/1 Montserrat;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border:0;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s}
+.btn-gold{background:var(--gold-grad);color:#1b0b33;box-shadow:0 10px 40px -10px rgba(241,212,126,.7),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 50px -10px rgba(241,212,126,.9)}
+.btn-ghost{color:var(--gold-hi);border:1.5px solid var(--line);background:rgba(255,255,255,.03)}
+.btn-ghost:hover{border-color:var(--gold);background:rgba(227,194,106,.08)}
+
+/* ---------- 2. Top bar ---------- */
+.nav{position:fixed;inset:0 0 auto;z-index:50;transition:background .3s,backdrop-filter .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(13,6,36,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:rgba(255,255,255,.06)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.brand{font:900 20px/1 Montserrat;letter-spacing:.12em;text-decoration:none}
+.brand small{display:block;font:600 9px/1.4 Cinzel,serif;letter-spacing:.25em;color:var(--muted);margin-top:3px}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font:600 13px/1 Montserrat;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--gold-hi)}
+.nav .btn{padding:12px 20px;font-size:12px}
+.nav-links a.btn,.nav-links a.btn:hover{color:#1b0b33}
+@media (max-width:820px){.nav-links a:not(.btn){display:none}}
+
+/* ---------- 3. Hero ---------- */
+.hero{min-height:100svh;display:grid;place-items:center;text-align:center;padding:110px 0 100px;overflow:hidden;isolation:isolate}
+.hero-bg{position:absolute;inset:0;z-index:-2;background:url(photos/flame-14.jpg) center 40%/cover;filter:saturate(1.2) brightness(.55);transform:scale(1.08)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:
+   radial-gradient(60% 50% at 50% 30%,rgba(141,114,216,.35),transparent 70%),
+   radial-gradient(50% 60% at 100% 70%,rgba(122,18,54,.55),transparent 70%),
+   radial-gradient(40% 50% at 0% 80%,rgba(122,18,54,.35),transparent 70%),
+   linear-gradient(180deg,rgba(13,6,36,.75) 0%,rgba(13,6,36,.55) 45%,var(--night) 100%)}
+.presents{margin:0 0 6px}
+@media (max-width:540px){.presents{letter-spacing:.16em;font-size:11px}}
+.menorah{width:min(640px,92vw);height:auto;margin:0 auto -4%;overflow:visible}
+.menorah .arm{stroke:url(#armGrad);stroke-width:13;stroke-linecap:square;fill:none}
+.menorah .cup{fill:#e9e3ff}
+.menorah .flame{transform-box:fill-box;transform-origin:50% 100%;opacity:0;transform:scale(.2)}
+.menorah .flame.lit{opacity:1;transform:scale(1);transition:opacity .5s,transform .6s cubic-bezier(.2,1.6,.4,1);animation:flicker 2.6s ease-in-out infinite}
+.menorah .glow{opacity:0;transition:opacity 1s}
+.menorah .glow.lit{opacity:1}
+@keyframes flicker{0%,100%{transform:scale(1) skewX(0)}25%{transform:scale(1.04,.96) skewX(2deg)}50%{transform:scale(.97,1.05) skewX(-2deg)}75%{transform:scale(1.03,.98) skewX(1deg)}}
+
+.title{position:relative;margin:0;font:900 clamp(84px,19vw,230px)/.9 Montserrat,sans-serif;letter-spacing:-.02em}
+.title span{position:relative;display:inline-block}
+.title .face{background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 #fff3c4) drop-shadow(0 0 30px rgba(241,212,126,.35))}
+.title .depth{position:absolute;inset:0;color:#5a3c0e;transform:translate(.045em,.06em);z-index:-1;text-shadow:.01em .015em 0 #6e4b13,.02em .03em 0 #7b5517,.03em .045em 0 #5a3c0e,0 .12em .25em rgba(0,0,0,.6)}
+.tagline{font:600 clamp(16px,2.4vw,26px)/1.3 Cinzel,serif;color:var(--gold-hi);letter-spacing:.06em;margin:.6em 0 1.4em}
+.when{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:.4em .9em;align-items:center;font:800 clamp(18px,3vw,30px)/1 Montserrat;letter-spacing:.02em;text-transform:uppercase}
+.when i{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block}
+.when sup{font-size:.55em}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+
+.countdown{display:flex;justify-content:center;gap:clamp(10px,2vw,18px);margin-top:42px}
+.countdown div{min-width:clamp(66px,14vw,92px);padding:14px 8px 12px;border:1px solid var(--line);border-radius:16px;background:rgba(23,10,56,.55);backdrop-filter:blur(6px)}
+.countdown b{display:block;font:800 clamp(26px,5vw,40px)/1 Montserrat;font-variant-numeric:tabular-nums}
+.countdown small{font:600 10px/1 Montserrat;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.scroll-hint{position:absolute;bottom:22px;left:50%;translate:-50% 0;width:24px;height:38px;border:2px solid var(--line);border-radius:14px}
+.scroll-hint::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--gold);animation:drop 1.8s infinite}
+@keyframes drop{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
+@media (max-height:760px){.scroll-hint{display:none}}
+
+/* ---------- 4. Details strip ---------- */
+.facts{padding:0;margin-top:-10px;z-index:2}
+.facts-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(42,15,74,.7),rgba(23,10,56,.7));backdrop-filter:blur(10px);overflow:hidden}
+.fact{padding:28px 30px;display:flex;gap:18px;align-items:flex-start}
+.fact+.fact{border-left:1px solid var(--line)}
+.fact svg{flex:none;width:34px;height:34px;color:var(--gold)}
+.fact h3{margin:0 0 4px;font:600 12px/1 Cinzel,serif;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+.fact p{margin:0;font-weight:700;font-size:18px;line-height:1.35}
+.fact p span{display:block;font-weight:500;font-size:15px;color:var(--muted)}
+@media (max-width:820px){.facts-grid{grid-template-columns:1fr}.fact+.fact{border-left:0;border-top:1px solid var(--line)}}
+
+/* ---------- 5. Experience ---------- */
+.experience .intro{display:grid;grid-template-columns:1.25fr .75fr;gap:60px;align-items:center}
+.experience .lead{font-size:clamp(17px,1.6vw,20px);color:var(--muted);max-width:52ch}
+.flyer{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px var(--line);transform:rotate(2deg);transition:transform .4s}
+.flyer:hover{transform:rotate(0) scale(1.02)}
+.flyer-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:64px}
+.perk{position:relative;padding:30px 26px;border-radius:var(--radius);background:linear-gradient(160deg,rgba(141,114,216,.14),rgba(122,18,54,.10));border:1px solid rgba(255,255,255,.07);overflow:hidden;transition:transform .3s,border-color .3s}
+.perk:hover{transform:translateY(-4px);border-color:var(--line)}
+.perk::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(227,194,106,.18),transparent 70%)}
+.perk svg{width:46px;height:46px;color:var(--gold);margin-bottom:18px}
+.perk h3{margin:0 0 6px;font:800 16px/1.2 Montserrat;letter-spacing:.12em;text-transform:uppercase}
+.perk p{margin:0;color:var(--muted);font-size:15px}
+@media (max-width:900px){.experience .intro{grid-template-columns:1fr}.flyer{max-width:420px;margin:0 auto}.perks{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:540px){.perks{gap:12px;margin-top:44px}.perk{padding:22px 16px}.perk svg{width:36px;height:36px;margin-bottom:12px}.perk h3{font-size:12.5px;letter-spacing:.08em}.perk p{font-size:13px;line-height:1.5}}
+
+/* ---------- 6. Tickets ---------- */
+.tickets{background:radial-gradient(70% 60% at 50% 0%,rgba(141,114,216,.18),transparent 70%),linear-gradient(180deg,var(--night),#12072e 50%,var(--night))}
+.center{text-align:center}
+.center .lead{color:var(--muted);max-width:56ch;margin:0 auto}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:48px 0 56px}
+.tier{position:relative;padding:34px 26px 30px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.08);background:rgba(23,10,56,.6);text-align:center;transition:transform .3s}
+.tier .name{font:600 13px/1 Cinzel,serif;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.tier .price{font:900 64px/1 Montserrat;margin:14px 0 8px}
+.tier .price sup{font-size:.42em;vertical-align:.9em;margin-right:2px}
+.tier .note{font-size:14px;color:var(--muted)}
+.tier .badge{position:absolute;top:-13px;left:50%;translate:-50% 0;padding:7px 14px;border-radius:999px;font:800 11px/1 Montserrat;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;background:var(--gold-grad);color:#1b0b33;display:none}
+.tier.current{border-color:var(--gold);background:linear-gradient(180deg,rgba(227,194,106,.14),rgba(23,10,56,.75));box-shadow:0 30px 60px -30px rgba(227,194,106,.45);transform:translateY(-6px)}
+.tier.current .badge{display:block}
+.tier.current .name{color:var(--gold-hi)}
+.tier.past{opacity:.45}
+.tier.past .price{text-decoration:line-through;text-decoration-thickness:3px;text-decoration-color:var(--wine)}
+@media (max-width:820px){.tiers{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
+
+.form-card{display:grid;grid-template-columns:.8fr 1.2fr;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:var(--night-2);box-shadow:0 50px 100px -40px rgba(0,0,0,.9)}
+.form-side{position:relative;padding:44px 38px;background:linear-gradient(180deg,rgba(13,6,36,.35),rgba(13,6,36,.92)),url(photos/flame-30.jpg) center/cover;display:flex;flex-direction:column;justify-content:flex-end;min-height:360px}
+.form-side h3{font:800 30px/1.1 Montserrat;text-transform:uppercase;margin:0 0 12px}
+.form-side ul{list-style:none;padding:0;margin:0 0 4px;color:var(--muted);font-size:15px}
+.form-side li{padding:8px 0 8px 28px;position:relative;border-top:1px solid rgba(255,255,255,.08)}
+.form-side li::before{content:"";position:absolute;left:4px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.form-main{background:#fff;color:#1b0b33;position:relative}
+.form-main iframe{display:block;width:100%;height:1040px;border:0;background:#fff}
+.form-fallback{padding:12px 20px;font-size:13px;text-align:center;background:#f5f1ff;color:#4a3b6e;border-top:1px solid #e6dff8}
+.form-fallback a{color:#5b3fb5;font-weight:700}
+.help{margin-top:26px;text-align:center;color:var(--muted);font-size:15px}
+.help a{color:var(--gold-hi);font-weight:700;text-decoration:none;border-bottom:1px solid var(--line)}
+@media (max-width:900px){.form-card{grid-template-columns:1fr}.form-side{min-height:300px}}
+
+/* ---------- 7. Gallery ---------- */
+.gallery-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+.gallery-head p{color:var(--muted);margin:0;max-width:44ch}
+.masonry{columns:3 300px;column-gap:14px}
+.masonry button{display:block;width:100%;margin:0 0 14px;padding:0;border:0;background:var(--night-2);border-radius:14px;overflow:hidden;cursor:zoom-in;break-inside:avoid;position:relative}
+.masonry img{width:100%;height:auto;transition:transform .6s,filter .4s;filter:saturate(1.05)}
+.masonry button:hover img{transform:scale(1.05);filter:saturate(1.25) brightness(1.08)}
+.masonry button::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);pointer-events:none}
+.masonry .hidden{display:none}
+.more-wrap{text-align:center;margin-top:30px}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(8,3,22,.95);display:none;align-items:center;justify-content:center;padding:60px 16px}
+.lb.open{display:flex}
+.lb img{max-width:min(1200px,100%);max-height:100%;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6);user-select:none}
+.lb button{position:absolute;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:rgba(23,10,56,.8);color:var(--gold-hi);font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.lb .x{top:14px;right:14px}
+.lb .prev{left:14px;top:50%;translate:0 -50%}
+.lb .next{right:14px;top:50%;translate:0 -50%}
+.lb .count{position:absolute;bottom:18px;left:50%;translate:-50% 0;font:600 13px Montserrat;letter-spacing:.2em;color:var(--muted)}
+@media (max-width:600px){.lb .prev,.lb .next{top:auto;bottom:10px;translate:none}.lb .count{bottom:26px}}
+
+/* ---------- 8. Video ---------- */
+.video{padding-top:0}
+.video-frame{position:relative;aspect-ratio:16/9;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:#000 center/cover;box-shadow:0 40px 90px -40px rgba(141,114,216,.6)}
+.video-frame button{position:absolute;inset:0;width:100%;border:0;background:linear-gradient(180deg,rgba(13,6,36,.15),rgba(13,6,36,.75));cursor:pointer;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font:700 14px Montserrat;letter-spacing:.2em;text-transform:uppercase}
+.video-frame .play{width:88px;height:88px;border-radius:50%;background:var(--gold-grad);display:grid;place-items:center;box-shadow:0 0 0 12px rgba(227,194,106,.18);transition:transform .3s}
+.video-frame button:hover .play{transform:scale(1.08)}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* ---------- 9. Location ---------- */
+.place{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:var(--night-2)}
+.place-info{padding:clamp(32px,5vw,56px)}
+.place-info address{font-style:normal;font-size:20px;font-weight:600;margin:6px 0 24px}
+.place-info address span{display:block;color:var(--muted);font-weight:500;font-size:16px}
+.place iframe{width:100%;height:100%;min-height:360px;border:0;filter:invert(.92) hue-rotate(200deg) saturate(.6) brightness(.9)}
+@media (max-width:820px){.place{grid-template-columns:1fr}}
+
+/* ---------- 10. Footer ---------- */
+footer{padding:70px 0 40px;border-top:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,var(--night),#08031a)}
+.foot{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:40px}
+.foot h4{margin:0 0 14px;font:600 12px/1 Cinzel,serif;letter-spacing:.24em;color:var(--gold);text-transform:uppercase}
+.foot p,.foot a{color:var(--muted);font-size:15px;text-decoration:none;margin:0 0 6px;display:block}
+.foot a:hover{color:var(--gold-hi)}
+.foot .sponsor{font:900 30px/1 Montserrat;letter-spacing:-.01em;color:transparent}
+.socials{display:flex;gap:12px;margin-top:8px}
+.socials a{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--gold-hi)}
+.socials svg{width:20px;height:20px}
+.legal{margin-top:50px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#7e7399;font-size:13px}
+@media (max-width:820px){.foot{grid-template-columns:1fr}}
+
+/* Mobile sticky ticket bar */
+.mbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:40;display:none;transform:translateY(140%);transition:transform .35s}
+.mbar.show{transform:none}
+.mbar a{width:100%;justify-content:center}
+@media (max-width:820px){.mbar{display:block}}
+
+/* Scroll-in animation */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="gold">FLAME</span><small>CYP S. PETE · 2026</small></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#experience">Experience</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#location">Location</a>
+      <a class="btn btn-gold" href="#tickets">Get Tickets</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow presents">Chabad Jewish Center of S. Pete presents</p>
+
+    <!-- The menorah: 8 branches + the taller middle "shamash". Flames light up one by one. -->
+    <svg class="menorah" viewBox="0 0 600 330" aria-hidden="true">
+      <defs>
+        <linearGradient id="armGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c9b8ff"/><stop offset="1" stop-color="#6b4fbf" stop-opacity=".25"/>
+        </linearGradient>
+        <radialGradient id="fireGrad" cx=".5" cy=".7" r=".6">
+          <stop offset="0" stop-color="#fffbe6"/><stop offset=".45" stop-color="#ffd76a"/><stop offset="1" stop-color="#ff7a1a"/>
+        </radialGradient>
+        <radialGradient id="haloGrad"><stop offset="0" stop-color="#ffd76a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient>
+      </defs>
+      <g id="menorahArms"></g>
+    </svg>
+
+    <h1 class="title" aria-label="Flame"><span><span class="depth" aria-hidden="true">FLAME</span><span class="face">FLAME</span></span></h1>
+    <p class="tagline">“The best 20s &amp; 30s Chanukah party around”</p>
+    <div class="when"><span>Saturday</span><i></i><span>Dec. 5<sup>th</sup></span><i></i><span class="gold">8:00 PM</span></div>
+
+    <div class="countdown" id="countdown" aria-label="Time until the party">
+      <div><b data-u="d">--</b><small>Days</small></div>
+      <div><b data-u="h">--</b><small>Hours</small></div>
+      <div><b data-u="m">--</b><small>Mins</small></div>
+      <div><b data-u="s">--</b><small>Secs</small></div>
+    </div>
+
+    <div class="hero-ctas">
+      <a class="btn btn-gold" href="#tickets">Reserve your spot
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost" href="#gallery">See past years</a>
+    </div>
+  </div>
+  <span class="scroll-hint" aria-hidden="true"></span>
+</section>
+
+<!-- ================= QUICK FACTS ================= -->
+<section class="facts">
+  <div class="wrap">
+    <div class="facts-grid reveal">
+      <div class="fact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <div><h3>When</h3><p>Saturday, Dec. 5th<span>2026 · Doors at 8:00 PM</span></p></div>
+      </div>
+      <div class="fact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <div><h3>Where</h3><p>Rooftop at Chabad<span>533 4th St N, Downtown S. Pete</span></p></div>
+      </div>
+      <div class="fact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.3c3 .1 6 1.9 6 5.7"/></svg>
+        <div><h3>Who</h3><p>Jewish 20s &amp; 30s<span>Chabad Young Professionals S. Pete</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE ================= -->
+<section class="experience" id="experience">
+  <div class="wrap">
+    <div class="intro">
+      <div class="reveal">
+        <p class="eyebrow">The experience</p>
+        <h2>A night <span class="gold">on fire</span><br>above downtown.</h2>
+        <p class="lead">Light the menorah under the stars on the Chabad rooftop with the best crowd in S. Pete. Drinks are flowing, the latkes are gourmet, the DJ is live, and the city is glowing all around you.</p>
+        <div class="flyer-actions">
+          <a class="btn btn-gold" href="#tickets">Get tickets</a>
+          <a class="btn btn-ghost" href="flyer.jpg" download="CYP-FLAME-2026-flyer.jpg">Download flyer</a>
+        </div>
+      </div>
+      <a class="flyer reveal" href="flyer.jpg" target="_blank" rel="noopener" aria-label="Open the FLAME 2026 flyer">
+        <img src="flyer.jpg" width="1400" height="1750" alt="FLAME 2026 flyer: Saturday Dec. 5th 8:00 PM, Rooftop at Chabad, 533 4th St N, Downtown S. Pete" loading="lazy">
+      </a>
+    </div>
+
+    <div class="perks">
+      <div class="perk reveal">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M8 8h32L24 26z"/><path d="M24 26v14M15 41h18"/><circle cx="31" cy="13" r="2.4" fill="currentColor"/><path d="M33 6l4-3"/></svg>
+        <h3>Open Bar</h3><p>Signature cocktails, wine and more, all night long.</p>
+      </div>
+      <div class="perk reveal">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><ellipse cx="20" cy="27" rx="13" ry="5"/><path d="M7 27c0 4 6 7 13 7s13-3 13-7"/><path d="M31 31l12 9"/><circle cx="16" cy="13" r="3"/><circle cx="25" cy="10" r="2.4"/><circle cx="22" cy="18" r="2"/></svg>
+        <h3>Gourmet Latke Station</h3><p>Crispy, golden and made to order, with all the toppings.</p>
+      </div>
+      <div class="perk reveal">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="24" cy="24" r="18"/><circle cx="24" cy="24" r="11"/><circle cx="24" cy="24" r="3.5" fill="currentColor"/><path d="M38 34l-8 8" stroke-linecap="round"/></svg>
+        <h3>Live DJ</h3><p>The soundtrack to the best Chanukah party around.</p>
+      </div>
+      <div class="perk reveal">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M6 16h8l3-5h14l3 5h8v22H6z"/><circle cx="24" cy="26" r="7"/></svg>
+        <h3>Photo Booth</h3><p>Grab your crew and take home the memories.</p>
+      </div>
+      <div class="perk reveal">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 40h36M8 34h32"/><path d="M14 34V8M24 34V8M34 34V8"/><circle cx="14" cy="15" r="3" fill="currentColor"/><circle cx="14" cy="24" r="3" fill="currentColor"/><circle cx="24" cy="15" r="3" fill="currentColor"/><circle cx="24" cy="24" r="3" fill="currentColor"/><circle cx="34" cy="15" r="3" fill="currentColor"/><circle cx="34" cy="24" r="3" fill="currentColor"/></svg>
+        <h3>Hors d’Oeuvres</h3><p>Passed bites and plenty to snack on as you mingle.</p>
+      </div>
+      <div class="perk reveal">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M24 10v30M15 44h18"/><path d="M24 30L6 12M24 30L10 12M24 30L14 12M24 30L18 12M24 30l18-18M24 30l14-18M24 30l10-18M24 30l6-18"/><path d="M24 4v3" stroke-width="3"/></svg>
+        <h3>Menorah Lighting</h3><p>Together we light the flames and share the miracle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TICKETS ================= -->
+<section class="tickets" id="tickets">
+  <div class="wrap">
+    <div class="center reveal">
+      <p class="eyebrow">Tickets</p>
+      <h2>Claim your <span class="gold">spot</span></h2>
+      <p class="lead">FLAME sells out every year. Lock in the early-bird price before November 20th.</p>
+    </div>
+
+    <div class="tiers" id="tiers">
+      <div class="tier reveal" data-tier="early">
+        <span class="badge">Now on sale</span>
+        <div class="name">Early Bird</div>
+        <div class="price gold"><sup>$</sup>35</div>
+        <div class="note">Until November 20</div>
+      </div>
+      <div class="tier reveal" data-tier="couvert">
+        <span class="badge">Now on sale</span>
+        <div class="name">Couvert</div>
+        <div class="price gold"><sup>$</sup>45</div>
+        <div class="note">Nov 21 – Dec 5</div>
+      </div>
+      <div class="tier reveal" data-tier="door">
+        <span class="badge">Tonight only</span>
+        <div class="name">At the Door</div>
+        <div class="price gold"><sup>$</sup>55</div>
+        <div class="note">If space allows</div>
+      </div>
+    </div>
+
+    <div class="form-card reveal">
+      <div class="form-side">
+        <p class="eyebrow">Registration</p>
+        <h3>Reserve in under a minute</h3>
+        <ul>
+          <li>Choose how many tickets you want</li>
+          <li>Add your name, address, phone &amp; email</li>
+          <li>Secure SSL checkout by ChabadOne</li>
+        </ul>
+      </div>
+      <div class="form-main">
+        <!-- The registration form itself is hosted by ChabadOne (the same system the old site uses). -->
+        <iframe id="regForm" title="FLAME registration form" loading="lazy"></iframe>
+        <div class="form-fallback">Form not loading? <a id="formLink" href="#" target="_blank" rel="noopener">Open it in a new tab</a></div>
+      </div>
+    </div>
+    <p class="help">Questions about tickets? Message Rabbi Mendel at <a href="tel:+19544788015">954-478-8015</a></p>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section id="gallery">
+  <div class="wrap">
+    <div class="gallery-head reveal">
+      <div>
+        <p class="eyebrow">Past FLAME highlights</p>
+        <h2 style="margin-bottom:0">Last time <span class="gold">was lit.</span></h2>
+      </div>
+      <p>Hundreds of young professionals, one giant menorah, and a night nobody wanted to end. Tap any photo to see it bigger.</p>
+    </div>
+    <div class="masonry" id="masonry"></div>
+    <div class="more-wrap"><button class="btn btn-ghost" id="moreBtn" type="button">Show all photos</button></div>
+  </div>
+</section>
+
+<!-- ================= VIDEO ================= -->
+<section class="video">
+  <div class="wrap">
+    <div class="video-frame reveal" id="videoFrame">
+      <button type="button" id="playBtn" aria-label="Play the FLAME recap video">
+        <span class="play"><svg width="30" height="30" viewBox="0 0 24 24" fill="#1b0b33"><path d="M8 5v14l11-7z"/></svg></span>
+        Watch the recap
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOCATION ================= -->
+<section id="location" style="padding-top:0">
+  <div class="wrap">
+    <div class="place reveal">
+      <div class="place-info">
+        <p class="eyebrow">Location</p>
+        <h2>Rooftop<br><span class="gold">at Chabad</span></h2>
+        <address>533 4th St N<span>Downtown St. Petersburg, FL</span></address>
+        <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=533+4th+St+N+St+Petersburg+FL" target="_blank" rel="noopener">Get directions</a>
+      </div>
+      <iframe title="Map to 533 4th St N, St. Petersburg" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps?q=533+4th+St+N,+St.+Petersburg,+FL&z=16&output=embed"></iframe>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <h4>Presented by</h4>
+        <p style="color:var(--text);font-weight:700">Chabad Jewish Center of Greater S. Petersburg</p>
+        <p>Chabad Young Professionals S. Pete</p>
+        <a href="https://www.chabadyoungsp.com" target="_blank" rel="noopener">ChabadYoungSP.com</a>
+      </div>
+      <div>
+        <h4>Corporate sponsor</h4>
+        <p class="sponsor gold">Otter PR</p>
+      </div>
+      <div>
+        <h4>Follow @chabadsp</h4>
+        <div class="socials">
+          <a href="https://www.instagram.com/chabadsp" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="https://www.facebook.com/chabadsp" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.4 10 6.4v2.1H7.5V12H10v10h4V12h3l.5-3.5z"/></svg></a>
+        </div>
+        <a href="tel:+19544788015" style="margin-top:14px">Rabbi Mendel · 954-478-8015</a>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© 2026 Chabad Jewish Center of Greater St. Petersburg</span>
+      <span>4010 Park St N, St. Petersburg, FL 33709</span>
+    </div>
+  </div>
+</footer>
+
+<div class="mbar" id="mbar"><a class="btn btn-gold" href="#tickets">Get FLAME tickets</a></div>
+
+<!-- Lightbox (big photo viewer) -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <img id="lbImg" alt="">
+  <button class="x" type="button" aria-label="Close">×</button>
+  <button class="prev" type="button" aria-label="Previous photo">‹</button>
+  <button class="next" type="button" aria-label="Next photo">›</button>
+  <span class="count" id="lbCount"></span>
+</div>
+
+<script>
+/* ===================== SETTINGS (edit these) ===================== */
+var EVENT_DATE     = new Date('2026-12-05T20:00:00-05:00'); // party start, Eastern time
+var EARLY_BIRD_END = new Date('2026-11-21T00:00:00-05:00'); // early bird ends at midnight after Nov 20
+// ChabadOne form ID. Paste the ID of the 2026 ticket form here.
+// (Right now it is the form from the old page, which is set up as a WAITLIST.)
+var FORM_ID  = '8c78bcbb-76ed-45b5-b7a5-07437f284cb3';
+var VIDEO_ID = 'ES8AvAVDT4Q';
+// Photos in the "photos" folder. [number, width, height]
+var PHOTOS = [];
+for (var n = 2; n <= 40; n++) PHOTOS.push([n, 1200, 800]);
+[18, 21, 28].forEach(function (p) { PHOTOS[p - 2] = [p, 800, 1200]; }); // the tall ones
+var FIRST_SHOWN = 12; // photos shown before "Show all photos"
+/* ================================================================= */
+
+/* --- Menorah: draw 9 arms fanning up from one point, then light them --- */
+(function () {
+  var g = document.getElementById('menorahArms'), ns = 'http://www.w3.org/2000/svg';
+  var baseX = 300, baseY = 330, html = '';
+  var tops = [];
+  for (var i = 0; i < 9; i++) {
+    var x = 40 + i * 65, y = (i === 4) ? 52 : 82 + Math.abs(i - 4) * 4; // middle one (shamash) is taller
+    tops.push([x, y]);
+  }
+  tops.forEach(function (t) {
+    html += '<line class="arm" x1="' + baseX + '" y1="' + baseY + '" x2="' + t[0] + '" y2="' + t[1] + '"/>';
+  });
+  tops.forEach(function (t, i) {
+    var x = t[0], y = t[1];
+    html += '<circle class="glow" data-i="' + i + '" cx="' + x + '" cy="' + (y - 24) + '" r="34" fill="url(#haloGrad)"/>';
+    html += '<path class="cup" d="M' + (x - 9) + ' ' + y + ' q-1 -14 4 -18 h10 q5 4 4 18 z"/>';
+    html += '<path class="flame" data-i="' + i + '" fill="url(#fireGrad)" d="M' + x + ' ' + (y - 46) +
+            ' C' + (x + 9) + ' ' + (y - 34) + ' ' + (x + 8) + ' ' + (y - 22) + ' ' + x + ' ' + (y - 19) +
+            ' C' + (x - 8) + ' ' + (y - 22) + ' ' + (x - 9) + ' ' + (y - 34) + ' ' + x + ' ' + (y - 46) + 'Z"/>';
+  });
+  g.innerHTML = html;
+  // Light the shamash first, then the others from right to left, like on Chanukah
+  var order = [4, 8, 7, 6, 5, 3, 2, 1, 0];
+  order.forEach(function (idx, k) {
+    setTimeout(function () {
+      g.querySelectorAll('[data-i="' + idx + '"]').forEach(function (el) {
+        el.classList.add('lit');
+        if (el.classList.contains('flame')) el.style.animationDelay = (-Math.random() * 2.6) + 's';
+      });
+    }, 500 + k * 260);
+  });
+})();
+
+/* --- Countdown --- */
+(function () {
+  var box = document.getElementById('countdown');
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var ms = EVENT_DATE - new Date();
+    if (ms <= 0) { box.innerHTML = '<div style="padding:16px 26px"><b class="gold" style="font-size:28px">It’s FLAME night!</b></div>'; return; }
+    var s = Math.floor(ms / 1000);
+    var v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+    for (var k in v) box.querySelector('[data-u="' + k + '"]').textContent = k === 'd' ? v[k] : pad(v[k]);
+    setTimeout(tick, 1000);
+  }
+  tick();
+})();
+
+/* --- Highlight whichever ticket price applies today --- */
+(function () {
+  var now = new Date(), current = now < EARLY_BIRD_END ? 'early' : now < EVENT_DATE ? 'couvert' : 'door';
+  var order = ['early', 'couvert', 'door'], ci = order.indexOf(current);
+  document.querySelectorAll('.tier').forEach(function (t) {
+    var i = order.indexOf(t.dataset.tier);
+    if (i === ci) t.classList.add('current'); else if (i < ci) t.classList.add('past');
+  });
+})();
+
+/* --- Registration form (ChabadOne) --- */
+(function () {
+  var url = 'https://chabadsp.chabadms.com/api/Forms/getFormView?id=' + FORM_ID;
+  document.getElementById('regForm').src = url;
+  document.getElementById('formLink').href = url;
+})();
+
+/* --- Gallery + lightbox --- */
+(function () {
+  var wall = document.getElementById('masonry'), btn = document.getElementById('moreBtn');
+  PHOTOS.forEach(function (p, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    if (i >= FIRST_SHOWN) b.className = 'hidden';
+    b.setAttribute('aria-label', 'Open photo ' + (i + 1));
+    b.innerHTML = '<img src="photos/flame-' + String(p[0]).padStart(2, '0') + '.jpg" width="' + p[1] + '" height="' + p[2] +
+                  '" loading="lazy" decoding="async" alt="Guests at a past CYP FLAME Chanukah party">';
+    b.addEventListener('click', function () { open(i); });
+    wall.appendChild(b);
+  });
+  btn.addEventListener('click', function () {
+    wall.querySelectorAll('.hidden').forEach(function (b) { b.classList.remove('hidden'); });
+    btn.parentNode.remove();
+  });
+
+  var lb = document.getElementById('lb'), img = document.getElementById('lbImg'), count = document.getElementById('lbCount'), cur = 0;
+  function show(i) {
+    cur = (i + PHOTOS.length) % PHOTOS.length;
+    img.src = 'photos/flame-' + String(PHOTOS[cur][0]).padStart(2, '0') + '.jpg';
+    count.textContent = (cur + 1) + ' / ' + PHOTOS.length;
+  }
+  function open(i) { show(i); lb.classList.add('open'); document.body.style.overflow = 'hidden'; lb.querySelector('.x').focus(); }
+  function close() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+  lb.querySelector('.x').onclick = close;
+  lb.querySelector('.prev').onclick = function () { show(cur - 1); };
+  lb.querySelector('.next').onclick = function () { show(cur + 1); };
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(cur - 1);
+    if (e.key === 'ArrowRight') show(cur + 1);
+  });
+  // swipe on phones
+  var sx = null;
+  lb.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', function (e) {
+    if (sx === null) return; var dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); sx = null;
+  });
+})();
+
+/* --- Video: only load YouTube when someone presses play (keeps the page fast) --- */
+(function () {
+  var f = document.getElementById('videoFrame');
+  f.style.backgroundImage = 'url(https://i.ytimg.com/vi/' + VIDEO_ID + '/hqdefault.jpg)';
+  document.getElementById('playBtn').addEventListener('click', function () {
+    f.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + VIDEO_ID +
+      '?autoplay=1&rel=0" title="FLAME recap video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  });
+})();
+
+/* --- Top bar background, mobile ticket bar, fade-in on scroll --- */
+(function () {
+  var nav = document.getElementById('nav'), mbar = document.getElementById('mbar'), tickets = document.getElementById('tickets');
+  function onScroll() {
+    nav.classList.toggle('scrolled', scrollY > 30);
+    var r = tickets.getBoundingClientRect();
+    var inTickets = r.top < innerHeight && r.bottom > 0;
+    mbar.classList.toggle('show', scrollY > innerHeight * .8 && !inTickets);
+  }
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  } else document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+})();
+</script>
+</body>
+</html>
