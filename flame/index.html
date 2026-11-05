@@ -80,10 +80,15 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .menu a:hover{color:var(--gold)}
 .menu .close{position:absolute;top:18px;left:clamp(16px,4vw,40px);width:44px;height:44px;background:none;border:0;color:var(--white);font-size:34px;cursor:pointer}
 
-/* ---------- 3. Hero (big photo) ---------- */
+/* ---------- 3. Hero slideshow ---------- */
 .hero{min-height:min(100svh,860px);display:flex;align-items:center;padding:120px 0 90px;overflow:hidden;isolation:isolate}
-.slide{position:absolute;inset:0;z-index:-2;background:center 60%/cover;animation:zoom 12s ease-out both}
-@keyframes zoom{from{transform:scale(1.1)}to{transform:scale(1)}}
+.slide{position:absolute;inset:0;z-index:-2;background:center 60%/cover;opacity:0;transform:scale(1.08);transition:opacity 1.4s,transform 7s linear}
+.slide.on{opacity:1;transform:scale(1)}
+.slide-bar{position:absolute;left:max(16px,calc((100% - var(--wrap))/2));bottom:42px;display:flex;align-items:center;gap:16px}
+.dots{display:flex;gap:6px}
+.dots button{width:32px;height:3px;border:0;padding:0;background:rgba(255,255,255,.3);cursor:pointer}
+.dots button.on{background:var(--gold)}
+.slide-label{font:600 10px/1 Jost;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
   linear-gradient(90deg,rgba(12,11,43,.92) 0%,rgba(12,11,43,.7) 35%,rgba(12,11,43,.1) 65%,rgba(12,11,43,.25) 100%),
   linear-gradient(180deg,rgba(12,11,43,.5) 0%,transparent 30%,transparent 65%,var(--navy) 100%),
@@ -277,8 +282,13 @@ footer{background:var(--navy-2);padding:64px 0 0}
 
 <!-- ================= HERO ================= -->
 <section class="hero">
-  <!-- Big photo at the top: last year's group photo -->
-  <div class="slide on" style="background-image:url(photos/2025-2.jpg)"></div>
+  <!-- Slideshow: last year's group photo first, then main photos from earlier years.
+       To change one, swap the photo name. data-label is the small caption by the dots. -->
+  <div class="slide on" data-label="Last year" style="background-image:url(photos/2025-2.jpg)"></div>
+  <div class="slide" data-label="Past FLAME" style="background-image:url(photos/flame-30.jpg)"></div>
+  <div class="slide" data-label="Past FLAME" style="background-image:url(photos/flame-14.jpg)"></div>
+  <div class="slide" data-label="Past FLAME" style="background-image:url(photos/flame-09.jpg)"></div>
+  <div class="slide" data-label="Past FLAME" style="background-image:url(photos/flame-06.jpg)"></div>
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow">CYP S. Pete presents · FLAME 2026</span>
@@ -296,6 +306,7 @@ footer{background:var(--navy-2);padding:64px 0 0}
       </div>
     </div>
   </div>
+  <div class="slide-bar"><div class="dots" id="dots" aria-label="Choose photo"></div><span class="slide-label" id="slideLabel">Last year</span></div>
 </section>
 
 <!-- ================= FEATURE CARDS ================= -->
@@ -518,6 +529,26 @@ var TALL = [18, 21, 28];
 function photoUrl(n) {
   return typeof n === 'string' ? 'photos/' + n + '.jpg' : 'photos/flame-' + String(n).padStart(2, '0') + '.jpg';
 }
+
+/* --- Hero slideshow: a new photo every 6 seconds --- */
+(function () {
+  var slides = document.querySelectorAll('.slide'), dots = document.getElementById('dots'),
+      label = document.getElementById('slideLabel'), cur = 0, timer;
+  slides.forEach(function (_, i) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (i + 1));
+    if (i === 0) b.className = 'on';
+    b.onclick = function () { go(i); restart(); };
+    dots.appendChild(b);
+  });
+  function go(i) {
+    slides[cur].classList.remove('on'); dots.children[cur].classList.remove('on');
+    cur = i; slides[cur].classList.add('on'); dots.children[cur].classList.add('on');
+    label.textContent = slides[cur].dataset.label || '';
+  }
+  function restart() { clearInterval(timer); timer = setInterval(function () { go((cur + 1) % slides.length); }, 6000); }
+  restart();
+})();
 
 /* --- Countdown --- */
 (function () {
