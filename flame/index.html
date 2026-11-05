@@ -80,12 +80,12 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .menu a:hover{color:var(--gold)}
 .menu .close{position:absolute;top:18px;left:clamp(16px,4vw,40px);width:44px;height:44px;background:none;border:0;color:var(--white);font-size:34px;cursor:pointer}
 
-/* ---------- 3. Hero slideshow ---------- */
+/* ---------- 3. Hero (big photo) ---------- */
 .hero{min-height:min(100svh,860px);display:flex;align-items:center;padding:120px 0 90px;overflow:hidden;isolation:isolate}
-.slide{position:absolute;inset:0;z-index:-2;background:center/cover;opacity:0;transition:opacity 1.4s,transform 7s linear;transform:scale(1.08)}
-.slide.on{opacity:1;transform:scale(1)}
+.slide{position:absolute;inset:0;z-index:-2;background:center 60%/cover;animation:zoom 12s ease-out both}
+@keyframes zoom{from{transform:scale(1.1)}to{transform:scale(1)}}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
-  linear-gradient(90deg,rgba(12,11,43,.95) 0%,rgba(12,11,43,.75) 38%,rgba(12,11,43,.25) 70%,rgba(12,11,43,.45) 100%),
+  linear-gradient(90deg,rgba(12,11,43,.92) 0%,rgba(12,11,43,.7) 35%,rgba(12,11,43,.1) 65%,rgba(12,11,43,.25) 100%),
   linear-gradient(180deg,rgba(12,11,43,.5) 0%,transparent 30%,transparent 65%,var(--navy) 100%),
   radial-gradient(50% 60% at 80% 40%,rgba(160,60,220,.28),transparent 70%)}
 @media (max-width:700px){.hero::after{background:linear-gradient(180deg,rgba(12,11,43,.75),rgba(12,11,43,.82) 60%,var(--navy))}}
@@ -97,9 +97,6 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .countdown div{text-align:left}
 .countdown b{display:block;font:500 34px/1 Jost;color:var(--white);font-variant-numeric:tabular-nums}
 .countdown small{font:600 10px/1 Jost;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
-.dots{position:absolute;left:max(16px,calc((100% - var(--wrap))/2));bottom:42px;display:flex;gap:6px}
-.dots button{width:32px;height:3px;border:0;padding:0;background:rgba(255,255,255,.3);cursor:pointer}
-.dots button.on{background:var(--gold)}
 
 /* ---------- 4. Three feature cards ---------- */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -280,10 +277,8 @@ footer{background:var(--navy-2);padding:64px 0 0}
 
 <!-- ================= HERO ================= -->
 <section class="hero">
-  <div class="slide on" style="background-image:url(photos/flame-14.jpg)"></div>
-  <div class="slide" style="background-image:url(photos/flame-30.jpg)"></div>
-  <div class="slide" style="background-image:url(photos/flame-09.jpg)"></div>
-  <div class="slide" style="background-image:url(photos/flame-06.jpg)"></div>
+  <!-- Big photo at the top: last year's group photo -->
+  <div class="slide on" style="background-image:url(photos/2025-2.jpg)"></div>
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow">CYP S. Pete presents · FLAME 2026</span>
@@ -301,14 +296,13 @@ footer{background:var(--navy-2);padding:64px 0 0}
       </div>
     </div>
   </div>
-  <div class="dots" id="dots" aria-label="Choose photo"></div>
 </section>
 
 <!-- ================= FEATURE CARDS ================= -->
 <section style="padding-top:20px">
   <div class="wrap cards">
     <a class="card reveal" href="#about">
-      <img src="photos/flame-22.jpg" alt="" loading="lazy">
+      <img src="photos/2025-5.jpg" alt="" loading="lazy">
       <span class="eyebrow">Open bar · Live DJ</span>
       <h3>The Experience</h3>
       <span class="btn btn-sm">Read more</span>
@@ -403,13 +397,13 @@ footer{background:var(--navy-2);padding:64px 0 0}
       <h2>Media &amp; Galleries</h2>
     </div>
     <div class="media-top">
+      <button class="tile reveal" type="button" data-photo="2025-3"><img src="photos/2025-3.jpg" alt="" loading="lazy"><span class="cap"><small>Last year</small><b>Lighting Up</b></span></button>
+      <button class="tile reveal" type="button" data-photo="2025-4"><img src="photos/2025-4.jpg" alt="" loading="lazy"><span class="cap"><small>Last year</small><b>Friends &amp; Flames</b></span></button>
       <button class="tile reveal" type="button" data-photo="17"><img src="photos/flame-17.jpg" alt="" loading="lazy"><span class="cap"><small>Past FLAME</small><b>Menorah Lighting</b></span></button>
-      <button class="tile reveal" type="button" data-photo="11"><img src="photos/flame-11.jpg" alt="" loading="lazy"><span class="cap"><small>Past FLAME</small><b>Friends &amp; Flames</b></span></button>
-      <button class="tile reveal" type="button" data-photo="37"><img src="photos/flame-37.jpg" alt="" loading="lazy"><span class="cap"><small>Past FLAME</small><b>Sweet Treats</b></span></button>
     </div>
     <div class="media-bottom">
-      <button class="tile reveal" type="button" data-photo="30"><img src="photos/flame-30.jpg" alt="" loading="lazy"><span class="cap"><small>Past FLAME</small><b>The FLAME Family</b></span></button>
-      <button class="tile reveal" type="button" data-photo="9"><img src="photos/flame-09.jpg" alt="" loading="lazy"><span class="cap"><small>Past FLAME</small><b>The Crowd</b></span></button>
+      <button class="tile reveal" type="button" data-photo="2025-1"><img src="photos/2025-1.jpg" alt="" loading="lazy"><span class="cap"><small>Last year</small><b>Picture Perfect</b></span></button>
+      <button class="tile reveal" type="button" data-photo="2025-5"><img src="photos/2025-5.jpg" alt="" loading="lazy"><span class="cap"><small>Last year</small><b>Good Company</b></span></button>
     </div>
     <div class="all" id="allPhotos"></div>
     <div class="more-wrap"><button class="btn" id="moreBtn" type="button">See all photos</button></div>
@@ -514,31 +508,16 @@ var EARLY_BIRD_END = new Date('2026-11-21T00:00:00-05:00'); // early bird ends a
 // (Right now it is the form from the old page, which is set up as a WAITLIST.)
 var FORM_ID  = '8c78bcbb-76ed-45b5-b7a5-07437f284cb3';
 var VIDEO_ID = 'ES8AvAVDT4Q';
-// Photos in the "photos" folder: numbers 2 to 40. 18, 21 and 28 are tall.
-var PHOTOS = [];
+// Photos in the "photos" folder. Last year's (2025-1 ... 2025-5) come first,
+// then older years (2 ... 40). 18, 21 and 28 are tall photos.
+var PHOTOS = ['2025-2', '2025-3', '2025-4', '2025-5', '2025-1'];
 for (var n = 2; n <= 40; n++) PHOTOS.push(n);
 var TALL = [18, 21, 28];
 /* ================================================================= */
 
-function photoUrl(n) { return 'photos/flame-' + String(n).padStart(2, '0') + '.jpg'; }
-
-/* --- Hero slideshow --- */
-(function () {
-  var slides = document.querySelectorAll('.slide'), dots = document.getElementById('dots'), cur = 0, timer;
-  slides.forEach(function (_, i) {
-    var b = document.createElement('button');
-    b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (i + 1));
-    if (i === 0) b.className = 'on';
-    b.onclick = function () { go(i); restart(); };
-    dots.appendChild(b);
-  });
-  function go(i) {
-    slides[cur].classList.remove('on'); dots.children[cur].classList.remove('on');
-    cur = i; slides[cur].classList.add('on'); dots.children[cur].classList.add('on');
-  }
-  function restart() { clearInterval(timer); timer = setInterval(function () { go((cur + 1) % slides.length); }, 6000); }
-  restart();
-})();
+function photoUrl(n) {
+  return typeof n === 'string' ? 'photos/' + n + '.jpg' : 'photos/flame-' + String(n).padStart(2, '0') + '.jpg';
+}
 
 /* --- Countdown --- */
 (function () {
@@ -588,7 +567,7 @@ function photoUrl(n) { return 'photos/flame-' + String(n).padStart(2, '0') + '.j
 
   // The five featured tiles open the viewer at their own photo
   document.querySelectorAll('.tile').forEach(function (t) {
-    t.addEventListener('click', function () { open(PHOTOS.indexOf(+t.dataset.photo)); });
+    t.addEventListener('click', function () { var key = t.dataset.photo; open(PHOTOS.indexOf(isNaN(key) ? key : +key)); });
   });
 
   // "See all photos" builds the full wall the first time it is pressed
