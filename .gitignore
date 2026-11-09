@@ -15,3 +15,7 @@ vm-automation/
 
 # Editor/session
 .claude/
+
+# FLAME event page images are part of the published site.
+!flame/**/*.jpg
+!flame/**/*.png
