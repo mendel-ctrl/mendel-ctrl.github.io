@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- FLAME page icon: a straight-armed gold menorah engulfed in flame, on navy -->
+  <defs>
+    <radialGradient id="bg" cx=".5" cy=".62" r=".7">
+      <stop offset="0" stop-color="#2a1250"/>
+      <stop offset="1" stop-color="#0c0b2b"/>
+    </radialGradient>
+    <linearGradient id="fireOuter" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff5a1f"/>
+      <stop offset=".55" stop-color="#ff9a2a"/>
+      <stop offset="1" stop-color="#ffd76a" stop-opacity=".9"/>
+    </linearGradient>
+    <linearGradient id="fireInner" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffb43a"/>
+      <stop offset="1" stop-color="#fff1b8"/>
+    </linearGradient>
+    <linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="0" y1="96" x2="0" y2="460">
+      <stop offset="0" stop-color="#fff3c4"/>
+      <stop offset=".45" stop-color="#e9c46a"/>
+      <stop offset="1" stop-color="#b98a2b"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+
+  <!-- the big flame the menorah stands in: tongues of fire licking upward -->
+  <path filter="url(#glow)" opacity=".8" fill="#ff6a1a"
+        d="M148 420 C96 350 100 262 150 206 C150 246 164 266 182 274 C170 206 196 136 244 92 C236 136 244 168 258 184 C266 128 280 78 262 22 C332 76 366 146 352 214 C368 200 378 180 380 154 C428 222 432 334 366 420 Z"/>
+  <path fill="url(#fireOuter)"
+        d="M152 416 C104 350 108 268 154 214 C154 252 168 270 186 278 C176 212 200 144 246 100 C238 142 246 172 260 188 C268 132 282 84 264 30 C330 82 362 148 348 218 C364 204 372 186 376 162 C420 228 424 334 362 416 Z"/>
+  <path fill="url(#fireInner)" opacity=".95"
+        d="M196 410 C164 362 168 300 200 262 C204 288 214 300 226 306 C222 256 240 206 270 176 C268 206 274 226 286 236 C292 214 298 196 296 176 C340 222 346 330 316 410 Z"/>
+
+  <!-- menorah: straight stem, four straight diagonal arms each side, base -->
+  <g stroke="#0c0b2b" stroke-width="30" stroke-linecap="square" fill="none" opacity=".9">
+    <line x1="256" y1="150" x2="256" y2="420"/>
+    <line x1="256" y1="236" x2="216" y2="196"/><line x1="256" y1="236" x2="296" y2="196"/>
+    <line x1="256" y1="276" x2="176" y2="196"/><line x1="256" y1="276" x2="336" y2="196"/>
+    <line x1="256" y1="316" x2="136" y2="196"/><line x1="256" y1="316" x2="376" y2="196"/>
+    <line x1="256" y1="356" x2="96"  y2="196"/><line x1="256" y1="356" x2="416" y2="196"/>
+    <path d="M196 414 h120 v18 l18 24 h-156 l18 -24 z" stroke-width="12" stroke-linejoin="round"/>
+  </g>
+  <g stroke="url(#gold)" stroke-width="16" stroke-linecap="square" fill="none">
+    <line x1="256" y1="150" x2="256" y2="420"/>
+    <line x1="256" y1="236" x2="216" y2="196"/><line x1="256" y1="236" x2="296" y2="196"/>
+    <line x1="256" y1="276" x2="176" y2="196"/><line x1="256" y1="276" x2="336" y2="196"/>
+    <line x1="256" y1="316" x2="136" y2="196"/><line x1="256" y1="316" x2="376" y2="196"/>
+    <line x1="256" y1="356" x2="96"  y2="196"/><line x1="256" y1="356" x2="416" y2="196"/>
+  </g>
+  <rect x="196" y="414" width="120" height="18" fill="url(#gold)"/>
+  <path d="M206 432 h100 l18 24 h-136 z" fill="url(#gold)"/>
+
+  <!-- cups -->
+  <g fill="url(#gold)">
+    <rect x="84"  y="180" width="24" height="16"/><rect x="124" y="180" width="24" height="16"/>
+    <rect x="164" y="180" width="24" height="16"/><rect x="204" y="180" width="24" height="16"/>
+    <rect x="244" y="134" width="24" height="16"/>
+    <rect x="284" y="180" width="24" height="16"/><rect x="324" y="180" width="24" height="16"/>
+    <rect x="364" y="180" width="24" height="16"/><rect x="404" y="180" width="24" height="16"/>
+  </g>
+
+  <!-- a flame on every light -->
+  <g fill="#fff6d6">
+    <path d="M96 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M136 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M176 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M216 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M256 100 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M296 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M336 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M376 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+    <path d="M416 146 c10 14 10 26 0 32 c-10 -6 -10 -18 0 -32z"/>
+  </g>
+</svg>
