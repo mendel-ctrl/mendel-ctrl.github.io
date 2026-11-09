@@ -6,7 +6,9 @@
 
   THINGS YOU MIGHT WANT TO EDIT (search this file for the word):
     EVENT_DATE      the countdown target (date + time, Eastern)
-    EARLY_BIRD_END  last day of the $35 early-bird price
+    SALE_START      first day of the $35 early-bird price (Nov 12)
+    EARLY_BIRD_END  when the early-bird price ends (after Nov 19)
+    HERO_LAYOUT     'center' or 'left' headline at the top
     FORM_ID         the ChabadOne form that takes the registrations
     VIDEO_ID        the YouTube recap video
   Photos live in the "photos" folder next to this file
@@ -88,7 +90,7 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .dots{display:flex;gap:6px}
 .dots button{width:32px;height:3px;border:0;padding:0;background:rgba(255,255,255,.3);cursor:pointer}
 .dots button.on{background:var(--gold)}
-.slide-label{font:600 10px/1 Jost;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.slide-label{white-space:nowrap;font:600 10px/1 Jost;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
   linear-gradient(90deg,rgba(12,11,43,.92) 0%,rgba(12,11,43,.7) 35%,rgba(12,11,43,.1) 65%,rgba(12,11,43,.25) 100%),
   linear-gradient(180deg,rgba(12,11,43,.5) 0%,transparent 30%,transparent 65%,var(--navy) 100%),
@@ -102,6 +104,23 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .countdown div{text-align:left}
 .countdown b{display:block;font:500 34px/1 Jost;color:var(--white);font-variant-numeric:tabular-nums}
 .countdown small{font:600 10px/1 Jost;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.wordmark{display:none}
+
+/* Centered headline layout (see HERO_LAYOUT in the settings) */
+.hero.is-center{text-align:center}
+.hero.is-center::after{background:
+  radial-gradient(70% 60% at 50% 50%,rgba(12,11,43,.82),rgba(12,11,43,.55) 100%),
+  linear-gradient(180deg,rgba(12,11,43,.55) 0%,transparent 30%,transparent 65%,var(--navy) 100%),
+  radial-gradient(45% 40% at 50% 45%,rgba(160,60,220,.25),transparent 70%)}
+.is-center .hero-copy{max-width:880px;margin-inline:auto}
+.is-center .wordmark{display:block;font:700 clamp(86px,17vw,210px)/.86 Jost;letter-spacing:.06em;margin:4px 0 14px;padding-left:.06em;
+  background:linear-gradient(180deg,#fff3c4 0%,#e9c46a 40%,#b98a2b 75%,#f0d488 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 28px rgba(233,196,106,.35)) drop-shadow(0 4px 0 rgba(0,0,0,.35))}
+.is-center h1{font-size:clamp(20px,2.8vw,32px);font-weight:600;letter-spacing:.16em;line-height:1.3;margin-bottom:16px}
+.is-center p{margin-inline:auto;max-width:52ch}
+.is-center .hero-ctas,.is-center .countdown{justify-content:center}
+.is-center .countdown div{text-align:center}
+.is-center .slide-bar{left:50%;translate:-50% 0}
 
 /* ---------- 4. Three feature cards ---------- */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -137,7 +156,14 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 /* ---------- 6. Tickets ---------- */
 .center{text-align:center}
 .center .sub{color:var(--muted);margin:12px auto 0;max-width:52ch}
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:44px 0 50px}
+.tiers{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:44px 0 50px;padding-top:46px}
+/* timeline line and dots above the three prices */
+.tiers::before{content:"";position:absolute;top:13px;left:16.66%;right:16.66%;height:2px;background:linear-gradient(90deg,var(--gold),rgba(214,169,67,.25))}
+.tier::before{content:attr(data-step);position:absolute;top:-46px;left:50%;translate:-50% 0;width:28px;height:28px;display:grid;place-items:center;
+  font:600 12px/1 Jost;color:var(--muted);background:var(--navy);border:1.5px solid var(--line)}
+.tier.current::before{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.tier.past::before{content:"✓";color:var(--gold);border-color:var(--gold)}
+.tier .when{display:block;font:600 13px/1 Jost;letter-spacing:.12em;text-transform:uppercase;color:var(--white);margin-bottom:14px}
 .tier{position:relative;padding:34px 22px;text-align:center;background:var(--navy-2);border:1.5px solid transparent}
 .tier .eyebrow{font-size:11px;color:var(--muted)}
 .tier .price{font:500 56px/1 Jost;color:var(--white);margin:6px 0 8px}
@@ -149,7 +175,11 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .tier.current .badge{display:block}
 .tier.past{opacity:.4}
 .tier.past .price{text-decoration:line-through;text-decoration-thickness:2px}
-@media (max-width:760px){.tiers{grid-template-columns:1fr;max-width:400px;margin-inline:auto}}
+@media (max-width:760px){
+  .tiers{grid-template-columns:1fr;max-width:400px;margin-inline:auto;padding:0 0 0 44px;gap:22px}
+  .tiers::before{top:14px;bottom:14px;left:13px;right:auto;width:2px;height:auto;background:linear-gradient(180deg,var(--gold),rgba(214,169,67,.25))}
+  .tier::before{top:50%;left:-44px;translate:0 -50%}
+}
 .form-card{display:grid;grid-template-columns:.8fr 1.2fr;background:var(--navy-2)}
 .form-side{position:relative;padding:40px 34px;display:flex;flex-direction:column;justify-content:flex-end;min-height:340px;isolation:isolate}
 .form-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
@@ -292,6 +322,7 @@ footer{background:var(--navy-2);padding:64px 0 0}
   <div class="wrap">
     <div class="hero-copy">
       <span class="eyebrow">CYP S. Pete presents · FLAME 2026</span>
+      <div class="wordmark" aria-hidden="true">FLAME</div>
       <h1>The best 20s &amp; 30s Chanukah party</h1>
       <p>Saturday, Dec. 5th at 8:00 PM on the Rooftop at Chabad, Downtown S. Pete. Open bar, latkes, a live DJ and the menorah lighting.</p>
       <div class="hero-ctas">
@@ -371,13 +402,14 @@ footer{background:var(--navy-2);padding:64px 0 0}
   <div class="wrap">
     <div class="center reveal">
       <span class="eyebrow">Tickets</span>
-      <h2>Choose your ticket</h2>
-      <p class="sub">FLAME fills up every year. Get the early-bird price before November 20th.</p>
+      <h2>The earlier, the better</h2>
+      <p class="sub">The price goes up as the party gets closer. Grab the early-bird price November 12 – 19.</p>
     </div>
+    <!-- The price that applies today gets highlighted on its own (see SALE_START and EARLY_BIRD_END below). -->
     <div class="tiers">
-      <div class="tier reveal" data-tier="early"><span class="badge">Now on sale</span><span class="eyebrow">Early bird</span><div class="price"><sup>$</sup>35</div><div class="note">Until November 20</div></div>
-      <div class="tier reveal" data-tier="couvert"><span class="badge">Now on sale</span><span class="eyebrow">Couvert</span><div class="price"><sup>$</sup>45</div><div class="note">Nov 21 – Dec 5</div></div>
-      <div class="tier reveal" data-tier="door"><span class="badge">Tonight only</span><span class="eyebrow">At the door</span><div class="price"><sup>$</sup>55</div><div class="note">If space allows</div></div>
+      <div class="tier reveal" data-tier="early" data-step="1"><span class="badge">Now on sale</span><span class="when">Nov 12 – 19</span><span class="eyebrow">Early bird</span><div class="price"><sup>$</sup>35</div><div class="note">Best price</div></div>
+      <div class="tier reveal" data-tier="couvert" data-step="2"><span class="badge">Now on sale</span><span class="when">Nov 20 – Dec 5</span><span class="eyebrow">Couvert</span><div class="price"><sup>$</sup>45</div><div class="note">After early bird ends</div></div>
+      <div class="tier reveal" data-tier="door" data-step="3"><span class="badge">Tonight only</span><span class="when">Dec 5 · Party night</span><span class="eyebrow">At the door</span><div class="price"><sup>$</sup>55</div><div class="note">If space allows</div></div>
     </div>
     <div class="form-card reveal">
       <div class="form-side">
@@ -514,7 +546,11 @@ footer{background:var(--navy-2);padding:64px 0 0}
 <script>
 /* ===================== SETTINGS (edit these) ===================== */
 var EVENT_DATE     = new Date('2026-12-05T20:00:00-05:00'); // party start, Eastern time
-var EARLY_BIRD_END = new Date('2026-11-21T00:00:00-05:00'); // early bird ends at midnight after Nov 20
+var SALE_START     = new Date('2026-11-12T00:00:00-05:00'); // early bird starts Nov 12
+var EARLY_BIRD_END = new Date('2026-11-20T00:00:00-05:00'); // early bird ends at midnight after Nov 19
+// Headline layout: 'center' (big gold FLAME in the middle) or 'left' (text on the left side).
+// To preview the other one without changing this, add ?layout=left or ?layout=center to the page address.
+var HERO_LAYOUT = 'center';
 // ChabadOne form ID. Paste the ID of the 2026 ticket form here.
 // (Right now it is the form from the old page, which is set up as a WAITLIST.)
 var FORM_ID  = '8c78bcbb-76ed-45b5-b7a5-07437f284cb3';
@@ -529,6 +565,13 @@ var TALL = [18, 21, 28];
 function photoUrl(n) {
   return typeof n === 'string' ? 'photos/' + n + '.jpg' : 'photos/flame-' + String(n).padStart(2, '0') + '.jpg';
 }
+
+/* --- Headline layout: centered or left --- */
+(function () {
+  var asked = new URLSearchParams(location.search).get('layout');
+  var layout = (asked === 'left' || asked === 'center') ? asked : HERO_LAYOUT;
+  if (layout === 'center') document.querySelector('.hero').classList.add('is-center');
+})();
 
 /* --- Hero slideshow: a new photo every 6 seconds --- */
 (function () {
@@ -573,6 +616,8 @@ function photoUrl(n) {
     var i = order.indexOf(t.dataset.tier);
     if (i === ci) t.classList.add('current'); else if (i < ci) t.classList.add('past');
   });
+  // Before sales open, the early-bird card says when it starts instead of "Now on sale"
+  if (now < SALE_START) document.querySelector('.tier[data-tier="early"] .badge').textContent = 'Starts Nov 12';
 })();
 
 /* --- Registration form (ChabadOne) --- */
