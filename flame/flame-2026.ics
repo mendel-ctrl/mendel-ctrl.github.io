@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chabad Young Professionals S. Pete//FLAME 2026//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:flame-2026@chabadyoungsp.com
+DTSTAMP:20261109T000000Z
+DTSTART:20261206T010000Z
+DTEND:20261206T040000Z
+SUMMARY:CYP FLAME 2026 Chanukah Party
+LOCATION:Outdoor rooftop at the brand-new Chabad\, 533 4th St N\, St. Peter
+ sburg\, FL 33701
+DESCRIPTION:The best 20s & 30s Chanukah party around: open bar\, gourmet la
+ tke station\, live DJ\, photo booth\, hors d'oeuvres and menorah lighting.
+ \n21+ event - bring a photo ID.\nParking: free on-site for Chai Club membe
+ rs. Everyone else: Museum of the American Arts & Crafts Movement garage (3
+ 50 3rd St N) or street parking. Rideshare encouraged.\nQuestions: Rabbi Me
+ ndel 954-478-8015\nhttps://www.chabadyoungsp.com/flame
+URL:https://www.chabadyoungsp.com/flame
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:FLAME is tomorrow!
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+END:VCALENDAR
