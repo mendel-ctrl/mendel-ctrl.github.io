@@ -27,22 +27,16 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0c0b2b">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="icon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Federo&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Figtree:wght@500&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ---------- 0. Brand font: The Henston ----------
-   The flyer uses The Henston (Adobe Fonts). Until its file is added, the page uses
-   Federo, the closest free match. To use the real font, put it in flame/fonts/
-   named TheHenston.woff2 (or .otf / .ttf); the page picks it up on its own. */
-@font-face{font-family:"The Henston";font-display:swap;
-  src:url(fonts/TheHenston.woff2) format("woff2"),url(fonts/TheHenston.otf) format("opentype"),url(fonts/TheHenston.ttf) format("truetype")}
-
 /* ---------- 1. Colors & basics ---------- */
 :root{
-  --brand:"The Henston","Federo",Jost,serif; /* brand lettering for headings */
+  --brand:"Archivo",system-ui,sans-serif; /* headings: clean modern block sans */
   --navy:#0c0b2b;        /* page background */
   --navy-2:#13113f;      /* lighter band */
   --navy-3:#1b1852;
@@ -61,7 +55,7 @@ img{max-width:100%;height:auto;display:block}
 a{color:inherit}
 .wrap{width:min(var(--wrap),100% - 32px);margin-inline:auto}
 .eyebrow{display:block;font:600 12px/1.2 Jost;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
-h1,h2,h3{font-family:var(--brand);font-weight:400;-webkit-text-stroke:.022em currentColor;text-transform:uppercase;color:var(--white);margin:0}
+h1,h2,h3{font-family:var(--brand);font-weight:600;text-transform:uppercase;color:var(--white);margin:0}
 h2{font-size:clamp(28px,3.6vw,40px);line-height:1.1;letter-spacing:.02em}
 .g{color:var(--gold)}
 section{position:relative;padding:clamp(70px,9vw,110px) 0}
@@ -81,6 +75,11 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .burger{width:40px;height:40px;display:grid;place-content:center;gap:5px;background:none;border:0;cursor:pointer;padding:0}
 .burger span{display:block;width:22px;height:2px;background:var(--white)}
 .logo .g{font-family:var(--brand)}
+.logo-nav{display:inline-flex;align-items:center;gap:12px}
+.logo-flame{display:block;height:24px;width:auto;filter:drop-shadow(0 1px 6px rgba(233,196,106,.25))}
+@media (max-width:600px){.logo-flame{height:18px}.logo-nav{gap:8px}}
+@media (max-width:420px){.logo-nav{font-size:14px;letter-spacing:.18em;gap:6px}.logo-flame{height:16px}.nav-right .btn-sm{padding:8px 9px;font-size:9.5px;letter-spacing:.12em;white-space:nowrap}}
+@media (max-width:360px){.hide-xs{display:none}}
 .logo{font:500 17px/1 Jost;letter-spacing:.32em;text-transform:uppercase;text-decoration:none;color:var(--white);white-space:nowrap}
 .nav-right{display:flex;gap:8px;justify-content:flex-end}
 @media (max-width:600px){.nav-right .hide-sm{display:none}.logo{font-size:15px;letter-spacing:.24em}}
@@ -88,7 +87,7 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 /* Slide-out menu */
 .menu{position:fixed;inset:0;z-index:60;background:rgba(8,7,30,.97);display:flex;flex-direction:column;justify-content:center;padding:0 clamp(24px,8vw,120px);opacity:0;pointer-events:none;transition:opacity .3s}
 .menu.open{opacity:1;pointer-events:auto}
-.menu a{font:400 clamp(28px,5vw,46px)/1.5 var(--brand);text-transform:uppercase;text-decoration:none;color:var(--white);letter-spacing:.04em}
+.menu a{font:600 clamp(28px,5vw,46px)/1.5 var(--brand);text-transform:uppercase;text-decoration:none;color:var(--white);letter-spacing:.04em}
 .menu a:hover{color:var(--gold)}
 .menu .close{position:absolute;top:18px;left:clamp(16px,4vw,40px);width:44px;height:44px;background:none;border:0;color:var(--white);font-size:34px;cursor:pointer}
 
@@ -108,7 +107,7 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 @media (max-width:700px){.hero::after{background:linear-gradient(180deg,rgba(12,11,43,.75),rgba(12,11,43,.82) 60%,var(--navy))}}
 .hero-copy{max-width:560px}
 .hero h1{font-size:clamp(40px,6.4vw,68px);line-height:1.02;letter-spacing:.01em;margin-bottom:18px}
-.hero p{color:var(--text);font-size:clamp(16px,1.6vw,18px);margin:0 0 28px;max-width:44ch}
+.hero p{font-family:Figtree,Jost,system-ui,sans-serif;font-weight:500;color:var(--text);font-size:clamp(16px,1.6vw,18px);margin:0 0 28px;max-width:44ch}
 .hero-ctas{display:flex;gap:10px;flex-wrap:wrap}
 .countdown{display:flex;gap:26px;margin-top:40px}
 .countdown div{text-align:left}
@@ -221,7 +220,7 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .tile:hover img{transform:scale(1.06)}
 .tile .cap{position:absolute;left:0;right:0;bottom:20px}
 .tile .cap small{display:block;font:600 10px/1 Jost;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
-.tile .cap b{font:400 17px/1.2 var(--brand);letter-spacing:.06em;text-transform:uppercase;color:var(--white)}
+.tile .cap b{font:600 16px/1.2 var(--brand);letter-spacing:.06em;text-transform:uppercase;color:var(--white)}
 .all{display:none;columns:4 220px;column-gap:12px;margin-top:16px}
 .all.open{display:block}
 .all button{display:block;width:100%;margin:0 0 12px;padding:0;border:0;background:var(--navy-2);cursor:zoom-in;break-inside:avoid;overflow:hidden}
@@ -305,10 +304,10 @@ footer{background:var(--navy-2);padding:64px 0 0}
 <header class="nav" id="nav">
   <div class="wrap">
     <button class="burger" id="burger" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
-    <a class="logo" href="#top">CYP <span class="g">FLAME</span></a>
+    <a class="logo logo-nav" href="#top" aria-label="CYP FLAME, back to top">CYP<picture><source srcset="flame-word.webp" type="image/webp"><img class="logo-flame" src="flame-word.png" width="1600" height="367" alt="FLAME"></picture></a>
     <div class="nav-right">
       <a class="btn btn-sm hide-sm" href="#gallery">Gallery</a>
-      <a class="btn btn-sm" href="#tickets">Get Tickets</a>
+      <a class="btn btn-sm" href="#tickets"><span class="hide-xs">Get </span>Tickets</a>
     </div>
   </div>
 </header>
