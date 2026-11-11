@@ -76,9 +76,9 @@ section{position:relative;padding:clamp(70px,9vw,110px) 0}
 .burger span{display:block;width:22px;height:2px;background:var(--white)}
 .logo .g{font-family:var(--brand)}
 .logo-nav{display:inline-flex;align-items:center;gap:12px}
-.logo-flame{display:block;height:24px;width:auto;filter:drop-shadow(0 1px 6px rgba(233,196,106,.25))}
-@media (max-width:600px){.logo-flame{height:18px}.logo-nav{gap:8px}}
-@media (max-width:420px){.logo-nav{font-size:14px;letter-spacing:.18em;gap:6px}.logo-flame{height:16px}.nav-right .btn-sm{padding:8px 9px;font-size:9.5px;letter-spacing:.12em;white-space:nowrap}}
+.logo-flame{display:block;height:28px;width:auto;filter:drop-shadow(0 1px 6px rgba(233,196,106,.25))}
+@media (max-width:600px){.logo-flame{height:22px}}
+@media (max-width:420px){.logo-flame{height:20px}.nav-right .btn-sm{padding:8px 9px;font-size:9.5px;letter-spacing:.12em;white-space:nowrap}}
 @media (max-width:360px){.hide-xs{display:none}}
 .logo{font:500 17px/1 Jost;letter-spacing:.32em;text-transform:uppercase;text-decoration:none;color:var(--white);white-space:nowrap}
 .nav-right{display:flex;gap:8px;justify-content:flex-end}
@@ -304,10 +304,10 @@ footer{background:var(--navy-2);padding:64px 0 0}
 <header class="nav" id="nav">
   <div class="wrap">
     <button class="burger" id="burger" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
-    <a class="logo logo-nav" href="#top" aria-label="CYP FLAME, back to top">CYP<picture><source srcset="flame-word.webp" type="image/webp"><img class="logo-flame" src="flame-word.png" width="1600" height="367" alt="FLAME"></picture></a>
+    <a class="logo logo-nav" href="#top" aria-label="CYP FLAME, back to top"><picture><source srcset="flame-word.webp" type="image/webp"><img class="logo-flame" src="flame-word.png" width="1600" height="367" alt="FLAME"></picture></a>
     <div class="nav-right">
       <a class="btn btn-sm hide-sm" href="#gallery">Gallery</a>
-      <a class="btn btn-sm" href="#tickets"><span class="hide-xs">Get </span>Tickets</a>
+      <a class="btn btn-sm" href="#tickets"><span><span class="hide-xs">Get </span>Tickets</span></a>
     </div>
   </div>
 </header>
